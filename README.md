@@ -37,6 +37,11 @@ Sin `DATABASE_URL` la API arranca igual: `GET /health` responde
 Sin esos dos ajustes el catálogo local funciona sin red, pero el celular no alcanza la API
 y no se puede validar el refresco al reconectar.
 
+## Despliegue y costos
+
+La guía completa está en [docs/despliegue.md](docs/despliegue.md): PWA vs APK, arquitectura,
+opciones gratuitas (Cloudflare Pages + Render + Supabase), costos y pasos de despliegue.
+
 ## Comandos reales
 
 | Dónde | Comando | Qué hace |

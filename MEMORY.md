@@ -6,6 +6,7 @@
 - El catálogo muestra nombre, categoría, unidad y precio; al volver la red se reintenta el refresco sin recargar ni perder la categoría. Un catálogo vacío se conserva y muestra su estado vacío; el SW avisa cuando hay una versión nueva.
 - Commit inicial `f85485c` (root, master) con todo el código de 001; sin Postgres local, Docker ni `uv`.
 - Validado con Edge headless + CDP: 360/768/1280 sin scroll horizontal, offline con badge, banner de actualización y targets de 48 px. Falta tableta/celular físico e integración con Postgres.
+- Guía de despliegue en `docs/despliegue.md`: PWA vs APK, Cloudflare Pages + Render + Supabase, costos free y pasos de publicación.
 
 ## Decisiones (y por qué)
 - **Neon/Supabase free tier en vez de laptop en casa:** evita dejar una laptop encendida 24/7 y exponer túneles/DNS dinámicos.
