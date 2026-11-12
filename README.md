@@ -42,6 +42,13 @@ y no se puede validar el refresco al reconectar.
 La guía completa está en [docs/despliegue.md](docs/despliegue.md): PWA vs APK, arquitectura,
 opciones gratuitas (Cloudflare Pages + Render + Supabase), costos y pasos de despliegue.
 
+El archivo `render.yaml` deja configurado el backend para Render: raíz `backend`,
+`pip install .`, Uvicorn en `$PORT` y comprobación de `/health`. Las variables secretas
+(`DATABASE_URL` y `FRONTEND_ORIGIN`) se agregan en Render; no se guardan en Git.
+
+Para Cloudflare Pages usa `frontend` como raíz, `npm run build` como comando de compilación,
+`dist` como directorio de salida y `VITE_API_URL` apuntando a la URL pública de Render.
+
 ## Comandos reales
 
 | Dónde | Comando | Qué hace |
