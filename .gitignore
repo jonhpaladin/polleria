@@ -1,0 +1,17 @@
+node_modules/
+dist/
+dist-ssr/
+dev-dist/
+coverage/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.env
+.env.*
+!.env.example
+*.local
+.DS_Store
+Thumbs.db

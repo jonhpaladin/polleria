@@ -1,0 +1,265 @@
+{
+  "updated_at": "2026-11-11T18:04:00Z",
+  "categories": [
+    { "id": "cat-pollo", "name": "Pollo fresco", "sort_order": 1 },
+    { "id": "cat-cortes", "name": "Cortes y piezas", "sort_order": 2 },
+    { "id": "cat-promos", "name": "Promociones", "sort_order": 3 },
+    { "id": "cat-complementos", "name": "Complementos", "sort_order": 4 },
+    { "id": "cat-bebidas", "name": "Bebidas", "sort_order": 5 }
+  ],
+  "products": [
+    {
+      "id": "prd-pollo-entero",
+      "sku": "POLLO-ENTERO",
+      "name": "Pollo entero",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [
+        { "tier": "lista", "price": "185.00", "is_default": true },
+        { "tier": "mayoreo", "price": "170.00", "is_default": false }
+      ]
+    },
+    {
+      "id": "prd-pollo-asado",
+      "sku": "POLLO-ASADO",
+      "name": "Pollo asado",
+      "category_id": "cat-pollo",
+      "unit": "piece",
+      "active": true,
+      "prices": [
+        { "tier": "lista", "price": "220.00", "is_default": true },
+        { "tier": "promocion", "price": "199.00", "is_default": false }
+      ]
+    },
+    {
+      "id": "prd-pierna-muslo",
+      "sku": "PIERNA-MUSLO",
+      "name": "Pierna y muslo",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [
+        { "tier": "lista", "price": "150.00", "is_default": true },
+        { "tier": "promocion", "price": "130.00", "is_default": false },
+        { "tier": "mayoreo", "price": "120.00", "is_default": false }
+      ]
+    },
+    {
+      "id": "prd-pechuga",
+      "sku": "PECHUGA",
+      "name": "Pechuga",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "175.00", "is_default": true }]
+    },
+    {
+      "id": "prd-alitas",
+      "sku": "ALITAS",
+      "name": "Alitas",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [
+        { "tier": "lista", "price": "140.00", "is_default": true },
+        { "tier": "mayoreo", "price": "130.00", "is_default": false }
+      ]
+    },
+    {
+      "id": "prd-muslo",
+      "sku": "MUSLO",
+      "name": "Muslo",
+      "category_id": "cat-cortes",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "145.00", "is_default": true }]
+    },
+    {
+      "id": "prd-pechuga-filete",
+      "sku": "PECHUGA-FILETE",
+      "name": "Filete de pechuga",
+      "category_id": "cat-cortes",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "195.00", "is_default": true }]
+    },
+    {
+      "id": "prd-pechuga-empanizada",
+      "sku": "PECHUGA-EMP",
+      "name": "Pechuga empanizada",
+      "category_id": "cat-cortes",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "210.00", "is_default": true }]
+    },
+    {
+      "id": "prd-milanesa",
+      "sku": "POLLO-MILANESA",
+      "name": "Milanesa de pollo",
+      "category_id": "cat-cortes",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "200.00", "is_default": true }]
+    },
+    {
+      "id": "prd-higado",
+      "sku": "HIGADO",
+      "name": "Hígado de pollo",
+      "category_id": "cat-cortes",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "90.00", "is_default": true }]
+    },
+    {
+      "id": "prd-mollejas",
+      "sku": "MOLLEJAS",
+      "name": "Mollejas",
+      "category_id": "cat-cortes",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "120.00", "is_default": true }]
+    },
+    {
+      "id": "prd-combo-familiar",
+      "sku": "COMBO-FAM",
+      "name": "Combo familiar",
+      "category_id": "cat-promos",
+      "unit": "piece",
+      "active": true,
+      "prices": [
+        { "tier": "lista", "price": "299.00", "is_default": true },
+        { "tier": "promocion", "price": "269.00", "is_default": false }
+      ]
+    },
+    {
+      "id": "prd-combo-personal",
+      "sku": "COMBO-PER",
+      "name": "Combo personal",
+      "category_id": "cat-promos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "149.00", "is_default": true }]
+    },
+    {
+      "id": "prd-combo-pareja",
+      "sku": "COMBO-PAREJA",
+      "name": "Combo pareja",
+      "category_id": "cat-promos",
+      "unit": "piece",
+      "active": true,
+      "prices": [
+        { "tier": "lista", "price": "229.00", "is_default": true },
+        { "tier": "promocion", "price": "209.00", "is_default": false }
+      ]
+    },
+    {
+      "id": "prd-pollo-entero-promo",
+      "sku": "POLLO-ENTERO-PROMO",
+      "name": "Pollo entero en promoción",
+      "category_id": "cat-promos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "165.00", "is_default": true }]
+    },
+    {
+      "id": "prd-alitas-promo",
+      "sku": "ALITAS-PROMO",
+      "name": "Alitas en promoción",
+      "category_id": "cat-promos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "99.00", "is_default": true }]
+    },
+    {
+      "id": "prd-tortillas",
+      "sku": "TORTILLAS",
+      "name": "Tortillas",
+      "category_id": "cat-complementos",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "30.00", "is_default": true }]
+    },
+    {
+      "id": "prd-salsa-roja",
+      "sku": "SALSA-ROJA",
+      "name": "Salsa roja",
+      "category_id": "cat-complementos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "15.00", "is_default": true }]
+    },
+    {
+      "id": "prd-salsa-verde",
+      "sku": "SALSA-VERDE",
+      "name": "Salsa verde",
+      "category_id": "cat-complementos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "15.00", "is_default": true }]
+    },
+    {
+      "id": "prd-ensalada",
+      "sku": "ENSALADA",
+      "name": "Ensalada de col",
+      "category_id": "cat-complementos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "25.00", "is_default": true }]
+    },
+    {
+      "id": "prd-papas",
+      "sku": "PAPAS",
+      "name": "Papas a la francesa",
+      "category_id": "cat-complementos",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "90.00", "is_default": true }]
+    },
+    {
+      "id": "prd-arroz",
+      "sku": "ARROZ",
+      "name": "Arroz",
+      "category_id": "cat-complementos",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "45.00", "is_default": true }]
+    },
+    {
+      "id": "prd-refresco",
+      "sku": "REFRESCO",
+      "name": "Refresco 600 ml",
+      "category_id": "cat-bebidas",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "20.00", "is_default": true }]
+    },
+    {
+      "id": "prd-agua",
+      "sku": "AGUA",
+      "name": "Agua 600 ml",
+      "category_id": "cat-bebidas",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "12.00", "is_default": true }]
+    },
+    {
+      "id": "prd-agua-litro",
+      "sku": "AGUA-LITRO",
+      "name": "Agua 1.5 L",
+      "category_id": "cat-bebidas",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "20.00", "is_default": true }]
+    },
+    {
+      "id": "prd-jugo",
+      "sku": "JUGO",
+      "name": "Jugo natural",
+      "category_id": "cat-bebidas",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "25.00", "is_default": true }]
+    }
+  ]
+}
