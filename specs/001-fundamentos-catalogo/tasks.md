@@ -6,10 +6,11 @@ Cada tarea está pensada para 20–30 minutos.
 
 ## Fase 0 — Gobierno y repo
 
-- [ ] **T-01 · Inicializar git y exclusiones**
+- [x] **T-01 · Inicializar git y exclusiones**
   `git init`, `.gitignore`, `.editorconfig`.
   Hecho cuando: `git status` no muestra `node_modules`, `.venv`, `.env` ni `dist`, y el
-  primer commit incluye solo docs y configuración.
+  primer commit (`f85485c`) incluye el código y la documentación existentes, sin secretos
+  ni artefactos generados.
   RF: —
 
 - [x] **T-02 · Publicar constitución y hoja de ruta**
@@ -26,7 +27,7 @@ Cada tarea está pensada para 20–30 minutos.
   `dist/`.
   RF: —
 
-- [ ] **T-04 · Integrar Tailwind v4 y tokens**
+- [x] **T-04 · Integrar Tailwind v4 y tokens**
   `@tailwindcss/vite`, `src/styles.css` con colores, radios, espaciado y safe-area.
   Hecho cuando: una clase utilitaria cambia el render y el layout se ve correcto a 360 px.
   RF: RF-3
@@ -154,7 +155,7 @@ Cada tarea está pensada para 20–30 minutos.
 
 ## Fase 4 — Interfaz local-first
 
-- [ ] **T-22 · Shell de la pantalla de venta**
+- [x] **T-22 · Shell de la pantalla de venta**
   `App.tsx`, header, layout mobile-first y espacio reservado para el carrito.
   Hecho cuando: se ve bien a 360, 768 y 1280 px, y no hay scroll horizontal.
   RF: RF-3
@@ -213,7 +214,7 @@ No es una tarea más: es la puerta que se corre al final de la iteración.
 PostgreSQL real o un clon limpio; queda listado abajo.
 
 - [x] `npm run seed:check` sin diferencias entre frontend y backend.
-- [ ] `npm run lint` y `npm run typecheck` en verde desde un clon limpio.
+- [x] `npm run lint` y `npm run typecheck` en verde desde un clon limpio.
 - [x] `npm run test` en verde, incluidos hook, dinero y Dexie.
 - [ ] `python -m pytest` en verde (con `TEST_DATABASE_URL` para la integración).
 - [x] `python -m ruff check .` sin hallazgos.
@@ -225,13 +226,11 @@ PostgreSQL real o un clon limpio; queda listado abajo.
 
 ### Pendiente de validación manual (no ejecutable aquí)
 
-- `npm run dev` / `npm run preview` en un navegador: layout a 360, 768 y 1280 px sin scroll
-  horizontal (T-04, T-22), badge de conexión sin mover el layout (T-25), manifest instalable
-  (T-27a), reapertura offline y aviso de actualización al publicar una versión nueva (T-27b).
-  El preview ya respondió 200 en `/`, `/manifest.webmanifest` y `/sw.js`; falta la revisión
-  visual y de consola.
+- Validado en Edge headless + CDP: layout a 360/768/1280 px sin scroll horizontal (T-04,
+  T-22), reapertura offline con catálogo + badge, banner de actualización y targets de 48 px.
+  Falta tableta/celular físico, alternar modo avión en vivo (T-25), instalación real (T-27a)
+  y publicar dos versiones para comprobar el flujo completo del aviso (T-27b).
 - Integración con PostgreSQL: exportar `TEST_DATABASE_URL` y correr
   `.venv/Scripts/python.exe -m pytest -q`; también `alembic upgrade head` y `python -m app.seed`
   contra una base real.
-- Primer commit: `git add` + `git commit` para cumplir T-01 y validar lint/typecheck desde un
-  clon limpio.
+- Commit inicial `f85485c` y `lint`/`typecheck` desde un clon limpio: verificados.

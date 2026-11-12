@@ -4,8 +4,8 @@
 - Spec 001 implementada y verificada en local: PWA de catálogo de solo lectura + API FastAPI/PostgreSQL (migración Alembic 0001, semilla idempotente, `/health`, `/catalog`).
 - Tests: backend 22 passed + 1 skipped (integración sin `TEST_DATABASE_URL`); frontend 87 passed; `ruff`, `lint`, `typecheck`, `seed:check` y `build` en verde.
 - El catálogo muestra nombre, categoría, unidad y precio; al volver la red se reintenta el refresco sin recargar ni perder la categoría. Un catálogo vacío se conserva y muestra su estado vacío; el SW avisa cuando hay una versión nueva.
-- Sin commitear: el repo tiene `git init` pero ningún commit. Sin Postgres local, Docker ni `uv`.
-- Pendiente de validación humana: integración real con Postgres y demo PWA en tablet/celular (instalar, modo avión, 48 px).
+- Commit inicial `f85485c` (root, master) con todo el código de 001; sin Postgres local, Docker ni `uv`.
+- Validado con Edge headless + CDP: 360/768/1280 sin scroll horizontal, offline con badge, banner de actualización y targets de 48 px. Falta tableta/celular físico e integración con Postgres.
 
 ## Decisiones (y por qué)
 - **Neon/Supabase free tier en vez de laptop en casa:** evita dejar una laptop encendida 24/7 y exponer túneles/DNS dinámicos.
@@ -21,8 +21,8 @@
 - **Skills vendorizadas y pinneadas por hash** (`.agents/skills/` + `skills-lock.json`): reproducibles entre sesiones.
 
 ## Próximos pasos
-1. Revisar y commitear 001; configurar Postgres (Neon/Supabase) y correr la integración con `TEST_DATABASE_URL`.
-2. Probar la PWA en el navegador del celular con la red apagada (acción humana).
+1. Configurar Postgres (Neon/Supabase) y correr la integración con `TEST_DATABASE_URL`; el commit inicial ya existe.
+2. Probar la PWA en una tableta/celular físico con la red apagada (acción humana).
 3. Abrir 002 (venta offline) cuando 001 pase el checklist de cierre.
 
 ## Decisiones de producto pendientes
