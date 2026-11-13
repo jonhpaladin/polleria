@@ -4,9 +4,10 @@
 - Spec 001 cerrada por ratificación del dueño: PWA de catálogo + API FastAPI/PostgreSQL (migración Alembic 0001, semilla idempotente, `/health`, `/catalog`).
 - Spec 002 implementada: pestaña `Precios del día` (copia la última hoja disponible, edición local de normal/promoción/mayoreo), carrito por kilo/pieza con precio manual sin autorización, pago informativo y confirmación local atómica de ticket + outbox.
 - Tests: backend 22 passed + 1 skipped (integración sin `TEST_DATABASE_URL`); frontend 153 passed; `ruff`, `lint`, `typecheck`, `seed:check` y `build` en verde.
-- Validado con Edge headless + CDP: 360/768/1280 sin scroll horizontal, targets de 48 px, tabla de precios con scroll interno y cobro con red apagada (26 precios, 1 ticket y 1 outbox en IndexedDB). Queda la prueba manual en dispositivo físico.
+- Validado con Edge headless + CDP: 360/768/1280 sin scroll horizontal, targets de 48 px, tabla de precios con scroll interno y cobro con red apagada en **9,8 ms** desde el clic hasta el aviso de éxito (26 precios, 1 ticket y 1 outbox en IndexedDB). Queda la prueba manual en dispositivo físico (T-002-22).
 - Supabase conectado y validado: esquema 0001, 5 categorías, 26 productos, 33 precios y 26 precios por defecto; sin Postgres local, Docker ni `uv`.
 - Guía de despliegue en `docs/despliegue.md`: PWA vs APK, Cloudflare Pages + Render + Supabase, costos free y pasos de publicación.
+- Spec 002 commiteada y pusheada a `master` (`258d3d3` implementación, `2b5a812` skills, `75bff55` validación).
 
 ## Decisiones (y por qué)
 - **Neon/Supabase free tier en vez de laptop en casa:** evita dejar una laptop encendida 24/7 y exponer túneles/DNS dinámicos.

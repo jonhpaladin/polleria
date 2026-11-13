@@ -159,6 +159,17 @@ Cada tarea debe poder completarse en aproximadamente 20–30 minutos.
   Hecho cuando el resultado queda documentado sin afirmar una cifra no medida.
   RF: RF-002-12, RF-002-13, RF-002-18
 
+  Ejecutado en Edge con emulación móvil a 360 px (2026-11-13): 26 precios guardados, precio
+  manual aplicado, cobro con red apagada en **9,8 ms** desde el clic hasta el aviso de éxito
+  (18,4 ms de reloj total incluyendo el viaje CDP); 1 ticket + 1 outbox y el ticket sobrevive
+  una reapertura de la base. Falta el mismo guion en el celular/tablet físico:
+  1. Instalar la PWA desde `https://polleria-q84.pages.dev` en el dispositivo.
+  2. Abrir la app, pestaña `Precios del día` y Guardar precios.
+  3. Pestaña `Venta`, agregar un producto y activar modo avión.
+  4. Confirmar venta y medir el tiempo hasta el aviso (cronómetro o depuración remota).
+  5. Recargar la app y comprobar que sigue cobrando; con depuración remota, revisar el ticket
+     en IndexedDB (`polleria` → `tickets`).
+
 - [x] **T-002-23 · Gate de calidad y memoria**
   Ejecutar lint, typecheck, tests y build; revisar diff; actualizar `MEMORY.md`.
   Hecho cuando todos pasan, no hay secretos y el contrato queda listo para 003.
@@ -181,5 +192,7 @@ Puerta de calidad de la constitución (sección 5), ejecutada sobre el commit `2
   `ProductCard`, `db` y el smoke de la hoja del día.
 - RF-002-17 (sin `fetch` al confirmar) verificado por revisión de código: `ticket`,
   `ticketRepository`, `cart`, `money`, `weight` y `dailyPrices` no importan `fetch` ni HTTP.
+- Confirmación local medida en Edge con emulación móvil y red apagada: 9,8 ms desde el clic
+  hasta el aviso de éxito (18,4 ms de reloj total con el viaje CDP), bajo el límite de P1 (<50 ms).
 - Pendiente: T-002-22, prueba en celular/tablet físico. El flujo se validó en Edge con emulación
   móvil a 360 px; la medición real en dispositivo sigue abierta y no se afirma aquí.
