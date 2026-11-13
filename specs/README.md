@@ -7,11 +7,12 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 |---|---|---|---|---|
 | 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | cerrada por ratificación del dueño |
 | 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | activa |
-| 003 | `003-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | borrador |
-| 004 | `004-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+003 para consolidar) | borrador |
-| 005 | `005-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+003 para propagar) | borrador |
-| 006 | `006-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
-| 007 | `007-multidispositivo` | Concurrencia entre cajas y roles con PIN | 003 | condicional |
+| 003 | `003-???` | Idea nueva del dueño (por describir) | 002 | borrador |
+| 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | borrador |
+| 005 | `005-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | borrador |
+| 006 | `006-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
+| 007 | `007-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
+| 008 | `008-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 
 ## 002 — Venta offline
 
@@ -22,14 +23,21 @@ tarjeta o transferencia), totales en centavos y ticket persistido en IndexedDB c
 `client_order_uuid`. La línea del ticket congela el precio elegido, aunque el catálogo cambie
 después.
 
-**Fuera de alcance**: sincronizar (003), imprimir (006), anular con auditoría, descuentos,
+**Fuera de alcance**: sincronizar (004), imprimir (007), anular con auditoría, descuentos,
 propinas, redondeo, procesamiento bancario, PIN/roles y precios ligados a un cliente
-registrado (005).
+registrado (006).
 
 **Duda abierta**: política de autorización del precio manual; se resolverá en la tarea
 T-002-18, sin agregar PIN ni roles mientras el dueño no lo defina.
 
-## 003 — Sincronización e idempotencia
+## 003 — Idea nueva del dueño (por describir)
+
+El dueño adelantó una idea para esta spec que aún no está escrita. Hasta que la describa no se
+crea la carpeta ni se redactan RF. La sincronización que estaba prevista como 003 pasa a 004.
+
+**Duda abierta**: ¿cuál es el alcance exacto de esta spec?
+
+## 004 — Sincronización e idempotencia
 
 **Objetivo**: drenar el outbox en segundo plano con backoff exponencial, reintentos
 seguros y `POST /sync` idempotente. Un fallo de red no pierde ni duplica tickets.
@@ -39,7 +47,7 @@ seguros y `POST /sync` idempotente. Un fallo de red no pierde ni duplica tickets
 **Dudas abiertas**: ¿qué se hace con un ticket que el backend rechaza por dato inválido
 (dead letter)? ¿se sincroniza el catálogo en el mismo canal o en uno aparte?
 
-## 004 — Corte de caja y reportes
+## 005 — Corte de caja y reportes
 
 **Objetivo**: corte por turno/día y reportes de ventas agrupados por fecha local
 `America/Mexico_City`, calculados desde datos locales y conciliados con el backend.
@@ -49,7 +57,7 @@ seguros y `POST /sync` idempotente. Un fallo de red no pierde ni duplica tickets
 **Dudas abiertas**: ¿turnos fijos o botón "cerrar caja"? ¿qué se hace con ventas
 sincronizadas después del corte? ¿propinas se reportan aparte?
 
-## 005 — Administración de precios
+## 006 — Administración de precios
 
 **Objetivo**: desde la laptop, editar precios por nivel (lista, promoción, mayoreo),
 activar/desactivar productos, registrar clientes con precios negociados y publicar el
@@ -61,7 +69,7 @@ catálogo a las cajas sin tocar la base a mano.
 captura al vuelo en cada venta? ¿quién puede editar (PIN)? ¿vigencia programada e historial
 de cambios?
 
-## 006 — Impresión
+## 007 — Impresión
 
 **Objetivo**: ticket en impresora térmica 58/80 mm por ESC/POS y etiquetas por TSPL, con
 `--kiosk-printing` en Chromium.
@@ -71,7 +79,7 @@ de cambios?
 **Dudas abiertas**: ¿modelo de impresora? ¿USB, Bluetooth o red? ¿se imprime antes o
 después de confirmar el cobro?
 
-## 007 — Multidispositivo (condicional)
+## 008 — Multidispositivo (condicional)
 
 **Objetivo**: dos o más cajas operando a la vez sin pisarse precios ni folios. Solo se abre
 si el local realmente lo necesita; hoy la concurrencia está sin definir.

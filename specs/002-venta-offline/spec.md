@@ -17,7 +17,7 @@ La promoción se elige manualmente al agregar la línea; no se aplica automátic
 
 La venta se confirma únicamente después de persistir el ticket local y su registro en el
 outbox de IndexedDB. La sincronización HTTP, los reintentos y la idempotencia en el backend
-pertenecen a la Spec 003.
+pertenecen a la Spec 004.
 
 ## Usuarios / actores
 
@@ -153,7 +153,7 @@ El outbox guarda el wire del ticket en la misma operación local:
 
 - dinero como strings de dos decimales (`"185.00"`), nunca número JSON;
 - peso como gramos enteros;
-- claves `snake_case` para el payload futuro de 003;
+- claves `snake_case` para el payload futuro de 004;
 - `client_order_uuid` inmutable;
 - `schema_version` explícita;
 - sin descuentos, propinas, redondeo ni cambio de efectivo.
@@ -221,7 +221,7 @@ reportes.
 5. La UI se valida a 360 px y en un celular/tablet con red apagada.
 6. Se mide el tiempo real de confirmación local en un dispositivo.
 7. La política de autorización del precio manual quedó decidida y documentada (D-002-06).
-8. `MEMORY.md` queda actualizado y la forma del ticket queda lista para 003.
+8. `MEMORY.md` queda actualizado y la forma del ticket queda lista para 004.
 9. La pestaña de precios se probó creando el día, copiando el último día disponible, editando
    niveles y conservando los cambios al refrescar el catálogo.
 
@@ -232,7 +232,7 @@ reportes.
 - **D-002-03**: se mantienen los niveles de catálogo lista, promoción y mayoreo; se agrega
   precio manual por línea.
 - **D-002-04**: el ticket confirmado es inmutable; anulación queda fuera de 002.
-- **D-002-05**: el outbox se crea en 002 y se drena en 003.
+- **D-002-05**: el outbox se crea en 002 y se drena en 004.
 - **D-002-06**: el precio manual se captura sin autorización en 002, por decisión del dueño del
   2026-11-13; el riesgo queda aceptado y documentado. PIN, roles o autenticación se revisan en
   una spec posterior.

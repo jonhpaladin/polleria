@@ -74,7 +74,7 @@ No habrá `receivedCents`, `changeCents`, referencia bancaria ni pago mixto.
 ### Ticket y outbox
 
 El ticket local será el snapshot inmutable de la venta. El outbox conservará el payload que
-003 publicará sin volver a generar UUID ni recalcular totales. La clave será
+004 publicará sin volver a generar UUID ni recalcular totales. La clave será
 `clientOrderUuid` y el payload tendrá `schemaVersion`.
 
 ## 3. Precios del día
@@ -139,9 +139,9 @@ si falla la transacción:
 El UUID nace al iniciar el intento de cobro, no al agregar el primer producto. Una doble
 pulsación durante la escritura no debe crear otra fila.
 
-## 6. Frontera con la Spec 003
+## 6. Frontera con la Spec 004
 
-| 002 | 003 |
+| 002 | 004 |
 |---|---|
 | Construye ticket y wire | Publica `POST /sync` |
 | Escribe ticket y outbox | Backoff y reintentos |
@@ -152,7 +152,7 @@ pulsación durante la escritura no debe crear otra fila.
 Cualquier cambio posterior al payload requiere `schemaVersion` nueva y migración conforme a
 P8.
 
-`dailyPrices` no se sincroniza en 003 ni se pisa al refrescar el catálogo.
+`dailyPrices` no se sincroniza en 004 ni se pisa al refrescar el catálogo.
 
 ## 7. Interfaz
 

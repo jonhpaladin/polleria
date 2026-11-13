@@ -26,12 +26,13 @@
 - Implementado: hoja local `dailyPrices` (id `fecha:producto`, `unit` congelada, vacíos en `null`), copia desde la hoja anterior más reciente, alta de productos nuevos sin pisar ediciones y rotación al cambiar el día de negocio (foco, visibilidad e intervalo).
 - La venta usa solo la hoja del día; la promoción y el mayoreo se eligen manualmente por línea. El precio manual se captura en la línea del carrito con `validateManualPrice`, sin PIN ni roles (D-002-06).
 - Dexie v2 conserva `categories`/`products`/`meta` y agrega `dailyPrices`, `tickets` y `outbox`. El ticket y su outbox se escriben en una transacción; el mismo UUID no duplica el cobro.
-- El outbox queda `pending`; 003 hará la sincronización. Los precios diarios no se publican a otros dispositivos.
+- El outbox queda `pending`; 004 hará la sincronización. Los precios diarios no se publican a otros dispositivos.
 
 ## Próximos pasos
 1. Sustituir el catálogo provisional por la lista real de productos y precios del dueño.
-2. Probar el guion offline en celular/tablet físico y medir la confirmación tras IndexedDB `complete`.
-3. Abrir 003 solo después de validar el ticket local y su contrato de outbox.
+2. Probar el guion offline en celular/tablet físico (T-002-22) y documentar la cifra.
+3. Que el dueño describa la idea nueva de 003; la sincronización pasa a 004.
 
 ## Decisiones de producto pendientes
-- Vigencia de promociones y precios ligados a cliente se definen en 005.
+- Vigencia de promociones y precios ligados a cliente se definen en 006.
+- La idea de 003 está sin describir; hasta entonces no se crea su carpeta.
