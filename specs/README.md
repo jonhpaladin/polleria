@@ -7,7 +7,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 |---|---|---|---|---|
 | 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | cerrada por ratificación del dueño |
 | 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | activa |
-| 003 | `003-???` | Idea nueva del dueño (por describir) | 002 | borrador |
+| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 | borrador aprobado |
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | borrador |
 | 005 | `005-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | borrador |
 | 006 | `006-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
@@ -27,15 +27,24 @@ después.
 propinas, redondeo, procesamiento bancario, PIN/roles y precios ligados a un cliente
 registrado (006).
 
-**Duda abierta**: política de autorización del precio manual; se resolverá en la tarea
-T-002-18, sin agregar PIN ni roles mientras el dueño no lo defina.
+**Decisión**: el precio manual se captura sin autorización (D-002-06); PIN, roles y
+autenticación se revisan en una spec posterior.
 
-## 003 — Idea nueva del dueño (por describir)
+## 003 — Catálogo visual
 
-El dueño adelantó una idea para esta spec que aún no está escrita. Hasta que la describa no se
-crea la carpeta ni se redactan RF. La sincronización que estaba prevista como 003 pasa a 004.
+**Objetivo**: que el cajero reconozca cada producto por su imagen. Cada tarjeta activa lleva una
+foto de estudio como fondo, con estilo uniforme en todo el set, servida desde el precache y con
+respaldo por inicial si falta el archivo. La imagen se resuelve por SKU, sin cambios de backend
+ni de Dexie.
 
-**Duda abierta**: ¿cuál es el alcance exacto de esta spec?
+**Fuera de alcance**: subir o editar imágenes desde la app, fotos reales del local, iconos de
+categoría, búsqueda, favoritos, sincronización (004) e impresión (007).
+
+**Decisiones**: foto de estudio generada con IA y muestra aprobada como referencia; 26 SKU
+provisionales reemplazables por SKU; WebP 512×512, ≤60 KB cada una; 2/3/4 columnas.
+
+**Duda abierta**: ninguna bloqueante. La lista real de productos reemplazará las imágenes por
+SKU.
 
 ## 004 — Sincronización e idempotencia
 

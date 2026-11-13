@@ -8,6 +8,7 @@
 - Supabase conectado y validado: esquema 0001, 5 categorías, 26 productos, 33 precios y 26 precios por defecto; sin Postgres local, Docker ni `uv`.
 - Guía de despliegue en `docs/despliegue.md`: PWA vs APK, Cloudflare Pages + Render + Supabase, costos free y pasos de publicación.
 - Spec 002 commiteada y pusheada a `master` (`258d3d3` implementación, `2b5a812` skills, `75bff55` validación).
+- Spec 003 (`003-catalogo-visual`) redactada como borrador aprobado: foto de estudio por SKU, WebP local precacheado y rejilla 2/3/4 columnas. Se activa al cerrar T-002-22.
 
 ## Decisiones (y por qué)
 - **Neon/Supabase free tier en vez de laptop en casa:** evita dejar una laptop encendida 24/7 y exponer túneles/DNS dinámicos.
@@ -31,8 +32,8 @@
 ## Próximos pasos
 1. Sustituir el catálogo provisional por la lista real de productos y precios del dueño.
 2. Probar el guion offline en celular/tablet físico (T-002-22) y documentar la cifra.
-3. Que el dueño describa la idea nueva de 003; la sincronización pasa a 004.
+3. Aprobar la muestra de imagen de 003 y generar las 26 fotografías; la sincronización sigue en 004.
 
 ## Decisiones de producto pendientes
 - Vigencia de promociones y precios ligados a cliente se definen en 006.
-- La idea de 003 está sin describir; hasta entonces no se crea su carpeta.
+- 003 no tiene dudas bloqueantes; el catálogo real reemplazará las imágenes por SKU.
