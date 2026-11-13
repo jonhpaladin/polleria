@@ -1,7 +1,7 @@
 # Spec 002 — Venta offline y ticket local
 
-- Estado: activa (aprobada 2026-11-12)
-- Spec activa: sí
+- Estado: cerrada (2026-11-13)
+- Spec activa: no
 - Depende de: `specs/001-fundamentos-catalogo` y `docs/constitution.md` v1.0
 - Fecha: 2026-11-12
 
@@ -201,7 +201,7 @@ El outbox guarda el wire del ticket en la misma operación local:
 - **Interfaz**: español, contraste alto, controles de 48 px, sin depender de hover.
 - **Accesibilidad**: foco visible, nombres accesibles y `aria-live` para éxito/error.
 - **Rendimiento**: medir manualmente desde confirmar hasta aviso después de `complete`; no
-  afirmar 50 ms sin medirlo en un celular/tablet.
+  afirmar 50 ms sin medirlo en un dispositivo o en una emulación móvil documentada.
 - **Mantenibilidad**: TypeScript estricto, identificadores en inglés, lógica pura separada.
 - **Idioma de interfaz**: pestañas, tablas, botones, errores y confirmaciones en español.
 
@@ -218,8 +218,9 @@ reportes.
 2. La migración Dexie v1 → v2 conserva catálogo y metadatos.
 3. Ticket y outbox se escriben juntos y una doble confirmación no duplica.
 4. `npm run lint`, `npm run typecheck` y `npm run test` pasan.
-5. La UI se valida a 360 px y en un celular/tablet con red apagada.
-6. Se mide el tiempo real de confirmación local en un dispositivo.
+5. La UI se valida a 360/768/1280 px y con red apagada en Chromium con emulación móvil.
+6. Se mide la confirmación local en Chromium con emulación móvil (9,8–11,3 ms); la prueba en
+   dispositivo físico queda como verificación de campo (excepción aprobada, D-002-11).
 7. La política de autorización del precio manual quedó decidida y documentada (D-002-06).
 8. `MEMORY.md` queda actualizado y la forma del ticket queda lista para 004.
 9. La pestaña de precios se probó creando el día, copiando el último día disponible, editando
@@ -241,3 +242,6 @@ reportes.
   base. Una hoja de hoy existente no se pisa.
 - **D-002-09**: la promoción y el mayoreo se eligen manualmente por línea; no se aplican solos.
 - **D-002-10**: la publicación a otros dispositivos y Supabase queda para una spec posterior.
+- **D-002-11**: T-002-22 se cierra con la validación en Chromium con emulación móvil, por
+  aprobación del dueño (2026-11-13); la prueba en dispositivo físico queda como verificación de
+  campo y no bloquea el cierre.

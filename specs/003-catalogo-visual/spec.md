@@ -1,7 +1,7 @@
 # Spec 003 — Catálogo visual con imágenes
 
-- Estado: borrador aprobado (2026-11-13); se activa al cerrar la validación pendiente de 002 (T-002-22)
-- Spec activa: no
+- Estado: activa (aprobada 2026-11-13)
+- Spec activa: sí
 - Depende de: `specs/001-fundamentos-catalogo`, `specs/002-venta-offline` y `docs/constitution.md` v1.0
 - Fecha: 2026-11-13
 

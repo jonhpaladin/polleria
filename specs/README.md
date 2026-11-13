@@ -6,8 +6,8 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | Orden | Spec | Objetivo | Depende de | Estado |
 |---|---|---|---|---|
 | 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | cerrada por ratificación del dueño |
-| 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | activa |
-| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 | borrador aprobado |
+| 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | cerrada por ratificación del dueño (2026-11-13) |
+| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 | activa |
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | borrador |
 | 005 | `005-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | borrador |
 | 006 | `006-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |

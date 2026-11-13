@@ -2,8 +2,8 @@
 
 - Spec: `specs/003-catalogo-visual/spec.md`
 - Constitución: `docs/constitution.md` v1.0
-- Estado: borrador aprobado; se activa al cerrar la validación pendiente de 002 (T-002-22)
-- Dependencia: Spec 001 cerrada y Spec 002 implementada
+- Estado: activo (2026-11-13)
+- Dependencia: Spec 001 cerrada y Spec 002 cerrada
 
 ## 1. Estructura de archivos prevista
 

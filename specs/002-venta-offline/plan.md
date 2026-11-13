@@ -2,7 +2,7 @@
 
 - Spec: `specs/002-venta-offline/spec.md`
 - Constitución: `docs/constitution.md` v1.0
-- Estado: aprobado para implementación; precio manual sin autorización por decisión del dueño (2026-11-13)
+- Estado: cerrada (2026-11-13); precio manual sin autorización por decisión del dueño
 - Dependencia: Spec 001 cerrada
 
 ## 1. Estructura de archivos prevista
@@ -185,6 +185,11 @@ autenticación hasta que se pida explícitamente en una spec posterior.
   de IndexedDB `complete`.
 - Precios: abrir hoy, copiar última hoja anterior, no pisar una hoja existente, editar tres
   niveles, agregar producto nuevo y conservar la hoja después de `writeCatalog`.
+
+**Excepción aprobada (2026-11-13):** T-002-22 se cierra con la validación en Edge con emulación
+móvil, red apagada, recarga y supervivencia del ticket en IndexedDB. El dueño aprobó la
+excepción; la prueba en celular/tablet físico queda como verificación de campo y no bloquea el
+cierre.
 
 ## 9. Dependencias
 

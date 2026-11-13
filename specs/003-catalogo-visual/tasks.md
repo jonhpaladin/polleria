@@ -2,7 +2,7 @@
 
 - Spec: `specs/003-catalogo-visual/spec.md`
 - Plan: `specs/003-catalogo-visual/plan.md`
-- Estado: borrador aprobado; se activa al cerrar la validación pendiente de 002 (T-002-22)
+- Estado: activo (2026-11-13)
 
 ## Fase 0 — Gobierno
 
