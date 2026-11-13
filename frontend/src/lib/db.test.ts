@@ -43,3 +43,34 @@ describe("Dexie v1", () => {
     await expect(db.products.add({ ...product, id: "prd-otro" })).rejects.toThrow();
   });
 });
+
+describe("Dexie v1 → v2", () => {
+  it("conserva catálogo y meta y agrega precios, tickets y outbox", async () => {
+    const name = `polleria-migration-test-${counter++}`;
+    const catalog = makeCatalog();
+
+    const v1 = new Dexie(name);
+    v1.version(1).stores({
+      categories: "id, sortOrder",
+      products: "id, &sku, categoryId",
+      meta: "key",
+    });
+    await v1.open();
+    await v1.table("categories").bulkAdd(catalog.categories);
+    await v1.table("products").bulkAdd(catalog.products);
+    await v1.table("meta").put({ key: "catalog", value: { updatedAt: catalog.updatedAt } });
+    v1.close();
+
+    const db = createDb(name);
+    openDbs.push(db);
+    await db.open();
+
+    expect(await db.categories.count()).toBe(3);
+    expect(await db.products.count()).toBe(2);
+    expect((await db.meta.get("catalog"))?.value.updatedAt).toBe(catalog.updatedAt);
+    expect(await db.dailyPrices.count()).toBe(0);
+    expect(await db.tickets.count()).toBe(0);
+    expect(await db.outbox.count()).toBe(0);
+    expect(db.verno).toBe(2);
+  });
+});

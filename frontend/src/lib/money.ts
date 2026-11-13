@@ -51,3 +51,9 @@ export function sumCents(values: readonly Cents[]): Cents {
   }
   return assertCents(total);
 }
+
+/** "75.00" sin símbolo ni separadores: contrato JSON y campos de edición. */
+export function centsToDecimal(value: Cents): string {
+  const cents = assertCents(value);
+  return `${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, "0")}`;
+}

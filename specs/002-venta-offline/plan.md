@@ -2,7 +2,7 @@
 
 - Spec: `specs/002-venta-offline/spec.md`
 - Constitución: `docs/constitution.md` v1.0
-- Estado: aprobado para implementación; autorización del precio manual pendiente
+- Estado: aprobado para implementación; precio manual sin autorización por decisión del dueño (2026-11-13)
 - Dependencia: Spec 001 cerrada
 
 ## 1. Estructura de archivos prevista
@@ -13,17 +13,20 @@
 | `frontend/src/lib/weight.ts` | Validar gramos, atajos y formato visible | RF-002-02…04 |
 | `frontend/src/lib/cart.ts` | Reducer y operaciones puras del carrito | RF-002-01…08 |
 | `frontend/src/lib/payment.ts` | Métodos informativos y estado inicial efectivo | RF-002-09…10 |
+| `frontend/src/lib/dailyPrices.ts` | Apertura, copia, edición y selección de precios del día | RF-002-20…24 |
+| `frontend/src/lib/dailyPriceRepository.ts` | Persistencia local de hojas diarias | RF-002-20…23 |
 | `frontend/src/lib/ticket.ts` | Validar, construir y convertir tickets | RF-002-06, 12, 16 |
 | `frontend/src/lib/db.ts` | Migración Dexie v1 → v2 | RF-002-15 |
 | `frontend/src/lib/ticketRepository.ts` | Persistir ticket + outbox en una transacción | RF-002-12…14 |
+| `frontend/src/components/pos/DailyPricesTab.tsx` | Tabla local de precios del día | RF-002-20…23 |
 | `frontend/src/components/pos/Cart.tsx` | Panel táctil editable del carrito | RF-002-08 |
-| `frontend/src/components/pos/CartLine.tsx` | Línea, unidad, precio, cantidad y quitar | RF-002-01…08 |
+| `frontend/src/components/pos/CartLine.tsx` | Línea, unidad, precio, cantidad, quitar y captura de precio manual | RF-002-01…08 |
 | `frontend/src/components/pos/WeightControls.tsx` | Atajos y ajustes de 250 g | RF-002-02…04 |
 | `frontend/src/components/pos/PaymentSelector.tsx` | Segmentado efectivo/tarjeta/transferencia | RF-002-09…10 |
-| `frontend/src/components/pos/ManualPriceDialog.tsx` | Captura y validación de precio manual | RF-002-06, 07 |
 | `frontend/src/components/pos/CheckoutButton.tsx` | Candado, persistencia y confirmación | RF-002-11…18 |
 
-No se crea `syncManager.ts`, no se agrega `POST /sync` y no se toca Alembic en 002.
+No se crea `syncManager.ts`, no se agrega `POST /sync`, no se publica la hoja a otros
+dispositivos y no se toca Alembic en 002.
 
 ## 2. Contratos internos
 
@@ -31,6 +34,11 @@ No se crea `syncManager.ts`, no se agrega `POST /sync` y no se toca Alembic en 0
 
 Se reutilizan `Cents`, `parseMoneyToCents`, `assertCents`, `formatCents` y `sumCents`.
 Se agrega una marca `Grams` y todas las funciones reciben enteros ya validados.
+
+La hoja local de precios se representa como `DailyPrice` con `normalPriceCents`,
+`promotionPriceCents` y `wholesalePriceCents`. El `id` es
+`businessDate + ":" + productId`; el `unit` se congela para no reutilizar precios si cambia
+la unidad del producto.
 
 Funciones puras previstas:
 
@@ -69,7 +77,18 @@ El ticket local será el snapshot inmutable de la venta. El outbox conservará e
 003 publicará sin volver a generar UUID ni recalcular totales. La clave será
 `clientOrderUuid` y el payload tendrá `schemaVersion`.
 
-## 3. Migración Dexie v1 → v2
+## 3. Precios del día
+
+La apertura automática busca la fecha de negocio actual. Si existe, la devuelve sin escribir.
+Si no existe, copia la hoja con mayor `businessDate` menor a la actual; si tampoco existe,
+construye filas desde el catálogo base. Los productos nuevos se agregan sin sobrescribir filas
+ya editadas. Todo ocurre en una transacción local.
+
+La tabla no se modifica durante `writeCatalog`: el catálogo base y los precios del día son
+datos distintos. Al cobrar, la línea se crea exclusivamente desde la hoja del día y congela
+el precio elegido (`lista`, `promocion`, `mayoreo` o `manual`).
+
+## 4. Migración Dexie v1 → v2
 
 Se conserva el bloque `version(1)` actual y se agrega `version(2)` sin cambiar las claves del
 catálogo:
@@ -78,9 +97,13 @@ catálogo:
 categories: "id"
 products: "id, &sku"
 meta: "key"
+dailyPrices: "&id, businessDate, productId"
 tickets: "&clientOrderUuid, businessDate, soldAtUtc"
-outbox: "&clientOrderUuid, enqueuedAt"
+outbox: "&clientOrderUuid, status, enqueuedAt"
 ```
+
+La migración repite exactamente los índices v1 (`categories: "id, sortOrder"`,
+`products: "id, &sku, categoryId"`) y solo agrega las tres tablas nuevas.
 
 La migración no guarda carrito temporal, no borra datos y crea las nuevas tablas vacías. El
 test abrirá una base v1 con catálogo, actualizará a v2 y verificará que el catálogo siga
@@ -89,7 +112,7 @@ intacto.
 Si IndexedDB es de una versión futura, se conserva el comportamiento de degradación de 001:
 se muestra la semilla en memoria, pero no se confirma una venta.
 
-## 4. Flujo de confirmación local
+## 5. Flujo de confirmación local
 
 ```text
 si carrito vacío o guardando:
@@ -116,7 +139,7 @@ si falla la transacción:
 El UUID nace al iniciar el intento de cobro, no al agregar el primer producto. Una doble
 pulsación durante la escritura no debe crear otra fila.
 
-## 5. Frontera con la Spec 003
+## 6. Frontera con la Spec 003
 
 | 002 | 003 |
 |---|---|
@@ -129,22 +152,28 @@ pulsación durante la escritura no debe crear otra fila.
 Cualquier cambio posterior al payload requiere `schemaVersion` nueva y migración conforme a
 P8.
 
-## 6. Interfaz
+`dailyPrices` no se sincroniza en 003 ni se pisa al refrescar el catálogo.
+
+## 7. Interfaz
 
 - `ProductCard` se convertirá en un control interactivo semántico sin botones anidados.
+- La pestaña `Precios del día` tendrá tabla editable en español para normal, promoción y
+  mayoreo; los vacíos se representan como campos opcionales, no como cero.
 - El carrito permanecerá visible y editable en 360 px.
 - Peso: botones de 500/1000/1500/2000 g y ±250 g.
 - Pago: control segmentado con efectivo seleccionado por defecto.
-- Precio manual: control en español, error junto al campo y conserva lo tecleado si falla.
+- Precio manual: captura en línea dentro del carrito, sin diálogo ni PIN; error junto al campo,
+  targets de 48 px y conserva lo tecleado si falla.
 - Éxito: aviso no bloqueante, no modal de confirmación previa.
 - Textos, etiquetas, errores y mensajes serán españoles; nombres de variables y funciones,
   ingleses.
 - No se agregará store global, router ni dependencia de producción.
 
-La autorización del precio manual será una tarea final condicionada a decisión del dueño. No se
-implementará PIN ni roles antes de esa decisión.
+El dueño decidió que el precio manual se capture sin autorización en 002. El riesgo de que un
+cajero modifique el precio queda aceptado y documentado; no se implementa PIN, roles ni
+autenticación hasta que se pida explícitamente en una spec posterior.
 
-## 7. Pruebas
+## 8. Pruebas
 
 - Unitarias: gramos, redondeo, líneas, totales, precio manual, métodos y día de negocio.
 - Contrato: dinero como string, gramos enteros, `schemaVersion`, UUID y campos congelados.
@@ -154,8 +183,10 @@ implementará PIN ni roles antes de esa decisión.
 - Hook/componentes: selección, edición, quitar, pago y confirmación.
 - Manual: celular/tablet con red apagada, targets de 48 px y medición de confirmación después
   de IndexedDB `complete`.
+- Precios: abrir hoy, copiar última hoja anterior, no pisar una hoja existente, editar tres
+  niveles, agregar producto nuevo y conservar la hoja después de `writeCatalog`.
 
-## 8. Dependencias
+## 9. Dependencias
 
 No se agrega dependencia de producción. Se reutilizan React, TypeScript, Dexie y Vitest ya
 aprobados en 001.

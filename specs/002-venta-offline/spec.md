@@ -7,9 +7,13 @@
 
 ## Contexto y objetivo
 
-La Spec 001 dejó disponible el catálogo local-first. Esta iteración agrega la primera
-operación de mostrador: armar una venta, elegir el precio, registrar el método de pago y
-confirmar el ticket sin depender de la red.
+La Spec 001 dejó disponible el catálogo local-first. Esta iteración agrega primero una hoja
+local de **Precios del día** y después la primera operación de mostrador: armar una venta,
+elegir el precio, registrar el método de pago y confirmar el ticket sin depender de la red.
+
+La hoja de precios se abre automáticamente para el día de negocio actual. Copia la última hoja
+guardada anterior disponible y permite editar el precio normal, promoción y mayoreo por producto.
+La promoción se elige manualmente al agregar la línea; no se aplica automáticamente.
 
 La venta se confirma únicamente después de persistir el ticket local y su registro en el
 outbox de IndexedDB. La sincronización HTTP, los reintentos y la idempotencia en el backend
@@ -34,6 +38,8 @@ pertenecen a la Spec 003.
   el ticket quedó guardado localmente.
 - **H6**: Como dueño quiero que una recarga o una falla de red no borre los tickets ya
   confirmados.
+- **H7**: Como encargado quiero abrir una pestaña de precios del día, copiar la última lista
+  disponible y ajustar rápidamente los precios de hoy sin depender de la red.
 
 ## Requisitos funcionales (criterios de aceptación en EARS)
 
@@ -76,10 +82,24 @@ pertenecen a la Spec 003.
 - **RF-002-18**: CUANDO la confirmación termina, EL SISTEMA vacía el carrito, muestra un
   aviso no bloqueante con total, método y folio local, y permite iniciar otra venta.
 - **RF-002-19**: EL SISTEMA no permite editar ni anular un ticket confirmado en esta spec.
+- **RF-002-20**: CUANDO se consulta la hoja de precios del día, EL SISTEMA crea la hoja de
+  `America/Mexico_City` automáticamente si no existe, copiando la última hoja anterior
+  disponible; si no existe ninguna, usa el catálogo base.
+- **RF-002-21**: SI la hoja del día ya existe, ENTONCES EL SISTEMA no la sobreescribe al
+  abrir la pestaña ni al volver a cargar el catálogo.
+- **RF-002-22**: EL SISTEMA permite editar y guardar por producto el precio normal, promoción
+  opcional y mayoreo opcional como centavos enteros, sin red.
+- **RF-002-23**: CUANDO una promoción o mayoreo no existe para un producto, EL SISTEMA permite
+  dejarlo vacío y no ofrece ese nivel al cobrar.
+- **RF-002-24**: CUANDO se agrega una línea, EL SISTEMA usa el precio de la hoja del día y
+  congela el nivel elegido; nunca usa directamente el precio embebido del catálogo base.
+- **RF-002-25**: SI IndexedDB no está disponible, ENTONCES EL SISTEMA puede mostrar una hoja
+  temporal en memoria, pero no finge haber guardado precios ni confirma ventas.
 
-La política de autorización para el precio manual queda como decisión tardía del dueño. Esta
-spec define el modelo y la validación del precio, pero no introduce PIN, roles ni autenticación
-multi-rol sin aprobación explícita.
+El dueño decidió (2026-11-13) que el precio manual se capture sin autorización en esta iteración.
+El riesgo de captura libre por el cajero queda aceptado y documentado; esta spec no introduce
+PIN, roles ni autenticación multi-rol. La autorización se revisará en una spec posterior si el
+negocio la pide.
 
 ## Contrato local del ticket
 
@@ -116,6 +136,17 @@ interface LocalTicket {
   status: "confirmed";
   catalogUpdatedAt: string;
 }
+
+interface DailyPrice {
+  id: string;
+  businessDate: string;
+  productId: string;
+  unit: "piece" | "kg";
+  normalPriceCents: number;
+  promotionPriceCents: number | null;
+  wholesalePriceCents: number | null;
+  updatedAtUtc: string;
+}
 ```
 
 El outbox guarda el wire del ticket en la misma operación local:
@@ -138,6 +169,12 @@ El outbox guarda el wire del ticket en la misma operación local:
 - Las líneas por kilo no se fusionan automáticamente.
 - No hay pago mixto, monto recibido, cambio, folio bancario ni verificación externa.
 - Un producto actualizado en el catálogo no repricia un carrito abierto.
+- La hoja de precios guarda `normal`, `promotion` y `wholesale`; un vacío es `null`, nunca
+  cero.
+- La hoja se copia desde la fecha anterior disponible más reciente. Una hoja de hoy existente
+  nunca se sobrescribe automáticamente.
+- La pestaña de precios y la venta usan la hoja local; el catálogo base solo aporta productos
+  nuevos y precios iniciales.
 - El día de negocio no se construye con `toISOString().slice(0, 10)` ni con
   `new Date("YYYY-MM-DD")`.
 
@@ -166,12 +203,14 @@ El outbox guarda el wire del ticket en la misma operación local:
 - **Rendimiento**: medir manualmente desde confirmar hasta aviso después de `complete`; no
   afirmar 50 ms sin medirlo en un celular/tablet.
 - **Mantenibilidad**: TypeScript estricto, identificadores en inglés, lógica pura separada.
+- **Idioma de interfaz**: pestañas, tablas, botones, errores y confirmaciones en español.
 
 ## Fuera de alcance
 
-Sincronización HTTP, `POST /sync`, backoff, dead letters, backend de ventas, impresión,
-inventario, descuentos, propinas, redondeo, pago bancario, clientes, PIN, autenticación,
-multi-caja, anulación con auditoría, folio global y reportes.
+Sincronización HTTP, `POST /sync`, backoff, dead letters, publicación de precios a otros
+dispositivos, backend de ventas, impresión, inventario, descuentos, propinas, redondeo, pago
+bancario, clientes, PIN, autenticación, multi-caja, anulación con auditoría, folio global y
+reportes.
 
 ## Criterios de finalización
 
@@ -181,9 +220,10 @@ multi-caja, anulación con auditoría, folio global y reportes.
 4. `npm run lint`, `npm run typecheck` y `npm run test` pasan.
 5. La UI se valida a 360 px y en un celular/tablet con red apagada.
 6. Se mide el tiempo real de confirmación local en un dispositivo.
-7. Se decide y documenta la política de autorización del precio manual antes de cerrar la
-   tarea correspondiente.
+7. La política de autorización del precio manual quedó decidida y documentada (D-002-06).
 8. `MEMORY.md` queda actualizado y la forma del ticket queda lista para 003.
+9. La pestaña de precios se probó creando el día, copiando el último día disponible, editando
+   niveles y conservando los cambios al refrescar el catálogo.
 
 ## Decisiones ratificadas
 
@@ -193,5 +233,11 @@ multi-caja, anulación con auditoría, folio global y reportes.
   precio manual por línea.
 - **D-002-04**: el ticket confirmado es inmutable; anulación queda fuera de 002.
 - **D-002-05**: el outbox se crea en 002 y se drena en 003.
-- **D-002-06**: la política de autorización/PIN del precio manual queda pendiente y será una
-  de las últimas tareas; no se inventan roles mientras el dueño no la defina.
+- **D-002-06**: el precio manual se captura sin autorización en 002, por decisión del dueño del
+  2026-11-13; el riesgo queda aceptado y documentado. PIN, roles o autenticación se revisan en
+  una spec posterior.
+- **D-002-07**: Precios del día es una pestaña local de la PWA y se abre automáticamente.
+- **D-002-08**: se copia la última hoja anterior disponible; si no existe, se usa el catálogo
+  base. Una hoja de hoy existente no se pisa.
+- **D-002-09**: la promoción y el mayoreo se eligen manualmente por línea; no se aplican solos.
+- **D-002-10**: la publicación a otros dispositivos y Supabase queda para una spec posterior.

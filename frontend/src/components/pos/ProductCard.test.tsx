@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 
 import { ProductCard } from "@/components/pos/ProductCard";
 import { makeCatalog } from "@/test/fixtures";
+import type { Cents } from "@/types/catalog";
+import type { DailyPrice } from "@/types/dailyPrice";
 
 function productBySku(sku: string) {
   const product = makeCatalog().products.find((item) => item.sku === sku);
@@ -30,6 +32,27 @@ describe("ProductCard", () => {
     expect(screen.getByText("por pieza")).toBeInTheDocument();
     expect(screen.getByText("$299.00")).toBeInTheDocument();
     expect(screen.queryByText(/^promo /i)).not.toBeInTheDocument();
+  });
+
+  it("usa la hoja del día aunque la promoción esté vacía, sin volver al catálogo", () => {
+    const dailyPrice: DailyPrice = {
+      id: "2026-11-13:prd-pierna",
+      businessDate: "2026-11-13",
+      productId: "prd-pierna",
+      unit: "kg",
+      normalPriceCents: 16000 as Cents,
+      promotionPriceCents: null,
+      wholesalePriceCents: 14500 as Cents,
+      updatedAtUtc: "2026-11-13T15:00:00.000Z",
+    };
+
+    render(
+      <ProductCard product={productBySku("PIERNA-MUSLO")} categoryName="Pollo" dailyPrice={dailyPrice} />,
+    );
+
+    expect(screen.getByText("$160.00")).toBeInTheDocument();
+    expect(screen.queryByText(/^promo /i)).not.toBeInTheDocument();
+    expect(screen.getByText("mayoreo $145.00")).toBeInTheDocument();
   });
 
   it("trunca nombres largos sin romper la tarjeta", () => {
