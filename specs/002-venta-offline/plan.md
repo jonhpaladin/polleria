@@ -19,11 +19,11 @@
 | `frontend/src/lib/db.ts` | Migración Dexie v1 → v2 | RF-002-15 |
 | `frontend/src/lib/ticketRepository.ts` | Persistir ticket + outbox en una transacción | RF-002-12…14 |
 | `frontend/src/components/pos/DailyPricesTab.tsx` | Tabla local de precios del día | RF-002-20…23 |
-| `frontend/src/components/pos/Cart.tsx` | Panel táctil editable del carrito | RF-002-08 |
+| `frontend/src/components/pos/Cart.tsx` | Panel táctil editable del carrito y botón de confirmación | RF-002-08, 11…18 |
 | `frontend/src/components/pos/CartLine.tsx` | Línea, unidad, precio, cantidad, quitar y captura de precio manual | RF-002-01…08 |
 | `frontend/src/components/pos/WeightControls.tsx` | Atajos y ajustes de 250 g | RF-002-02…04 |
 | `frontend/src/components/pos/PaymentSelector.tsx` | Segmentado efectivo/tarjeta/transferencia | RF-002-09…10 |
-| `frontend/src/components/pos/CheckoutButton.tsx` | Candado, persistencia y confirmación | RF-002-11…18 |
+| `frontend/src/hooks/useSale.ts` | Estado del carrito, candado y confirmación | RF-002-11…18 |
 
 No se crea `syncManager.ts`, no se agrega `POST /sync`, no se publica la hoja a otros
 dispositivos y no se toca Alembic en 002.

@@ -120,7 +120,7 @@ Cada tarea debe poder completarse en aproximadamente 20–30 minutos.
   RF: RF-002-09, RF-002-10
 
 - [x] **T-002-17 · Integrar botón de confirmar**
-  Crear `CheckoutButton` con estados vacío, guardando, error y éxito.
+  Botón de confirmación en `Cart` con estados vacío, guardando, error y éxito.
   Hecho cuando no hace fetch, confirma solo después de `complete`, limpia el carrito y
   muestra un aviso en español con total, método y folio.
   RF: RF-002-11…18
