@@ -2,7 +2,7 @@
 
 - Spec: `specs/001-fundamentos-catalogo/spec.md`
 - Constitución: `docs/constitution.md` v1.0
-- Estado: implementado (2026-11-12) — validación manual y primer commit pendientes
+- Estado: cerrado por ratificación del dueño (2026-11-12)
 - Toolchain verificado: Node 24.13, npm 11.10, Python 3.14.3, git 2.53. **Sin `uv` ni Docker
   locales** → se usa `venv` + `pip`, y la integración con Postgres se omite sin
   `TEST_DATABASE_URL`.

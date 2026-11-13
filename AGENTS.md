@@ -1,7 +1,7 @@
 # AGENTS.md — Pollería el wero (POS táctil local-first)
 
 ## Estado del repo (2026-11-12)
-- Spec 001 implementada: PWA de catálogo de solo lectura (React + Vite + Tailwind) y backend FastAPI/PostgreSQL con migración, semilla y CI. Sin carrito, cobro, sync, impresión ni reportes: eso va en 002+. El estado vivo está en `MEMORY.md`, que debes leer antes de trabajar.
+- Spec 001 cerrada por ratificación del dueño; Spec 002 activa: PWA de catálogo y primera venta offline local. Sync, impresión y reportes siguen en specs posteriores. El estado vivo está en `MEMORY.md`, que debes leer antes de trabajar.
 - Gobierno SDD: `docs/constitution.md` (principios y puerta de calidad) y `specs/` (una spec activa con su plan y tareas). Nada se implementa fuera de la spec activa.
 - Comandos reales (detalle en `README.md`): backend `cd backend && .venv/Scripts/python.exe -m pytest -q` y `... -m ruff check .`; frontend `cd frontend && npm run test|lint|typecheck|build` y `npm run seed:check`. En macOS/Linux usa `.venv/bin/python`.
 - `skills-lock.json` es el manifiesto del instalador de skills, no un lockfile npm: no ejecutes `npm install`/`npm ci` por su presencia.

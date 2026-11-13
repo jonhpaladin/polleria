@@ -1,7 +1,7 @@
 # Spec 001 — Fundaciones del proyecto y catálogo de mostrador
 
-- Estado: implementada (2026-11-12) — validación manual y primer commit pendientes
-- Spec activa: sí
+- Estado: cerrada por ratificación del dueño (2026-11-12)
+- Spec activa: no
 - Depende de: `docs/constitution.md` v1.0
 - Fecha: 2026-11-11
 

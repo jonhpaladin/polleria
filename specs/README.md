@@ -5,8 +5,8 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 
 | Orden | Spec | Objetivo | Depende de | Estado |
 |---|---|---|---|---|
-| 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | implementada; validación manual pendiente |
-| 002 | `002-venta-offline` | Carrito, peso, cobro y ticket persistido en <50 ms | 001 | borrador |
+| 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | cerrada por ratificación del dueño |
+| 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | activa |
 | 003 | `003-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | borrador |
 | 004 | `004-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+003 para consolidar) | borrador |
 | 005 | `005-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+003 para propagar) | borrador |
@@ -15,19 +15,19 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 
 ## 002 — Venta offline
 
-**Objetivo**: cobrar de verdad sin red. Carrito táctil, venta por pieza y por kilo con
+**Objetivo**: registrar una venta sin red. Carrito táctil, venta por pieza y por kilo con
 atajos `0.500/1.000/1.500/2.000` kg y ajustes de ±250 g, **elección de precio al agregar**
-(lista, promoción, mayoreo o uno capturado con autorización), totales en centavos, ticket
-persistido en IndexedDB con `client_order_uuid` y confirmación visual en <50 ms. La línea
-del ticket congela el precio elegido, aunque el catálogo cambie después.
+(lista, promoción, mayoreo o manual), métodos de pago informativos (efectivo por defecto,
+tarjeta o transferencia), totales en centavos y ticket persistido en IndexedDB con
+`client_order_uuid`. La línea del ticket congela el precio elegido, aunque el catálogo cambie
+después.
 
-**Fuera de alcance**: sincronizar (003), imprimir (006), anular con auditoría, precios
-ligados a un cliente registrado (005).
+**Fuera de alcance**: sincronizar (003), imprimir (006), anular con auditoría, descuentos,
+propinas, redondeo, procesamiento bancario, PIN/roles y precios ligados a un cliente
+registrado (005).
 
-**Dudas abiertas**: ¿descuentos o cortesías además de los niveles? ¿propina? ¿redondeo a
-$0.50 en efectivo? ¿qué pasa si se acaba el producto a media venta? ¿las promociones tienen
-vigencia? ¿quién autoriza un precio manual distinto al de lista (cualquier cajero o
-encargado con PIN)?
+**Duda abierta**: política de autorización del precio manual; se resolverá en la tarea
+T-002-18, sin agregar PIN ni roles mientras el dueño no lo defina.
 
 ## 003 — Sincronización e idempotencia
 
