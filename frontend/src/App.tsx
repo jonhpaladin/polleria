@@ -16,7 +16,13 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<"sale" | "prices">("sale");
   const { catalog, origin, online, selectedCategory, selectCategory } = useCatalog();
   const dailyPrices = useDailyPrices(catalog);
-  const sale = useSale(catalog, dailyPrices.rows, dailyPrices.canSave, dailyPrices.isToday);
+  const sale = useSale(
+    catalog,
+    dailyPrices.rows,
+    dailyPrices.canSave,
+    dailyPrices.isToday,
+    dailyPrices.businessDate,
+  );
   const { needRefresh, update, dismiss } = usePwaUpdate();
 
   const products = catalog?.products ?? [];

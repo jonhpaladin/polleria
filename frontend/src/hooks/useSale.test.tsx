@@ -1,10 +1,17 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useSale } from "@/hooks/useSale";
-import { buildBaseDailyPrices } from "@/lib/dailyPrices";
+import { buildBaseDailyPrices, businessDate } from "@/lib/dailyPrices";
 import { getDb } from "@/lib/db";
 import { makeCatalog } from "@/test/fixtures";
+
+vi.mock("@/lib/ticketRepository", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/ticketRepository")>();
+  return { ...actual, persistTicket: vi.fn(actual.persistTicket) };
+});
+
+import { persistTicket } from "@/lib/ticketRepository";
 
 const catalog = makeCatalog();
 const dailyPrices = buildBaseDailyPrices(
@@ -43,6 +50,24 @@ describe("useSale", () => {
     expect(await getDb().tickets.count()).toBe(1);
   });
 
+  it("conserva el carrito y avisa cuando falla la escritura local", async () => {
+    vi.mocked(persistTicket).mockRejectedValueOnce(new Error("Cuota excedida"));
+    const { result } = renderHook(() => useSale(catalog, dailyPrices, true));
+
+    act(() => result.current.addProduct("prd-pierna", "Pollo"));
+    await act(async () => {
+      await result.current.checkout();
+    });
+
+    expect(result.current.error).toBe(
+      "No se pudo guardar la venta. No se cobró nada; vuelve a intentar.",
+    );
+    expect(result.current.success).toBeNull();
+    expect(result.current.saving).toBe(false);
+    expect(result.current.cart.lines).toHaveLength(1);
+    expect(await getDb().tickets.count()).toBe(0);
+  });
+
   it("dos confirmaciones simultáneas crean un solo ticket y outbox", async () => {
     const { result } = renderHook(() => useSale(catalog, dailyPrices, true));
 
@@ -64,6 +89,21 @@ describe("useSale", () => {
 
     expect(result.current.cart.lines).toHaveLength(0);
     expect(result.current.error).toContain("Precios del día");
+  });
+
+  it("bloquea agregar y cobrar si la hoja es de ayer aunque el render diga que es hoy", async () => {
+    const yesterday = businessDate(new Date(Date.now() - 86_400_000));
+    const { result } = renderHook(() => useSale(catalog, dailyPrices, true, true, yesterday));
+
+    act(() => result.current.addProduct("prd-pierna", "Pollo"));
+    expect(result.current.cart.lines).toHaveLength(0);
+    expect(result.current.error).toContain("no son de hoy");
+
+    await act(async () => {
+      await result.current.checkout();
+    });
+    expect(result.current.error).toContain("no son de hoy");
+    expect(await getDb().tickets.count()).toBe(0);
   });
 
   it("bloquea agregar y cobrar cuando la hoja no es de hoy", async () => {

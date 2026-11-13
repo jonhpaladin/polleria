@@ -90,6 +90,64 @@ describe("cartReducer", () => {
     );
   });
 
+  it("mantiene separadas dos líneas por kilo del mismo producto", () => {
+    const first = withPierna();
+    const second = cartReducer(first, {
+      type: "addProduct",
+      product: pierna,
+      categoryName: "Pollo",
+      dailyPrice: dailyPrice(),
+    });
+
+    expect(second.lines).toHaveLength(2);
+    expect(second.lines[0]!.lineId).not.toBe(second.lines[1]!.lineId);
+  });
+
+  it("redondea 99.99 por kilo a 250 g en 2500 centavos", () => {
+    const cart = withPierna(dailyPrice({ normalPriceCents: 9999 as Cents }));
+    const lineId = cart.lines[0]!.lineId;
+
+    const result = cartReducer(cart, { type: "setWeight", lineId, grams: 250 as never });
+
+    expect(result.lines[0]!.lineTotalCents).toBe(2500);
+  });
+
+  it("incrementa y decrementa piezas sin bajar de una", () => {
+    const piecePrice = dailyPrice({
+      id: "2026-11-13:prd-combo",
+      productId: "prd-combo",
+      unit: "piece",
+      normalPriceCents: 29900 as Cents,
+      promotionPriceCents: null,
+    });
+    const base = cartReducer(EMPTY_CART, {
+      type: "addProduct",
+      product: combo,
+      categoryName: "Promociones",
+      dailyPrice: piecePrice,
+    });
+    const lineId = base.lines[0]!.lineId;
+
+    const two = cartReducer(base, { type: "incrementPiece", lineId });
+    const one = cartReducer(two, { type: "decrementPiece", lineId });
+    const stillOne = cartReducer(one, { type: "decrementPiece", lineId });
+
+    expect(two.lines[0]!.quantity).toBe(2);
+    expect(two.lines[0]!.lineTotalCents).toBe(59800);
+    expect(one.lines[0]!.quantity).toBe(1);
+    expect(stillOne.lines[0]!.quantity).toBe(1);
+  });
+
+  it("conserva las líneas y el total al cambiar el método de pago", () => {
+    const cart = withPierna();
+
+    const result = cartReducer(cart, { type: "setPayment", paymentMethod: "card" });
+
+    expect(result.paymentMethod).toBe("card");
+    expect(result.lines).toEqual(cart.lines);
+    expect(cartTotalCents(result)).toBe(15000);
+  });
+
   it("cambia entre normal, promoción y mayoreo solo si existe", () => {
     const cart = withPierna();
     const lineId = cart.lines[0]!.lineId;

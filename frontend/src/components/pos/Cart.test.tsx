@@ -43,6 +43,7 @@ function cart(overrides: Partial<CartState> = {}): CartState {
 function renderCart(overrides: {
   cart?: CartState;
   canCheckout?: boolean;
+  saving?: boolean;
   error?: string | null;
   onAction?: (action: unknown) => void;
   onCheckout?: () => void;
@@ -54,7 +55,7 @@ function renderCart(overrides: {
       cart={overrides.cart ?? cart()}
       dailyPrices={[dailyPrice]}
       canCheckout={overrides.canCheckout ?? true}
-      saving={false}
+      saving={overrides.saving ?? false}
       error={overrides.error ?? null}
       success={null}
       onAction={onAction}
@@ -106,6 +107,32 @@ describe("Cart", () => {
 
     expect(screen.getByText("Toca un producto para agregarlo.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Confirmar venta" })).toBeDisabled();
+  });
+
+  it("deshabilita confirmar mientras guarda la venta", () => {
+    renderCart({ saving: true });
+
+    expect(screen.getByRole("button", { name: "Guardando venta…" })).toBeDisabled();
+  });
+
+  it("ofrece atajos de peso y los tres métodos con efectivo activo", () => {
+    const { onAction } = renderCart();
+
+    for (const label of ["0.500 kg", "1.000 kg", "1.500 kg", "2.000 kg"]) {
+      expect(screen.getByRole("button", { name: label })).toBeInTheDocument();
+    }
+
+    fireEvent.click(screen.getByRole("button", { name: "2.000 kg" }));
+    expect(onAction).toHaveBeenCalledWith({ type: "setWeight", lineId: "line-1", grams: 2000 });
+    expect(screen.getByRole("button", { name: "Efectivo" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "Tarjeta" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    expect(screen.getByRole("button", { name: "Transferencia" })).toBeInTheDocument();
   });
 
   it("avisa por qué no se puede cobrar y enfoca el error", () => {

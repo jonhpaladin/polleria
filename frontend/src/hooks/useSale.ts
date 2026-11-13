@@ -1,6 +1,7 @@
 import { useCallback, useReducer, useRef, useState } from "react";
 
 import { cartReducer, EMPTY_CART, type CartAction } from "@/lib/cart";
+import { businessDate } from "@/lib/dailyPrices";
 import { formatCents } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/payment";
 import { persistTicket } from "@/lib/ticketRepository";
@@ -28,6 +29,7 @@ export function useSale(
   dailyPrices: readonly DailyPrice[],
   pricesReady: boolean,
   isToday = true,
+  pricesDate: string | null = null,
 ): UseSaleResult {
   const [cart, dispatch] = useReducer(cartReducer, EMPTY_CART);
   const [saving, setSaving] = useState(false);
@@ -35,6 +37,13 @@ export function useSale(
   const [success, setSuccess] = useState<string | null>(null);
   const inFlight = useRef(false);
   const pendingUuid = useRef<string | null>(null);
+
+  // Se evalúa al agregar y al cobrar: el render puede quedar viejo si la app
+  // cruza la medianoche sin foco ni cambio de estado.
+  const pricesAreStale = useCallback(
+    () => pricesDate !== null && pricesDate !== businessDate(new Date()),
+    [pricesDate],
+  );
 
   const canCheckout =
     pricesReady &&
@@ -47,7 +56,7 @@ export function useSale(
       const product = catalog?.products.find((item) => item.id === productId);
       const dailyPrice = dailyPrices.find((row) => row.productId === productId);
       if (!product) return;
-      if (!isToday) {
+      if (!isToday || pricesAreStale()) {
         setError("Los precios no son de hoy. Abre Precios del día para cargar la hoja de hoy.");
         return;
       }
@@ -59,13 +68,13 @@ export function useSale(
       setSuccess(null);
       dispatch({ type: "addProduct", product, categoryName, dailyPrice });
     },
-    [catalog, dailyPrices, isToday],
+    [catalog, dailyPrices, isToday, pricesAreStale],
   );
 
   const checkout = useCallback(async () => {
     if (!catalog) return;
     if (inFlight.current) return;
-    if (!isToday) {
+    if (!isToday || pricesAreStale()) {
       setError("Los precios no son de hoy. Abre Precios del día antes de cobrar.");
       return;
     }
@@ -99,7 +108,7 @@ export function useSale(
       inFlight.current = false;
       setSaving(false);
     }
-  }, [cart, catalog, isToday]);
+  }, [cart, catalog, isToday, pricesAreStale]);
 
   return {
     cart,

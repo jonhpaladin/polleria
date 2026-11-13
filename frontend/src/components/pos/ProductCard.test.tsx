@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { ProductCard } from "@/components/pos/ProductCard";
 import { makeCatalog } from "@/test/fixtures";
@@ -15,6 +15,17 @@ function productBySku(sku: string) {
 }
 
 describe("ProductCard", () => {
+  it("agrega el producto al tocarlo", () => {
+    const onSelect = vi.fn();
+    render(
+      <ProductCard product={productBySku("PIERNA-MUSLO")} categoryName="Pollo" onSelect={onSelect} />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Agregar Pierna y muslo al carrito" }));
+
+    expect(onSelect).toHaveBeenCalledTimes(1);
+  });
+
   it("muestra nombre, categoría, unidad, precio por defecto y promoción", () => {
     render(<ProductCard product={productBySku("PIERNA-MUSLO")} categoryName="Pollo" />);
 
