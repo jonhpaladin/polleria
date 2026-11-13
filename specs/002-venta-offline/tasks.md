@@ -163,3 +163,23 @@ Cada tarea debe poder completarse en aproximadamente 20–30 minutos.
   Ejecutar lint, typecheck, tests y build; revisar diff; actualizar `MEMORY.md`.
   Hecho cuando todos pasan, no hay secretos y el contrato queda listo para 003.
   RF: —
+
+## Validación de cierre (2026-11-13)
+
+Puerta de calidad de la constitución (sección 5), ejecutada sobre el commit `258d3d3`:
+
+- Frontend: `npm run lint`, `npm run typecheck` y `npm run test` en verde (22 archivos,
+  153 tests). `npm run build` y `npm run seed:check` también en verde.
+- Backend: `python -m pytest` (22 passed, 1 skipped) y `python -m ruff check .` limpios.
+- Sin `float` en rutas de dinero o peso: `money.ts` y `dailyPrices.ts` usan `Number` solo para
+  leer dígitos enteros; `cart.ts` hace aritmética entera con `Math.floor`; el backend usa
+  `Decimal` y rechaza `float` en sus esquemas.
+- Sin secretos, cadenas de conexión ni datos personales en el diff.
+- RF-002-01…19 cubiertos por tests (`cart`, `ticket`, `ticketRepository`, `useSale`, `weight`,
+  `money`, `db`, `DailyPricesTab`) y por el smoke con Edge/CDP y red apagada.
+- RF-002-20…25 cubiertos por `dailyPrices`, `dailyPriceRepository`, `DailyPricesTab`,
+  `ProductCard`, `db` y el smoke de la hoja del día.
+- RF-002-17 (sin `fetch` al confirmar) verificado por revisión de código: `ticket`,
+  `ticketRepository`, `cart`, `money`, `weight` y `dailyPrices` no importan `fetch` ni HTTP.
+- Pendiente: T-002-22, prueba en celular/tablet físico. El flujo se validó en Edge con emulación
+  móvil a 360 px; la medición real en dispositivo sigue abierta y no se afirma aquí.
