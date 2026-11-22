@@ -8,7 +8,9 @@ from fastapi.testclient import TestClient
 from app.main import create_app
 from app.routers.catalog import get_catalog_repository
 from app.routers.health import check_database
+from app.routers.sync import get_sale_repository
 from app.schemas.catalog import CatalogOut, CategoryOut, PriceOut, ProductOut
+from app.schemas.sync import SyncTicketIn
 
 
 def build_catalog() -> CatalogOut:
@@ -58,15 +60,38 @@ class FakeCatalogRepository:
         self.seeded = seed
 
 
+class FakeSaleRepository:
+    """Registro en memoria que reproduce la idempotencia por UUID."""
+
+    def __init__(self) -> None:
+        self.sales: dict[str, tuple[SyncTicketIn, datetime]] = {}
+
+    async def record(self, ticket: SyncTicketIn) -> tuple[bool, datetime]:
+        key = str(ticket.client_order_uuid)
+        if key in self.sales:
+            return False, self.sales[key][1]
+        received_at = datetime.now(UTC)
+        self.sales[key] = (ticket, received_at)
+        return True, received_at
+
+
 @pytest.fixture
 def fake_repository() -> FakeCatalogRepository:
     return FakeCatalogRepository(build_catalog())
 
 
 @pytest.fixture
-def client(fake_repository: FakeCatalogRepository) -> Iterator[TestClient]:
+def fake_sale_repository() -> FakeSaleRepository:
+    return FakeSaleRepository()
+
+
+@pytest.fixture
+def client(
+    fake_repository: FakeCatalogRepository, fake_sale_repository: FakeSaleRepository
+) -> Iterator[TestClient]:
     app = create_app()
     app.dependency_overrides[get_catalog_repository] = lambda: fake_repository
+    app.dependency_overrides[get_sale_repository] = lambda: fake_sale_repository
     app.dependency_overrides[check_database] = lambda: "ok"
     with TestClient(app) as test_client:
         yield test_client

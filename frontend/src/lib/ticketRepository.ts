@@ -31,6 +31,9 @@ export async function persistTicket(
       schemaVersion: 1,
       status: "pending",
       enqueuedAt: now.toISOString(),
+      attempts: 0,
+      nextAttemptAt: null,
+      lastError: null,
       payload: toTicketWire(ticket),
     };
 

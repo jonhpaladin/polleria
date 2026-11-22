@@ -56,6 +56,9 @@ describe("persistTicket", () => {
     expect(first.ticket.localFolio).toBe(1);
     expect(second.ticket.localFolio).toBe(2);
     expect(first.outbox.status).toBe("pending");
+    expect(first.outbox.attempts).toBe(0);
+    expect(first.outbox.nextAttemptAt).toBeNull();
+    expect(first.outbox.lastError).toBeNull();
     expect(first.outbox.payload.total).toBe("75.00");
     expect(await db.tickets.count()).toBe(2);
     expect(await db.outbox.count()).toBe(2);

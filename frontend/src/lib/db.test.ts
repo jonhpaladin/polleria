@@ -44,10 +44,11 @@ describe("Dexie v1", () => {
   });
 });
 
-describe("Dexie v1 → v2", () => {
-  it("conserva catálogo y meta y agrega precios, tickets y outbox", async () => {
+describe("Dexie v1 → v3", () => {
+  it("conserva catálogo, meta y outbox pendiente al agregar precios, tickets e índices", async () => {
     const name = `polleria-migration-test-${counter++}`;
     const catalog = makeCatalog();
+    const legacyUuid = "11111111-1111-4111-8111-111111111111";
 
     const v1 = new Dexie(name);
     v1.version(1).stores({
@@ -61,6 +62,31 @@ describe("Dexie v1 → v2", () => {
     await v1.table("meta").put({ key: "catalog", value: { updatedAt: catalog.updatedAt } });
     v1.close();
 
+    const v2 = new Dexie(name);
+    v2.version(1).stores({
+      categories: "id, sortOrder",
+      products: "id, &sku, categoryId",
+      meta: "key",
+    });
+    v2.version(2).stores({
+      categories: "id, sortOrder",
+      products: "id, &sku, categoryId",
+      meta: "key",
+      dailyPrices: "&id, businessDate, productId",
+      tickets: "&clientOrderUuid, businessDate, soldAtUtc",
+      outbox: "&clientOrderUuid, status, enqueuedAt",
+    });
+    await v2.open();
+    // Registro tal como lo escribía 002: sin attempts, nextAttemptAt ni lastError.
+    await v2.table("outbox").add({
+      clientOrderUuid: legacyUuid,
+      schemaVersion: 1,
+      status: "pending",
+      enqueuedAt: "2026-11-13T18:00:00.000Z",
+      payload: { total: "75.00" },
+    });
+    v2.close();
+
     const db = createDb(name);
     openDbs.push(db);
     await db.open();
@@ -70,7 +96,8 @@ describe("Dexie v1 → v2", () => {
     expect((await db.meta.get("catalog"))?.value.updatedAt).toBe(catalog.updatedAt);
     expect(await db.dailyPrices.count()).toBe(0);
     expect(await db.tickets.count()).toBe(0);
-    expect(await db.outbox.count()).toBe(0);
-    expect(db.verno).toBe(2);
+    expect(await db.outbox.where("status").equals("pending").count()).toBe(1);
+    expect((await db.outbox.get(legacyUuid))?.enqueuedAt).toBe("2026-11-13T18:00:00.000Z");
+    expect(db.verno).toBe(3);
   });
 });

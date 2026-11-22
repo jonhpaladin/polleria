@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import catalog, health
+from app.routers import catalog, health, sync
 
 
 def create_app() -> FastAPI:
@@ -13,11 +13,12 @@ def create_app() -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.allowed_origins,
-        allow_methods=["GET"],
+        allow_methods=["GET", "POST"],
         allow_headers=["*"],
     )
     app.include_router(health.router)
     app.include_router(catalog.router)
+    app.include_router(sync.router)
     return app
 
 

@@ -68,6 +68,8 @@ Nada se implementa fuera de la spec activa.
   sincronizar: versiona el esquema de Dexie con migración que conserve lo pendiente.
 - `client_order_uuid` es UNIQUE: si el cliente reenvía la misma orden, el backend
   devuelve la existente sin duplicar cobro ni efectos.
+- El outbox se drena en segundo plano; un 4xx de validación pasa a `failed` y no se
+  reintenta solo. El catálogo viaja por `GET /catalog`, nunca por `/sync`.
 
 ## UI de mostrador
 - Uso primario: celular/tablet, manos ocupadas, horas pico. Área táctil ≥48 px, contraste

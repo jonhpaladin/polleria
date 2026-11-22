@@ -5,16 +5,19 @@ import { useCatalog } from "@/hooks/useCatalog";
 import { useDailyPrices } from "@/hooks/useDailyPrices";
 import { usePwaUpdate } from "@/hooks/usePwaUpdate";
 import { useSale } from "@/hooks/useSale";
+import { useSync } from "@/hooks/useSync";
 import { Cart } from "@/components/pos/Cart";
 import { CategoryBar } from "@/components/pos/CategoryBar";
 import { ConnectionBadge } from "@/components/pos/ConnectionBadge";
 import { DailyPricesTab } from "@/components/pos/DailyPricesTab";
 import { ProductGrid } from "@/components/pos/ProductGrid";
+import { SyncBadge } from "@/components/pos/SyncBadge";
 import { UpdateBanner } from "@/components/ui/UpdateBanner";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<"sale" | "prices">("sale");
   const { catalog, origin, online, selectedCategory, selectCategory } = useCatalog();
+  const sync = useSync({ online });
   const dailyPrices = useDailyPrices(catalog);
   const sale = useSale(
     catalog,
@@ -22,6 +25,7 @@ export default function App() {
     dailyPrices.canSave,
     dailyPrices.isToday,
     dailyPrices.businessDate,
+    sync.nudge,
   );
   const { needRefresh, update, dismiss } = usePwaUpdate();
 
@@ -42,7 +46,15 @@ export default function App() {
             </p>
             <h1 className="text-2xl font-black tracking-tight text-stone-900">el wero</h1>
           </div>
-          <ConnectionBadge online={online} />
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <SyncBadge
+              pending={sync.pending}
+              failed={sync.failed}
+              syncing={sync.syncing}
+              onRetry={() => void sync.retryFailed()}
+            />
+            <ConnectionBadge online={online} />
+          </div>
         </div>
       </header>
 

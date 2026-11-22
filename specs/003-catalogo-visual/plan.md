@@ -9,8 +9,8 @@
 
 | Archivo | Responsabilidad | RF |
 |---|---|---|
-| `frontend/src/assets/products/<SKU>.webp` | Una imagen por producto activo | RF-003-01…03, 08 |
-| `frontend/src/lib/productImages.ts` | Mapa SKU → URL, respaldo e inicial | RF-003-01, 04, 07 |
+| `frontend/src/assets/products/<nombre>.webp` | Una imagen por producto activo, con nombre descriptivo | RF-003-01…03, 08 |
+| `frontend/src/lib/productImages.ts` | Mapa SKU → archivo/URL, respaldo e inicial | RF-003-01, 04, 07 |
 | `frontend/src/components/pos/ProductCard.tsx` | Tarjeta visual con imagen de fondo, texto y chips | RF-003-01, 04…06, 09, 11 |
 | `frontend/src/components/pos/ProductGrid.tsx` | Rejilla 2/3/4 columnas | RF-003-10 |
 | `frontend/vite.config.ts` | Precache de WebP en el service worker | RF-003-03 |
@@ -24,7 +24,7 @@ producción ni de desarrollo.
 ## 2. Contrato de assets
 
 ```text
-frontend/src/assets/products/<SKU>.webp
+frontend/src/assets/products/<nombre-descriptivo>.webp
 ```
 
 | Regla | Valor |
@@ -36,7 +36,7 @@ frontend/src/assets/products/<SKU>.webp
 | Luz | Cálida y difusa, desde la izquierda |
 | Ángulo | Cenital con inclinación suave (~45°) |
 | Prohibido | Texto, logotipos, marcas de agua, manos, utensilios decorativos |
-| Nombre | El SKU exacto del catálogo, en mayúsculas |
+| Nombre | Descriptivo, corto, en minúsculas y sin acentos (`combo-familiar.webp`) |
 
 Las imágenes se importan con `import.meta.glob` y Vite les asigna URL con hash. El service
 worker las precachea con `webp` dentro de `globPatterns`.
@@ -45,12 +45,15 @@ worker las precachea con `webp` dentro de `globPatterns`.
 
 Prompt base, idéntico para todo el set (solo cambia el sujeto):
 
-> Fotografía de producto de estudio de **{sujeto}**, vista cenital con inclinación suave de
-> 45°, sobre papel crema liso, luz cálida difusa desde la izquierda, sombra natural sutil,
-> encuadre cuadrado 1:1, sin texto, sin logotipos, sin marcas de agua, sin manos, sin
-> utensilios decorativos, alta nitidez, estilo de catálogo consistente.
+> Representación híbrida de **{sujeto}**, con textura semirrealista y formas caricaturescas
+> redondeadas, colores cálidos suaves, volumen limpio y contornos sutiles, vista cenital con
+> inclinación suave de 45°, sobre fondo crema liso `#FFF7EA`, luz cálida difusa desde la
+> izquierda, sombra natural sutil, encuadre cuadrado 1:1, sin texto, sin logotipos, sin marcas
+> de agua, sin manos, sin utensilios decorativos, estilo de catálogo consistente. En cortes de
+> pollo: carne, nunca un animal vivo, sin cabeza, ojos, cara ni plumas.
 
-Una muestra aprobada (pierna y muslo) se usa como referencia de estilo para las 25 restantes.
+El dueño autorizó generar el primer lote con este estilo como punto de partida; la aprobación
+final se hará con la hoja de contactos. Se descartaron las muestras de prueba anteriores.
 
 | SKU | Sujeto para la imagen |
 |---|---|
@@ -84,14 +87,13 @@ Una muestra aprobada (pierna y muslo) se usa como referencia de estilo para las 
 ## 4. Flujo de generación
 
 ```text
-1. Generar la muestra de PIERNA-MUSLO con el prompt base.
-2. Revisar: fondo, luz, ángulo, encuadre y apetito visual.
-3. Si el dueño aprueba, usarla como referencia de estilo.
-4. Generar las 25 restantes con el mismo prompt y la referencia.
-5. Revisar una hoja de contactos; regenerar solo las que rompan el estilo.
-6. Redimensionar a 512×512 y convertir a WebP con Pillow (ya instalado).
-7. Guardar como <SKU>.webp en frontend/src/assets/products/.
-8. Ejecutar scripts/check-product-images.mjs (presencia y peso).
+1. Generar el primer lote con el prompt híbrido y la cuota gratuita disponible.
+2. Revisar una hoja de contactos: sujeto, fondo, luz, ángulo y encuadre.
+3. Regenerar solo las imágenes incorrectas o que rompan el estilo cuando haya cuota.
+4. Completar los productos pendientes con el mismo prompt.
+5. Redimensionar a 512×512 y convertir a WebP con Pillow (ya instalado).
+6. Guardar con nombres descriptivos en frontend/src/assets/products/.
+7. Ejecutar scripts/check-product-images.mjs (cobertura del mapa y peso).
 ```
 
 No se versionan las imágenes fuente en alta resolución: solo el WebP optimizado.
@@ -108,14 +110,20 @@ const modules = import.meta.glob("../assets/products/*.webp", {
   import: "default",
 }) as Record<string, string>;
 
+export const PRODUCT_IMAGE_BY_SKU: Readonly<Record<string, string>> = {
+  "POLLO-ENTERO": "pollo-entero",
+  "COMBO-FAM": "combo-familiar",
+  // ...el resto de SKU activos
+};
 export const INTENTIONAL_FALLBACKS: readonly string[] = [];
 
 export function productImageUrl(sku: string): string | null;
 export function fallbackInitial(name: string): string;
 ```
 
-`productImageUrl` resuelve por nombre de archivo, no por ruta completa. `fallbackInitial` toma
-la primera letra visible y la devuelve en mayúsculas.
+`productImageUrl` consulta el mapa SKU → nombre descriptivo y resuelve el módulo por nombre de
+archivo, no por ruta completa. `fallbackInitial` toma la primera letra visible y la devuelve en
+mayúsculas.
 
 ### Tarjeta
 

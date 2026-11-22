@@ -4,6 +4,7 @@ import type { DailyPriceSource } from "@/types/dailyPrice";
 export type Grams = number & { readonly __brand: "Grams" };
 export type PaymentMethod = "cash" | "card" | "transfer";
 export type PriceSource = DailyPriceSource | "manual";
+export type OutboxStatus = "pending" | "failed";
 
 export interface CartLine {
   lineId: string;
@@ -67,7 +68,12 @@ export interface TicketWire {
 export interface OutboxRecord {
   clientOrderUuid: string;
   schemaVersion: 1;
-  status: "pending";
+  status: OutboxStatus;
   enqueuedAt: string;
+  /** Intentos de envío; los registros de 002 se leen como 0. */
+  attempts: number;
+  /** Instante UTC del próximo intento; `null` cuando toca ya. */
+  nextAttemptAt: string | null;
+  lastError: string | null;
   payload: TicketWire;
 }

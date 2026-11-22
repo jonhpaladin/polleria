@@ -30,6 +30,7 @@ export function useSale(
   pricesReady: boolean,
   isToday = true,
   pricesDate: string | null = null,
+  onTicketSaved?: () => void,
 ): UseSaleResult {
   const [cart, dispatch] = useReducer(cartReducer, EMPTY_CART);
   const [saving, setSaving] = useState(false);
@@ -101,6 +102,8 @@ export function useSale(
       setSuccess(
         `Venta confirmada: ${total} en ${method}. Folio local ${result.ticket.localFolio}.`,
       );
+      // El outbox ya está escrito; el envío corre aparte y no retrasa el aviso.
+      onTicketSaved?.();
     } catch (cause: unknown) {
       setError("No se pudo guardar la venta. No se cobró nada; vuelve a intentar.");
       console.warn("TICKET_PERSIST_FAILED", cause);
@@ -108,7 +111,7 @@ export function useSale(
       inFlight.current = false;
       setSaving(false);
     }
-  }, [cart, catalog, isToday, pricesAreStale]);
+  }, [cart, catalog, isToday, pricesAreStale, onTicketSaved]);
 
   return {
     cart,

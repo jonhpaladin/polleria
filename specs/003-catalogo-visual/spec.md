@@ -65,13 +65,15 @@ reemplazan una por una cuando llegue la lista real de productos y precios.
 ## Contrato de assets
 
 ```text
-frontend/src/assets/products/<SKU>.webp
+frontend/src/assets/products/<nombre-descriptivo>.webp
 ```
 
-- El nombre es el SKU tal como viene del catálogo (`POLLO-ENTERO.webp`, `AGUA-LITRO.webp`).
+- El nombre es corto, legible y descriptivo (`pollo-entero.webp`, `combo-familiar.webp`,
+  `agua-600-ml.webp`), en minúsculas y sin acentos.
+- Un mapa estático en `productImages.ts` relaciona cada SKU con su archivo descriptivo.
 - Formato WebP, 512×512 px, fondo crema, sin texto, sin logotipos y sin marcas de agua.
 - Peso máximo: 60 KB por imagen; 2 MB el set completo.
-- No se agrega un campo nuevo al catálogo ni una migración Dexie: la ruta se deriva del SKU.
+- No se agrega un campo nuevo al catálogo ni una migración Dexie.
 - Un SKU sin archivo usa respaldo; no se inventa una imagen en tiempo de ejecución.
 
 ## Reglas de negocio y cálculos
@@ -80,7 +82,7 @@ frontend/src/assets/products/<SKU>.webp
 - El precio y la promoción se siguen tomando de la hoja del día, igual que en 002.
 - La imagen se resuelve por SKU, no por nombre visible: renombrar un producto no rompe su
   imagen.
-- Reemplazar una imagen es sobrescribir el archivo con el mismo SKU; no requiere migración.
+- Reemplazar una imagen es sobrescribir el archivo asignado al SKU; no requiere migración.
 - Un producto inactivo no se pinta y su imagen puede quedarse sin usar.
 - La tarjeta no lee red, IndexedDB ni estado global; solo recibe producto y precio.
 
@@ -127,8 +129,9 @@ esquema Dexie, y variantes de arte por temporada.
 
 ## Decisiones ratificadas
 
-- **D-003-01**: las imágenes son fotografías de estudio generadas con IA, con un prompt fijo y
-  una muestra aprobada como referencia de estilo.
+- **D-003-01**: las imágenes se generan con IA y un prompt fijo. El dueño autorizó iniciar el
+  primer lote con un estilo híbrido de textura semirrealista y formas caricaturescas como punto
+  de partida; la aprobación visual final sigue pendiente y no se presume.
 - **D-003-02**: se generan para los 26 SKU del catálogo provisional; el reemplazo es por SKU.
 - **D-003-03**: los assets viven en `frontend/src/assets/products/` y se resuelven por SKU, sin
   cambios de backend ni de Dexie.
@@ -137,3 +140,5 @@ esquema Dexie, y variantes de arte por temporada.
 - **D-003-06**: la imagen es decorativa (`alt=""`); el nombre accesible vive en el texto de la
   tarjeta.
 - **D-003-07**: si falta una imagen, el respaldo muestra la inicial con el color de la categoría.
+- **D-003-08**: los archivos usan nombres descriptivos fáciles de identificar, solicitados por el
+  dueño; `productImages.ts` mantiene la relación SKU → archivo sin tocar el catálogo.

@@ -36,6 +36,15 @@ export class PolleriaDb extends Dexie {
       tickets: "&clientOrderUuid, businessDate, soldAtUtc",
       outbox: "&clientOrderUuid, status, enqueuedAt",
     });
+    // v3 solo agrega un índice de reintento: Dexie conserva las filas existentes.
+    this.version(3).stores({
+      categories: "id, sortOrder",
+      products: "id, &sku, categoryId",
+      meta: "key",
+      dailyPrices: "&id, businessDate, productId",
+      tickets: "&clientOrderUuid, businessDate, soldAtUtc",
+      outbox: "&clientOrderUuid, status, enqueuedAt, nextAttemptAt",
+    });
   }
 }
 

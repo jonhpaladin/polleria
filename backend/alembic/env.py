@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from app.config import get_settings
+from app.models import sale as _sale_models  # noqa: F401  (registra las tablas)
 from app.models.catalog import Base
 
 config = context.config

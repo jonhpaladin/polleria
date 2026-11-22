@@ -13,18 +13,19 @@
 
 ## Fase 1 — Assets
 
-- [ ] **T-003-02 · Generar y aprobar la muestra de estilo**
-  Generar `PIERNA-MUSLO` con el prompt base y revisar fondo, luz, ángulo y encuadre.
-  Hecho cuando el dueño aprueba la muestra y queda como referencia para el resto.
+- [ ] **T-003-02 · Definir y aprobar el estilo visual**
+  Explorar realismo, caricatura y el híbrido semirrealista; revisar fondo, luz, ángulo y sujeto.
+  Hecho cuando el dueño aprueba el estilo final; el primer lote híbrido es solo un punto de partida.
   RF: RF-003-02
 
-- [ ] **T-003-03 · Generar las 25 imágenes restantes**
-  Usar el prompt base y la muestra aprobada como referencia; revisar una hoja de contactos.
+- [ ] **T-003-03 · Generar las 26 imágenes**
+  Usar el prompt híbrido fijo y la cuota disponible; revisar una hoja de contactos.
   Hecho cuando las 26 imágenes comparten estilo y ninguna rompe la paleta.
   RF: RF-003-01, RF-003-02
 
-- [ ] **T-003-04 · Optimizar y nombrar por SKU**
-  Redimensionar a 512×512, convertir a WebP con Pillow y guardar como `<SKU>.webp`.
+- [ ] **T-003-04 · Optimizar y asignar nombres descriptivos**
+  Redimensionar a 512×512, convertir a WebP con Pillow y usar nombres simples como
+  `pollo-entero.webp` y `combo-familiar.webp`.
   Hecho cuando cada archivo pesa ≤60 KB y el set completo ≤2 MB.
   RF: RF-003-08
 

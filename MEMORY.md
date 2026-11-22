@@ -1,45 +1,45 @@
 # MEMORY.md — Memoria de Arquitectura y Estado del POS
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
-## Estado actual (2026-11-13)
-- Spec 001 cerrada por ratificación del dueño: PWA de catálogo + API FastAPI/PostgreSQL (migración Alembic 0001, semilla idempotente, `/health`, `/catalog`).
-- Spec 002 cerrada por ratificación del dueño (2026-11-13): pestaña `Precios del día` (copia la última hoja disponible, edición local de normal/promoción/mayoreo), carrito por kilo/pieza con precio manual sin autorización, pago informativo y confirmación local atómica de ticket + outbox.
-- Tests: backend 22 passed + 1 skipped (integración sin `TEST_DATABASE_URL`); frontend 165 passed en 24 archivos; `ruff`, `lint`, `typecheck`, `seed:check` y `build` en verde.
-- Validado con Edge headless + CDP: 360/768/1280 sin scroll horizontal, targets de 48 px, tabla de precios con scroll interno y cobro con red apagada en **9,8–11,3 ms** desde el clic hasta el aviso de éxito (26 precios, 1 ticket y 1 outbox). Tras recargar sin red, el service worker sirvió la app y el ticket sobrevivió. La prueba en dispositivo físico queda como verificación de campo (D-002-11).
-- Supabase conectado y validado: esquema 0001, 5 categorías, 26 productos, 33 precios y 26 precios por defecto; sin Postgres local, Docker ni `uv`.
-- Guía de despliegue en `docs/despliegue.md`: PWA vs APK, Cloudflare Pages + Render + Supabase, costos free y pasos de publicación.
-- Spec 002 commiteada y pusheada a `master` (`258d3d3` implementación, `2b5a812` skills, `75bff55` validación).
-- Spec 003 (`003-catalogo-visual`) activa: foto de estudio por SKU, WebP local precacheado y rejilla 2/3/4 columnas.
+## Estado actual (2026-11-22)
+- Spec 001 y 002 cerradas por ratificación del dueño (002: precios del día, venta offline y ticket local atómico).
+- Spec 003 (catálogo visual) pospuesta el 2026-11-22: faltan imágenes aprobadas y consumía demasiado contexto; no hay código de 003.
+- Spec 004 (sincronización) activa e implementada: `POST /sync` idempotente por UUID, tablas `sales`/`sale_lines`, outbox con backoff, 4xx terminal y reintento manual.
+- Tests: backend 36 passed + 2 skipped (integración sin `TEST_DATABASE_URL`); frontend 197 passed en 29 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
+- En 002 se validó con Edge headless + CDP: sin scroll horizontal a 360/768/1280, targets de 48 px y cobro sin red en 9,8–11,3 ms.
+- Supabase conectado con el esquema 0001; **la migración 0002 aún no se aplica** al proyecto remoto.
+- Guía de despliegue en `docs/despliegue.md`: PWA vs APK, Cloudflare Pages + Render + Supabase.
 
 ## Decisiones (y por qué)
-- **Neon/Supabase free tier en vez de laptop en casa:** evita dejar una laptop encendida 24/7 y exponer túneles/DNS dinámicos.
+- **Neon/Supabase free tier en vez de laptop en casa:** evita exponer túneles/DNS y dejar un equipo encendido.
 - **Outbox local-first:** el celular confirma la venta sin depender del Wi-Fi/4G del local.
-- **Decimal en backend y centavos enteros en el cliente, en vez de float:** los kilos fraccionados (ej. 1.345 kg) con precios variables desfasan arqueos con IEEE 754.
-- **PWA sobre app nativa:** se abre en cualquier celular/tablet/laptop sin compilaciones por plataforma ni tiendas de apps.
-- **Precios en `product_prices` (lista, promoción, mayoreo):** permite agregar niveles sin migrar; un índice único parcial garantiza un solo precio por defecto.
+- **Decimal en backend y centavos enteros en el cliente:** los kilos fraccionados desfasan arqueos con IEEE 754.
+- **PWA sobre app nativa:** se abre en cualquier celular/tablet/laptop sin tiendas ni compilaciones.
 - **Zona horaria fija `America/Mexico_City`:** un tablet mal configurado no descuadra el corte del día.
-- **Vitest + Pytest:** cada runner es el estándar de su stack.
-- **Semilla canónica en `backend/app/seeds/catalog.json`:** el JSON del frontend se genera con `seed:sync` y `seed:check` hace fallar CI si divergen.
-- **TypeScript 5.9.3:** `typescript-eslint@8` exige TS `<6.1.0`.
-- **Sin `dexie-react-hooks`:** el catálogo se lee con un hook propio; la dependencia del plan no se instaló por no usarse.
-- **Skills vendorizadas y pinneadas por hash** (`.agents/skills/` + `skills-lock.json`): reproducibles entre sesiones.
+- **Semilla canónica en `backend/app/seeds/catalog.json`:** `seed:sync` genera el JSON del frontend y `seed:check` falla si divergen.
+- **4xx terminal en `/sync`:** un dato inválido no se arregla reintentando; se muestra el fallo y se reintenta a mano.
+- **Venta como snapshot sin FK a productos:** un cambio de catálogo no deja ventas pendientes sin sincronizar.
+- **`/sync` solo ventas:** el catálogo sigue por `GET /catalog` y cada contrato conserva una responsabilidad.
+- **Zona de negocio con respaldo UTC-6:** Windows sin tzdata no rompe la validación; la constante sigue siendo `America/Mexico_City`.
 
 ## Spec 002 — Venta offline (cerrada)
-- Implementado: hoja local `dailyPrices` (id `fecha:producto`, `unit` congelada, vacíos en `null`), copia desde la hoja anterior más reciente, alta de productos nuevos sin pisar ediciones y rotación al cambiar el día de negocio (foco, visibilidad e intervalo).
-- La venta usa solo la hoja del día; la promoción y el mayoreo se eligen manualmente por línea. El precio manual se captura en la línea del carrito con `validateManualPrice`, sin PIN ni roles (D-002-06).
-- Dexie v2 conserva `categories`/`products`/`meta` y agrega `dailyPrices`, `tickets` y `outbox`. El ticket y su outbox se escriben en una transacción; el mismo UUID no duplica el cobro.
-- El outbox queda `pending`; 004 hará la sincronización. Los precios diarios no se publican a otros dispositivos.
-- El cobro revalida el día de la hoja al agregar y al confirmar, no solo en el render, para cerrar la ventana de medianoche.
+- Hoja local `dailyPrices` con copia de la anterior, carrito por kilo/pieza, precio manual sin PIN y pago informativo.
+- Dexie v2: `dailyPrices`, `tickets` y `outbox`; ticket y outbox se escriben en una transacción y el mismo UUID no duplica el cobro.
+- El cobro revalida el día de la hoja al agregar y al confirmar; el outbox lo drena el sincronizador de 004.
 
-## Spec activa: 003 — Catálogo visual
-- Foto de estudio generada con IA por SKU, WebP 512×512 en `src/assets/products/`, precache en el service worker y respaldo con inicial.
-- Pendiente el primer paso: muestra de `PIERNA-MUSLO` para aprobar el estilo y luego las 26 imágenes.
+## Spec 004 — Sincronización (activa)
+- `drainOutbox` envía un ticket por solicitud, borra al confirmar y aplica backoff de 2 s a 5 min con jitter. Un 400/404/409/422 pasa a `failed` sin frenar la cola.
+- Dexie v3 agrega `attempts`, `nextAttemptAt`, `lastError` e índice `nextAttemptAt`; los registros de 002 se leen con `attempts ?? 0`.
+- `useSync` drena al arrancar, al volver `online`, al cobrar y cada 30 s; `SyncBadge` muestra pendientes/fallidos y «Reintentar».
+- El backend valida día de negocio, dinero string, kilos y total; guarda snapshot y devuelve 201/200 (`created`/`duplicate`).
 
 ## Próximos pasos
-1. Sustituir el catálogo provisional por la lista real de productos y precios del dueño.
-2. Verificación de campo de T-002-22 en celular/tablet físico (excepción ya aprobada; no bloquea).
-3. Aprobar la muestra de imagen de 003 y generar las 26 fotografías; la sincronización sigue en 004.
+1. Aplicar la migración 0002 a Supabase y desplegar el backend.
+2. Verificación manual offline→online en celular/tablet y un 422 forzado (T-004-11).
+3. Retomar 003 cuando el dueño entregue las imágenes por SKU.
+4. Sustituir el catálogo provisional por la lista real de productos y precios.
 
 ## Decisiones de producto pendientes
-- Vigencia de promociones y precios ligados a cliente se definen en 006.
-- 003 no tiene dudas bloqueantes; el catálogo real reemplazará las imágenes por SKU.
+- 005: ¿turnos fijos o botón de cierre? ¿qué pasa con ventas sincronizadas después del corte?
+- 006: vigencia de promociones y precios ligados a cliente.
+- 007: modelo y conexión de la impresora.
