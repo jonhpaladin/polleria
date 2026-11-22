@@ -51,8 +51,8 @@ SKU.
 
 ## 004 — Sincronización e idempotencia
 
-**Estado**: activa e implementada el 2026-11-22. Pendiente aplicar la migración `0002_sales`
-a Supabase y la verificación manual offline→online (T-004-11).
+**Estado**: activa e implementada el 2026-11-22; la migración `0002_sales` ya está aplicada a
+Supabase. Pendiente desplegar el backend y la verificación manual offline→online (T-004-11).
 
 **Objetivo**: drenar el outbox en segundo plano con backoff exponencial, reintentos
 seguros y `POST /sync` idempotente. Un fallo de red no pierde ni duplica tickets.

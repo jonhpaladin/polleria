@@ -7,7 +7,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Spec 004 (sincronización) activa e implementada: `POST /sync` idempotente por UUID, tablas `sales`/`sale_lines`, outbox con backoff, 4xx terminal y reintento manual.
 - Tests: backend 36 passed + 2 skipped (integración sin `TEST_DATABASE_URL`); frontend 197 passed en 29 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
 - En 002 se validó con Edge headless + CDP: sin scroll horizontal a 360/768/1280, targets de 48 px y cobro sin red en 9,8–11,3 ms.
-- Supabase conectado con el esquema 0001; **la migración 0002 aún no se aplica** al proyecto remoto.
+- Supabase conectado con el esquema 0001 y la migración `0002_sales` aplicada el 2026-11-22 (tablas `sales` y `sale_lines`; RLS sigue deshabilitado).
 - Guía de despliegue en `docs/despliegue.md`: PWA vs APK, Cloudflare Pages + Render + Supabase.
 
 ## Decisiones (y por qué)
@@ -34,7 +34,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - El backend valida día de negocio, dinero string, kilos y total; guarda snapshot y devuelve 201/200 (`created`/`duplicate`).
 
 ## Próximos pasos
-1. Aplicar la migración 0002 a Supabase y desplegar el backend.
+1. Desplegar el backend con `DATABASE_URL` de Supabase y `FRONTEND_ORIGIN`.
 2. Verificación manual offline→online en celular/tablet y un 422 forzado (T-004-11).
 3. Retomar 003 cuando el dueño entregue las imágenes por SKU.
 4. Sustituir el catálogo provisional por la lista real de productos y precios.

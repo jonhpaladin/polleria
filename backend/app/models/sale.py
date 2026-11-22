@@ -68,7 +68,8 @@ class SaleLine(Base):
         ),
         CheckConstraint("quantity > 0", name="sale_lines_quantity_positive"),
         CheckConstraint(
-            "(unit = 'piece' AND grams IS NULL) OR (unit = 'kg' AND grams > 0)",
+            "(unit = 'piece' AND grams IS NULL) OR "
+            "(unit = 'kg' AND grams IS NOT NULL AND grams > 0)",
             name="sale_lines_measure_valid",
         ),
         CheckConstraint(
