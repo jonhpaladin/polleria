@@ -81,6 +81,12 @@ catálogo a las cajas sin tocar la base a mano.
 
 **Fuera de alcance**: inventario, costos, proveedores, facturación.
 
+**Seguridad (añadido 2026-11-22)**: antes de exponer la escritura, 006 debe cerrar el acceso
+público a la base. Hoy RLS está deshabilitado en las 7 tablas de `public`. Hay que habilitarlo,
+definir políticas por tabla o dejar sin acceso a `anon`/`authenticated` si ningún cliente usa la
+llave pública, crear un rol de base con privilegios mínimos para la API y separar las llaves de
+Supabase. La API seguirá conectando con su usuario de base, nunca con `anon`.
+
 **Dudas abiertas**: ¿un precio negociado vive en el cliente (producto + cliente) o se
 captura al vuelo en cada venta? ¿quién puede editar (PIN)? ¿vigencia programada e historial
 de cambios?
