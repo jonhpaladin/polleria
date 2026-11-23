@@ -8,8 +8,8 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | cerrada por ratificación del dueño |
 | 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | cerrada por ratificación del dueño (2026-11-13) |
 | 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 | pospuesta (2026-11-22) |
-| 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | activa (2026-11-22) |
-| 005 | `005-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | borrador |
+| 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | cerrada por ratificación del dueño (2026-11-22) |
+| 005 | `005-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | siguiente (borrador) |
 | 006 | `006-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
 | 007 | `007-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
 | 008 | `008-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
@@ -51,8 +51,9 @@ SKU.
 
 ## 004 — Sincronización e idempotencia
 
-**Estado**: activa e implementada el 2026-11-22; la migración `0002_sales` ya está aplicada a
-Supabase. Pendiente desplegar el backend y la verificación manual offline→online (T-004-11).
+**Estado**: cerrada por ratificación del dueño (2026-11-22). Migración `0002_sales` aplicada a
+Supabase y API desplegada en Render; el dueño validó el flujo offline→online en la PWA y el
+smoke test de `/sync` pasó contra la API real.
 
 **Objetivo**: drenar el outbox en segundo plano con backoff exponencial, reintentos
 seguros y `POST /sync` idempotente. Un fallo de red no pierde ni duplica tickets.

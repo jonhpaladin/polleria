@@ -59,7 +59,7 @@ Cada tarea se marca `[x]` solo con la puerta de calidad en verde (constitución,
   Hecho cuando `npm run test` pasa con los casos nuevos.
   RF: RF-004-01…05, RF-004-09
 
-- [ ] **T-004-11 · Verificación manual del flujo offline**
+- [x] **T-004-11 · Verificación manual del flujo offline**
   Cobrar en modo avión, reconectar y ver el outbox vaciarse; forzar un 422 y comprobar el
   estado fallido y el reintento manual. Contra la API desplegada, ejecutar
   `backend/scripts/smoke_sync.py <url>` y borrar la venta de prueba por su UUID.

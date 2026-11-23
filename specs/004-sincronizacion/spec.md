@@ -1,7 +1,7 @@
 # Spec 004 — Sincronización e idempotencia
 
-- Estado: activa (aprobada 2026-11-22)
-- Spec activa: sí
+- Estado: cerrada por ratificación del dueño (2026-11-22)
+- Spec activa: no
 - Depende de: `specs/002-venta-offline` y `docs/constitution.md` v1.0
 - Fecha: 2026-11-22
 

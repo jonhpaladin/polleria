@@ -188,6 +188,20 @@ desplegar el frontend.
 4. Abrir la URL de Pages en el celular e instalar la PWA.
 5. Probar: catálogo, modo avión, reapertura, badge y aviso de actualización.
 
+### 6.5 Despliegue actual (2026-11-22)
+
+- API: `https://polleria-api-homu.onrender.com`
+- PWA: `https://polleria-q84.pages.dev`
+- Base: Supabase `kuxypmdzadvcmeckmidx`, migraciones `0001_catalog` y `0002_sales` aplicadas.
+
+`FRONTEND_ORIGIN` acepta una lista separada por comas, pero cada valor debe ser un origen
+exacto: con protocolo, sin barra final y sin ruta. Los previews de Cloudflare Pages con hash
+cambian en cada despliegue; para uso diario se registra el alias estable. Tras cambiar una
+variable en Render, el servicio se reinicia y hay que esperar el redeploy antes de probar CORS.
+
+El plan free de Render duerme la API por inactividad. La PWA sigue cobrando sin red; la
+primera sincronización después del sueño puede tardar 30–60 s.
+
 ## 7. Qué pasa si el servidor falla
 
 - **Catálogo:** la PWA ya tiene la semilla y el catálogo local; se sigue mostrando.
