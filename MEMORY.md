@@ -2,13 +2,13 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
 ## Estado actual (2026-11-23)
-- Specs 001, 002, 004, 005, 006, 007 y 008 cerradas; 003 pospuesta; 011 activa implementada.
+- Specs 001, 002, 004, 005, 006, 007, 008 y 011 cerradas; 003 pospuesta; 012 activa implementada.
+- 012: anulación de ticket completo con PIN, motivo, sincronización de anuladas y reportes filtrados; falta validarla en tablet.
 - 008: administración de precios, claves de API y RLS desplegadas; falta configurar `ADMIN_KEY` y `DEVICE_KEY` en Render.
-- 011: pestaña «Respaldo» con JSON, validación y fusión; falta validarla en la tablet.
 - Catálogo real con 29 productos activos: 11 con precio confirmado y 18 temporales a $100; 17 inactivos.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
-- Tests: backend 54 passed + 3 skipped; frontend 257 passed en 38 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
-- Supabase con `0001_catalog`, `0002_sales`, RLS y `0003_seguridad`; `anon`/`authenticated` sin permisos.
+- Tests: backend 59 passed + 4 skipped; frontend 269 passed en 40 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
+- Supabase con `0001`…`0004`; RLS activo y `anon`/`authenticated` sin permisos.
 - Guías: `docs/despliegue.md` y `docs/seguridad.md`.
 
 ## Decisiones
@@ -20,6 +20,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **Corte local + conciliación remota:** el mostrador manda; el backend solo compara lo sincronizado.
 - **Precios base publicados:** las cajas refrescan cada 5 min y reemplazan la hoja del día.
 - **Respaldo local en JSON:** fusión por llave, sin nube ni cifrado en esta iteración.
+- **Anulación conserva el ticket:** estado `voided`, PIN local y `voidPending` hasta que el backend confirma.
 
 ## Specs cerradas
 - **002/004:** hoja diaria, carrito, ticket + outbox atómicos, backoff 2 s→5 min y 4xx terminal.
@@ -28,12 +29,17 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **008:** engrane con clave, edición de precios, clave del local, 401 reintentable y RLS.
 - **011:** respaldo con tickets, outbox, cortes y precios; restauración que no borra.
 
+## Spec 012 — Anulaciones (activa)
+- Ticket completo del día, motivo y PIN de 4-6 dígitos (PBKDF2 con sal y bloqueo).
+- El outbox de la venta se elimina; `POST /sales/{uuid}/void` idempotente con clave del local; 404 = no-op.
+- Reportes local y remoto excluyen anuladas; el corte las muestra aparte y avisa si cambió.
+
 ## Próximos pasos
-1. Validar 011 en la tablet: descargar, borrar IndexedDB y restaurar.
+1. Validar 012 en la tablet: anular una venta, verla fuera del corte y conciliar.
 2. 003 bloqueada hasta tener imágenes aprobadas por SKU.
-3. 012 anulaciones y devoluciones con auditoría; después 009 impresión y 013 historial.
+3. Después: 009 impresión y 013 historial; 010 multidispositivo condicional.
 4. Configurar las claves de Render y probar la publicación entre dos dispositivos.
 
 ## Decisiones pendientes
-- 012: motivo, PIN y efecto de una anulación en el corte.
 - 009: modelo y conexión de la impresora.
+- 013: columnas y filtros del historial/exportación.

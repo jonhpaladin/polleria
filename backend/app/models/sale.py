@@ -32,6 +32,12 @@ class Sale(Base):
             "payment_method IN ('cash','card','transfer')", name="sales_payment_method_valid"
         ),
         CheckConstraint("total > 0", name="sales_total_positive"),
+        CheckConstraint(
+            "(voided_at_utc IS NULL AND void_reason IS NULL) OR "
+            "(voided_at_utc IS NOT NULL AND void_reason IS NOT NULL "
+            "AND length(void_reason) BETWEEN 3 AND 200)",
+            name="sales_void_consistent",
+        ),
         Index("sales_business_date_idx", "business_date"),
     )
 
@@ -47,6 +53,10 @@ class Sale(Base):
     received_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+    voided_at_utc: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    void_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     lines: Mapped[list["SaleLine"]] = relationship(
         back_populates="sale", cascade="all, delete-orphan"

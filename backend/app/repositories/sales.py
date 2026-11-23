@@ -1,6 +1,6 @@
 """Persistencia idempotente de las ventas sincronizadas."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -66,3 +66,14 @@ class SqlSaleRepository:
         )
         await self._session.commit()
         return True, received_at
+
+    async def void(self, client_order_uuid: str, reason: str) -> datetime | None:
+        """Marca una venta como anulada; repetir no cambia la fecha original."""
+        sale = await self._session.get(Sale, client_order_uuid)
+        if sale is None:
+            return None
+        if sale.voided_at_utc is None:
+            sale.voided_at_utc = datetime.now(UTC)
+            sale.void_reason = reason
+            await self._session.commit()
+        return sale.voided_at_utc

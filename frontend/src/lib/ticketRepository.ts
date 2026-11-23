@@ -43,3 +43,34 @@ export async function persistTicket(
     return { ticket, outbox };
   });
 }
+
+/** Anula un ticket completo, conserva su snapshot y saca la venta del outbox. */
+export async function voidTicket(
+  db: PolleriaDb,
+  clientOrderUuid: string,
+  reason: string,
+  now = new Date(),
+): Promise<LocalTicket> {
+  const trimmed = reason.trim();
+  if (trimmed.length < 3) {
+    throw new Error("El motivo debe tener al menos 3 caracteres.");
+  }
+
+  return db.transaction("rw", db.tickets, db.outbox, async () => {
+    const ticket = await db.tickets.get(clientOrderUuid);
+    if (!ticket) throw new Error("Ticket no encontrado");
+    if (ticket.status === "voided") return ticket;
+
+    const updated: LocalTicket = {
+      ...ticket,
+      status: "voided",
+      voidedAtUtc: now.toISOString(),
+      voidReason: trimmed,
+      voidPending: true,
+      voidLastError: null,
+    };
+    await db.tickets.put(updated);
+    await db.outbox.delete(clientOrderUuid);
+    return updated;
+  });
+}

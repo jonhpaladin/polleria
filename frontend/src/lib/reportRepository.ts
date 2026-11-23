@@ -24,16 +24,19 @@ export async function listCashCuts(db: PolleriaDb, limit = 12): Promise<CashCut[
   return db.cashCuts.orderBy("businessDate").reverse().limit(limit).toArray();
 }
 
-/** Tickets del día que aún no llegaron al backend (pending o failed). */
+/** Tickets del día que aún no llegaron al backend (outbox o anulación pendiente). */
 export async function countUnsyncedTickets(
   db: PolleriaDb,
   businessDate: string,
 ): Promise<number> {
-  const [pending, failed] = await Promise.all([
+  const [pending, failed, tickets] = await Promise.all([
     db.outbox.where("status").equals("pending").toArray(),
     db.outbox.where("status").equals("failed").toArray(),
+    db.tickets.where("businessDate").equals(businessDate).toArray(),
   ]);
-  return [...pending, ...failed].filter(
+  const pendingOutbox = [...pending, ...failed].filter(
     (record) => record.payload.business_date === businessDate,
   ).length;
+  const pendingVoids = tickets.filter((ticket) => ticket.voidPending === true).length;
+  return pendingOutbox + pendingVoids;
 }

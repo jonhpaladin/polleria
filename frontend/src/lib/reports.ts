@@ -23,7 +23,9 @@ export function buildDailyReport(
   tickets: readonly LocalTicket[],
   businessDate: string,
 ): DailyReport {
-  const dayTickets = tickets.filter((ticket) => ticket.businessDate === businessDate);
+  const dayTickets = tickets.filter(
+    (ticket) => ticket.businessDate === businessDate && ticket.status !== "voided",
+  );
   const byPayment = emptyPayments();
   const products = new Map<string, ProductTotal>();
   const categories = new Map<string, Cents>();

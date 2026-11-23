@@ -9,6 +9,7 @@ import {
 } from "@/lib/adminApi";
 import { parseOptionalPrice } from "@/lib/dailyPrices";
 import { centsToDecimal } from "@/lib/money";
+import { hasVoidPin, isVoidPinFormat, setVoidPin } from "@/lib/voidPin";
 import type { Catalog, PriceTier, Unit } from "@/types/catalog";
 
 interface AdminDialogProps {
@@ -120,6 +121,12 @@ export function AdminDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [pinConfigured, setPinConfigured] = useState(() => hasVoidPin());
+  const [newPin, setNewPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState("");
+  const [pinError, setPinError] = useState<string | null>(null);
+  const [pinMessage, setPinMessage] = useState<string | null>(null);
+  const [savingPin, setSavingPin] = useState(false);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -199,6 +206,31 @@ export function AdminDialog({
       setError(errorMessage(cause));
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function savePin() {
+    if (!isVoidPinFormat(newPin)) {
+      setPinError("El PIN debe tener entre 4 y 6 dígitos.");
+      return;
+    }
+    if (newPin !== confirmPin) {
+      setPinError("Los PIN no coinciden.");
+      return;
+    }
+    setSavingPin(true);
+    setPinError(null);
+    setPinMessage(null);
+    try {
+      await setVoidPin(newPin);
+      setPinConfigured(true);
+      setNewPin("");
+      setConfirmPin("");
+      setPinMessage("PIN guardado en esta tablet.");
+    } catch (cause: unknown) {
+      setPinError(cause instanceof Error ? cause.message : "No se pudo guardar el PIN.");
+    } finally {
+      setSavingPin(false);
     }
   }
 
@@ -307,6 +339,65 @@ export function AdminDialog({
                   </div>
                 ))}
               </div>
+
+              <details className="mt-3 rounded-xl border border-stone-200 bg-white p-3">
+                <summary className="flex min-h-12 cursor-pointer items-center text-sm font-bold text-stone-900">
+                  PIN para anular ventas {pinConfigured ? "· configurado" : "· sin configurar"}
+                </summary>
+                <div className="space-y-2 pt-2">
+                  <p className="text-xs text-stone-500">
+                    De 4 a 6 dígitos. Se guarda como hash en esta tablet y no se envía a la API.
+                  </p>
+                  <input
+                    type="password"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    maxLength={6}
+                    value={newPin}
+                    onChange={(event) => {
+                      setNewPin(event.target.value.replace(/\D/g, ""));
+                      setPinError(null);
+                      setPinMessage(null);
+                    }}
+                    placeholder={pinConfigured ? "Nuevo PIN" : "PIN"}
+                    aria-label="PIN de anulaciones"
+                    className="h-12 w-full rounded-lg border border-stone-300 bg-white px-3 text-base tracking-[0.3em]"
+                  />
+                  <input
+                    type="password"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    maxLength={6}
+                    value={confirmPin}
+                    onChange={(event) => {
+                      setConfirmPin(event.target.value.replace(/\D/g, ""));
+                      setPinError(null);
+                      setPinMessage(null);
+                    }}
+                    placeholder="Confirmar PIN"
+                    aria-label="Confirmar PIN de anulaciones"
+                    className="h-12 w-full rounded-lg border border-stone-300 bg-white px-3 text-base tracking-[0.3em]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => void savePin()}
+                    disabled={savingPin}
+                    className="min-h-12 w-full rounded-lg border border-brand-600 px-4 text-sm font-bold text-brand-700 disabled:opacity-60"
+                  >
+                    {savingPin ? "Guardando…" : pinConfigured ? "Cambiar PIN" : "Guardar PIN"}
+                  </button>
+                  {pinError ? (
+                    <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+                      {pinError}
+                    </p>
+                  ) : null}
+                  {pinMessage ? (
+                    <p role="status" className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
+                      {pinMessage}
+                    </p>
+                  ) : null}
+                </div>
+              </details>
             </div>
 
             <footer className="space-y-2 border-t border-stone-200 bg-white p-4">

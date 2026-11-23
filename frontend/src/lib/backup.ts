@@ -59,6 +59,7 @@ function isLine(value: unknown): boolean {
 
 function isTicket(value: unknown): boolean {
   if (!isRecord(value)) return false;
+  const voided = value.status === "voided";
   return (
     value.schemaVersion === 1 &&
     isString(value.clientOrderUuid) &&
@@ -71,8 +72,17 @@ function isTicket(value: unknown): boolean {
     value.lines.length > 0 &&
     value.lines.every(isLine) &&
     isInt(value.totalCents, 1) &&
-    value.status === "confirmed" &&
-    isString(value.catalogUpdatedAt)
+    (value.status === "confirmed" || voided) &&
+    isString(value.catalogUpdatedAt) &&
+    (!voided ||
+      (isIsoDate(value.voidedAtUtc) &&
+        typeof value.voidReason === "string" &&
+        value.voidReason.length >= 3 &&
+        value.voidReason.length <= 200)) &&
+    (value.voidPending === undefined || typeof value.voidPending === "boolean") &&
+    (value.voidLastError === undefined ||
+      value.voidLastError === null ||
+      typeof value.voidLastError === "string")
   );
 }
 

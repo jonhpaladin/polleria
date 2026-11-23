@@ -114,6 +114,25 @@ describe("buildDailyReport", () => {
     expect(report.byPayment).toEqual({ cash: 0, card: 0, transfer: 0 });
     expect(report.byProduct).toEqual([]);
   });
+
+  it("excluye los tickets anulados del corte", () => {
+    const report = buildDailyReport(
+      [
+        cashTicket(),
+        cashTicket({
+          clientOrderUuid: "33333333-3333-4333-8333-333333333333",
+          localFolio: 3,
+          status: "voided",
+          voidReason: "Cobro incorrecto",
+        }),
+      ],
+      "2026-11-22",
+    );
+
+    expect(report.ticketCount).toBe(1);
+    expect(report.totalCents).toBe(44000);
+    expect(report.byPayment.cash).toBe(44000);
+  });
 });
 
 describe("buildCashCut", () => {

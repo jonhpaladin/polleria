@@ -2,14 +2,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { getDb, type PolleriaDb } from "@/lib/db";
 import { readOutboxCounts } from "@/lib/outboxRepository";
-import { postTicket } from "@/lib/syncApi";
+import { postTicket, postVoid } from "@/lib/syncApi";
 import { drainOutbox, retryFailedOutbox } from "@/lib/syncEngine";
+import { drainVoids } from "@/lib/voidEngine";
 import type { TicketWire } from "@/types/sale";
 
 export interface UseSyncOptions {
   online: boolean;
   db?: PolleriaDb;
   post?: (payload: TicketWire) => Promise<unknown>;
+  postVoid?: (clientOrderUuid: string, reason: string) => Promise<unknown>;
   pollMs?: number;
 }
 
@@ -33,6 +35,9 @@ export function useSync(options: UseSyncOptions): UseSyncResult {
   const [deps] = useState(() => ({
     db: options.db ?? getDb(),
     post: options.post ?? ((payload: TicketWire) => postTicket(payload)),
+    voidPost:
+      options.postVoid ??
+      ((clientOrderUuid: string, reason: string) => postVoid(clientOrderUuid, reason)),
   }));
   const [counts, setCounts] = useState({ pending: 0, failed: 0 });
   const [syncing, setSyncing] = useState(false);
@@ -53,12 +58,16 @@ export function useSync(options: UseSyncOptions): UseSyncResult {
     running.current = true;
     setSyncing(true);
     try {
-      const summary = await drainOutbox({ db: deps.db, post: deps.post });
-      setAuthRequired(summary.auth);
+      const voidSummary = await drainVoids({ db: deps.db, post: deps.voidPost });
+      const summary = voidSummary.auth
+        ? { synced: 0, retried: 0, failed: 0, auth: true }
+        : await drainOutbox({ db: deps.db, post: deps.post });
+      const auth = voidSummary.auth || summary.auth;
+      setAuthRequired(auth);
       setLastError(
-        summary.auth
+        auth
           ? "Falta la clave del local o es incorrecta."
-          : summary.retried > 0
+          : voidSummary.failed + summary.retried > 0
             ? "No se pudo contactar la API; se reintentará solo."
             : null,
       );

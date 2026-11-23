@@ -94,6 +94,53 @@ def test_daily_report_uses_the_injected_repository(
     assert fake_report_repository.requested == date(2026, 11, 14)
 
 
+def test_build_daily_report_excludes_voided_sales() -> None:
+    active = make_sale(
+        "11111111-1111-4111-8111-111111111111",
+        "cash",
+        "100.00",
+        [
+            make_line(
+                line_id="linea-activa",
+                product_id="prd-pollo-asado",
+                sku="POLLO-ASADO",
+                name="Pollo asado",
+                unit="piece",
+                quantity=1,
+                grams=None,
+                unit_price="100.00",
+                line_total="100.00",
+            )
+        ],
+    )
+    voided = make_sale(
+        "22222222-2222-4222-8222-222222222222",
+        "cash",
+        "50.00",
+        [
+            make_line(
+                line_id="linea-anulada",
+                product_id="prd-pollo-asado",
+                sku="POLLO-ASADO",
+                name="Pollo asado",
+                unit="piece",
+                quantity=1,
+                grams=None,
+                unit_price="50.00",
+                line_total="50.00",
+            )
+        ],
+    )
+    voided.voided_at_utc = datetime(2026, 11, 22, 19, 0, tzinfo=UTC)
+    voided.void_reason = "Cobro incorrecto"
+
+    report = build_daily_report([active, voided], date(2026, 11, 22))
+
+    assert report.ticket_count == 1
+    assert report.total == Decimal("100.00")
+    assert report.by_payment_method["cash"] == Decimal("100.00")
+
+
 def test_build_daily_report_aggregates_sales_and_units() -> None:
     cash_sale = make_sale(
         "11111111-1111-4111-8111-111111111111",

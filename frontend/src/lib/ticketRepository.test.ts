@@ -2,7 +2,7 @@ import Dexie from "dexie";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createDb, type PolleriaDb } from "@/lib/db";
-import { persistTicket } from "@/lib/ticketRepository";
+import { persistTicket, voidTicket } from "@/lib/ticketRepository";
 import { makeCatalog } from "@/test/fixtures";
 import type { Cents } from "@/types/catalog";
 import type { CartState } from "@/types/sale";
@@ -44,6 +44,60 @@ function cart(): CartState {
     ],
   };
 }
+
+describe("voidTicket", () => {
+  it("anula el ticket, conserva su snapshot y saca la venta del outbox", async () => {
+    const db = newDb();
+    const now = new Date("2026-11-13T18:00:00Z");
+    const persisted = await persistTicket(
+      cart(),
+      makeCatalog().updatedAt,
+      now,
+      "11111111-1111-4111-8111-111111111111",
+      db,
+    );
+
+    const voided = await voidTicket(
+      db,
+      persisted.ticket.clientOrderUuid,
+      "Cobro incorrecto",
+      now,
+    );
+
+    expect(voided.status).toBe("voided");
+    expect(voided.voidReason).toBe("Cobro incorrecto");
+    expect(voided.voidPending).toBe(true);
+    expect(voided.lines).toEqual(persisted.ticket.lines);
+    expect(await db.outbox.get(persisted.ticket.clientOrderUuid)).toBeUndefined();
+  });
+
+  it("no cambia la fecha ni el motivo si se repite", async () => {
+    const db = newDb();
+    const now = new Date("2026-11-13T18:00:00Z");
+    const persisted = await persistTicket(
+      cart(),
+      makeCatalog().updatedAt,
+      now,
+      "11111111-1111-4111-8111-111111111111",
+      db,
+    );
+    const first = await voidTicket(
+      db,
+      persisted.ticket.clientOrderUuid,
+      "Cobro incorrecto",
+      now,
+    );
+    const second = await voidTicket(
+      db,
+      persisted.ticket.clientOrderUuid,
+      "Otro motivo",
+      new Date("2026-11-13T19:00:00Z"),
+    );
+
+    expect(second.voidedAtUtc).toBe(first.voidedAtUtc);
+    expect(second.voidReason).toBe("Cobro incorrecto");
+  });
+});
 
 describe("persistTicket", () => {
   it("guarda ticket y outbox en la misma transacción con folio incremental", async () => {

@@ -102,6 +102,7 @@ class FakeSaleRepository:
 
     def __init__(self) -> None:
         self.sales: dict[str, tuple[SyncTicketIn, datetime]] = {}
+        self.voids: dict[str, tuple[str, datetime]] = {}
 
     async def record(self, ticket: SyncTicketIn) -> tuple[bool, datetime]:
         key = str(ticket.client_order_uuid)
@@ -110,6 +111,13 @@ class FakeSaleRepository:
         received_at = datetime.now(UTC)
         self.sales[key] = (ticket, received_at)
         return True, received_at
+
+    async def void(self, client_order_uuid: str, reason: str) -> datetime | None:
+        if client_order_uuid not in self.sales:
+            return None
+        if client_order_uuid not in self.voids:
+            self.voids[client_order_uuid] = (reason, datetime.now(UTC))
+        return self.voids[client_order_uuid][1]
 
 
 @pytest.fixture

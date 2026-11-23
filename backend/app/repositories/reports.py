@@ -16,13 +16,14 @@ _ZERO = Decimal("0.00")
 
 
 def build_daily_report(sales: Sequence[Sale], business_date: date) -> DailyReportOut:
-    """Suma ventas y líneas; función pura para testear sin base de datos."""
+    """Suma ventas y líneas; ignora las anuladas. Función pura para testear."""
+    active_sales = [sale for sale in sales if sale.voided_at_utc is None]
     by_payment = {method: _ZERO for method in _PAYMENT_METHODS}
     products: dict[str, ProductReportOut] = {}
     categories: dict[str, Decimal] = {}
     total = _ZERO
 
-    for sale in sales:
+    for sale in active_sales:
         total += sale.total
         by_payment[sale.payment_method] = (
             by_payment.get(sale.payment_method, _ZERO) + sale.total
@@ -51,7 +52,7 @@ def build_daily_report(sales: Sequence[Sale], business_date: date) -> DailyRepor
 
     return DailyReportOut(
         business_date=business_date,
-        ticket_count=len(sales),
+        ticket_count=len(active_sales),
         total=total,
         by_payment_method=by_payment,
         products=sorted(products.values(), key=lambda item: item.total, reverse=True),
@@ -75,6 +76,7 @@ class SqlReportRepository:
             await self._session.scalars(
                 select(Sale)
                 .where(Sale.business_date == business_date)
+                .where(Sale.voided_at_utc.is_(None))
                 .options(selectinload(Sale.lines))
                 .order_by(Sale.sold_at_utc)
             )

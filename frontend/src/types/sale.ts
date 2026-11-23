@@ -35,8 +35,13 @@ export interface LocalTicket {
   paymentMethod: PaymentMethod;
   lines: CartLine[];
   totalCents: Cents;
-  status: "confirmed";
+  status: "confirmed" | "voided";
   catalogUpdatedAt: string;
+  /** Campos opcionales: los tickets anteriores a 012 no los tienen. */
+  voidedAtUtc?: string | null;
+  voidReason?: string | null;
+  voidPending?: boolean;
+  voidLastError?: string | null;
 }
 
 export interface TicketWireLine {

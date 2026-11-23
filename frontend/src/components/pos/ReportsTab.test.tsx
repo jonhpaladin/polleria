@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ReportsTab } from "@/components/pos/ReportsTab";
 import type { Cents } from "@/types/catalog";
 import type { CashCut, DailyReport, RemoteDailyReport } from "@/types/report";
+import type { LocalTicket } from "@/types/sale";
 
 const report: DailyReport = {
   businessDate: "2026-11-22",
@@ -59,6 +60,7 @@ const remote: RemoteDailyReport = {
 
 interface RenderOptions {
   report?: DailyReport | null;
+  tickets?: LocalTicket[];
   cut?: CashCut | null;
   unsynced?: number;
   history?: CashCut[];
@@ -69,16 +71,19 @@ interface RenderOptions {
   error?: string | null;
   businessDate?: string | null;
   onSaveCash?: (opening: string, counted: string) => Promise<boolean>;
+  onVoid?: (clientOrderUuid: string, reason: string) => Promise<boolean>;
 }
 
 function renderTab(overrides: RenderOptions = {}) {
   const onSaveCash = overrides.onSaveCash ?? vi.fn(async () => true);
+  const onVoid = overrides.onVoid ?? vi.fn(async () => true);
   const reportValue = overrides.report === undefined ? report : overrides.report;
   const remoteValue = overrides.remote === undefined ? null : overrides.remote;
   render(
     <ReportsTab
       businessDate={overrides.businessDate ?? "2026-11-22"}
       report={reportValue}
+      tickets={overrides.tickets ?? []}
       cut={overrides.cut ?? null}
       unsynced={overrides.unsynced ?? 0}
       history={overrides.history ?? []}
@@ -88,9 +93,10 @@ function renderTab(overrides: RenderOptions = {}) {
       saving={overrides.saving ?? false}
       error={overrides.error ?? null}
       onSaveCash={onSaveCash}
+      onVoid={onVoid}
     />,
   );
-  return { onSaveCash };
+  return { onSaveCash, onVoid };
 }
 
 describe("ReportsTab", () => {
@@ -123,7 +129,9 @@ describe("ReportsTab", () => {
     renderTab({ cut });
 
     expect(screen.getByText("Cerrado")).toBeInTheDocument();
-    expect(screen.getByText("Hay ventas nuevas desde el cierre.")).toBeInTheDocument();
+    expect(
+      screen.getByText("El corte cambió desde el cierre; recalcula para actualizarlo."),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Recalcular" })).toBeInTheDocument();
   });
 

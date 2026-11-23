@@ -15,8 +15,8 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 008 | `008-precios-admin` | Edición de precios, publicación y seguridad de la API | 001 (+004 para propagar) | cerrada por ratificación del dueño (2026-11-23); claves de Render como paso operativo |
 | 009 | `009-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
-| 011 | `011-respaldo` | Respaldo y restauración de los datos locales | 002, 004, 006 | activa (implementada; pendiente validación) |
-| 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | borrador |
+| 011 | `011-respaldo` | Respaldo y restauración de los datos locales | 002, 004, 006 | cerrada por ratificación del dueño (2026-11-23); verificación de campo pendiente |
+| 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | activa (implementada; pendiente validación) |
 | 013 | `013-historial-ventas` | Historial de ventas y exportación CSV | 006 | borrador |
 
 Orden de trabajo acordado (2026-11-23): **011 respaldo → 003 imágenes → 012 anulaciones → 009
@@ -157,8 +157,8 @@ si el local realmente lo necesita; hoy la concurrencia está sin definir.
 
 ## 011 — Respaldo y restauración
 
-**Estado**: activa (2026-11-23); implementada y desplegada, pendiente la validación del dueño en
-el dispositivo.
+**Estado**: cerrada por ratificación del dueño (2026-11-23); implementada y desplegada. La prueba
+de descarga/restauración en la tablet queda en la verificación de campo.
 
 **Objetivo**: descargar un JSON con tickets, ventas pendientes, cortes y hojas de precios, y
 restaurarlo en la misma u otra tablet sin red. La restauración fusiona y nunca borra lo existente.
@@ -168,6 +168,19 @@ backend, fusionar catálogo y resolver folios entre dispositivos (010).
 
 **Decisiones**: JSON local descargado por el usuario; fusión por llave con prioridad a lo actual;
 recordatorio a los 7 días; pestaña «Respaldo» sin clave de administración; sin cambio de Dexie.
+
+## 012 — Anulación de tickets
+
+**Estado**: activa (2026-11-23); implementada y desplegada, pendiente la validación de campo.
+
+**Objetivo**: anular un ticket completo del día con motivo, PIN del dueño y sincronización al
+backend, sin borrar la venta original y excluyéndola de los reportes y del corte.
+
+**Fuera de alcance**: devoluciones parciales, tickets de días anteriores (013), reembolso
+procesado por el sistema, borrar tickets y roles con nombre de usuario (010).
+
+**Decisiones**: ticket completo; PIN local de 4-6 dígitos con hash y bloqueo; solo el día en
+curso; la venta se conserva como anulada; el backend filtra las anuladas del reporte diario.
 
 ## Reglas para abrir la siguiente spec
 

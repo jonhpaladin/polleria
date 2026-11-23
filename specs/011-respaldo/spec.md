@@ -1,7 +1,8 @@
 # Spec 011 — Respaldo y restauración de datos locales
 
-- Estado: activa (2026-11-23); alcance aprobado por el dueño.
-- Spec activa: sí
+- Estado: cerrada por ratificación del dueño (2026-11-23); implementada y desplegada. La prueba
+  de descarga/restauración en la tablet queda en la verificación de campo.
+- Spec activa: no
 - Depende de: `specs/002-venta-offline`, `specs/004-sincronizacion`, `specs/006-corte-reportes`
 - Fecha: 2026-11-23
 

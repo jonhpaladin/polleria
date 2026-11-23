@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 
 import { PAYMENT_LABEL, PAYMENT_METHODS } from "@/lib/payment";
 import { assertCents, centsToDecimal, formatCents } from "@/lib/money";
+import { APP_TIME_ZONE } from "@/lib/dailyPrices";
 import {
   formatProductQuantity,
   formatSignedCents,
@@ -9,11 +10,14 @@ import {
   parseCashAmount,
   reconcileReports,
 } from "@/lib/reports";
+import { VoidTicketDialog } from "@/components/pos/VoidTicketDialog";
 import type { CashCut, DailyReport, RemoteDailyReport } from "@/types/report";
+import type { LocalTicket } from "@/types/sale";
 
 interface ReportsTabProps {
   businessDate: string | null;
   report: DailyReport | null;
+  tickets: LocalTicket[];
   cut: CashCut | null;
   unsynced: number;
   history: CashCut[];
@@ -23,6 +27,7 @@ interface ReportsTabProps {
   saving: boolean;
   error: string | null;
   onSaveCash: (opening: string, counted: string) => Promise<boolean>;
+  onVoid: (clientOrderUuid: string, reason: string) => Promise<boolean>;
 }
 
 function parseInput(value: string) {
@@ -43,6 +48,7 @@ function differenceLabel(difference: number): string {
 export function ReportsTab({
   businessDate,
   report,
+  tickets,
   cut,
   unsynced,
   history,
@@ -52,7 +58,11 @@ export function ReportsTab({
   saving,
   error,
   onSaveCash,
+  onVoid,
 }: ReportsTabProps) {
+  const [voiding, setVoiding] = useState<LocalTicket | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const orderedTickets = [...tickets].sort((left, right) => right.localFolio - left.localFolio);
   const reconciliation =
     report && remote && remote.business_date === report.businessDate
       ? reconcileReports(report, remote)
@@ -91,6 +101,68 @@ export function ReportsTab({
             <Summary label="Tickets" value={String(report.ticketCount)} />
             <Summary label="Promedio" value={formatCents(report.averageTicketCents)} />
           </div>
+
+          <details className="mt-4 rounded-2xl border border-stone-200 bg-white p-4">
+            <summary className="flex min-h-12 cursor-pointer items-center text-sm font-bold text-stone-900">
+              Ventas del día ({tickets.length})
+            </summary>
+            <p className="text-xs text-stone-500">Las anuladas no suman en el corte.</p>
+            {orderedTickets.length === 0 ? (
+              <p className="py-2 text-sm text-stone-600">Sin ventas.</p>
+            ) : (
+              <ul className="mt-2 divide-y divide-stone-100">
+                {orderedTickets.map((ticket) => (
+                  <li
+                    key={ticket.clientOrderUuid}
+                    className="flex flex-wrap items-center justify-between gap-2 py-3"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-stone-900">
+                        Folio #{ticket.localFolio} ·{" "}
+                        <span className="tabular-nums">{formatCents(ticket.totalCents)}</span>
+                      </p>
+                      <p className="text-xs text-stone-500">
+                        {new Intl.DateTimeFormat("es-MX", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          timeZone: APP_TIME_ZONE,
+                        }).format(new Date(ticket.soldAtUtc))}{" "}
+                        · {PAYMENT_LABEL[ticket.paymentMethod]}
+                      </p>
+                      {ticket.status === "voided" ? (
+                        <p className="text-xs font-semibold text-red-700">
+                          Anulada · {ticket.voidReason}
+                          {ticket.voidPending ? " · pendiente de sincronizar" : ""}
+                          {ticket.voidLastError ? ` · ${ticket.voidLastError}` : ""}
+                        </p>
+                      ) : null}
+                    </div>
+                    {ticket.status === "voided" ? (
+                      <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800">
+                        Anulada
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNotice(null);
+                          setVoiding(ticket);
+                        }}
+                        className="min-h-12 rounded-full border border-red-300 px-4 text-sm font-bold text-red-800"
+                      >
+                        Anular
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {notice ? (
+              <p role="status" className="mt-2 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
+                {notice}
+              </p>
+            ) : null}
+          </details>
 
           <section className="mt-4 rounded-2xl border border-stone-200 bg-white p-4">
             <h3 className="text-sm font-bold text-stone-900">Por método de pago</h3>
@@ -263,6 +335,21 @@ export function ReportsTab({
           ) : null}
         </>
       ) : null}
+
+      {voiding ? (
+        <VoidTicketDialog
+          ticket={voiding}
+          onClose={() => setVoiding(null)}
+          onConfirm={async (reason) => {
+            const ok = await onVoid(voiding.clientOrderUuid, reason);
+            if (ok) {
+              setNotice(`Venta #${voiding.localFolio} anulada.`);
+              setVoiding(null);
+            }
+            return ok;
+          }}
+        />
+      ) : null}
     </section>
   );
 }
@@ -368,7 +455,7 @@ function CashForm({ report, cut, saving, error, onSaveCash }: CashFormProps) {
 
       {cut && hasNewSales(report, cut) ? (
         <p role="status" className="mt-3 text-sm font-semibold text-amber-900">
-          Hay ventas nuevas desde el cierre.
+          El corte cambió desde el cierre; recalcula para actualizarlo.
         </p>
       ) : null}
 

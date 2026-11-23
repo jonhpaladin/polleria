@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { postTicket, SyncApiError } from "@/lib/syncApi";
+import { postTicket, postVoid, SyncApiError } from "@/lib/syncApi";
 import type { TicketWire } from "@/types/sale";
 
 const payload: TicketWire = {
@@ -106,5 +106,54 @@ describe("postTicket", () => {
     expect(error).toBeInstanceOf(Error);
     expect(error.code).toBe("HTTP");
     expect(error.status).toBe(503);
+  });
+});
+
+describe("postVoid", () => {
+  it("envía el motivo a la ruta de anulación", async () => {
+    const fetchImpl = vi.fn(async () =>
+      jsonResponse({
+        client_order_uuid: payload.client_order_uuid,
+        status: "voided",
+        voided_at_utc: "2026-11-22T19:00:00Z",
+      }),
+    );
+
+    const result = await postVoid(payload.client_order_uuid, "Cobro incorrecto", {
+      baseUrl: "http://api.test",
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+    });
+
+    expect(result.status).toBe("voided");
+    expect(fetchImpl).toHaveBeenCalledWith(
+      `http://api.test/sales/${payload.client_order_uuid}/void`,
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ reason: "Cobro incorrecto" }),
+      }),
+    );
+  });
+
+  it("trata un 404 como venta que nunca llegó al backend", async () => {
+    const fetchImpl = vi.fn(async () => jsonResponse({}, 404));
+
+    const result = await postVoid(payload.client_order_uuid, "Cliente canceló", {
+      baseUrl: "http://api.test",
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+    });
+
+    expect(result.status).toBe("not_found");
+    expect(result.voided_at_utc).toBeNull();
+  });
+
+  it("propaga el 401 para pedir la clave del local", async () => {
+    const fetchImpl = vi.fn(async () => jsonResponse({}, 401));
+
+    await expect(
+      postVoid(payload.client_order_uuid, "Cliente canceló", {
+        baseUrl: "http://api.test",
+        fetchImpl: fetchImpl as unknown as typeof fetch,
+      }),
+    ).rejects.toMatchObject({ code: "HTTP", status: 401 });
   });
 });

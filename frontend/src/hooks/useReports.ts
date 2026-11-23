@@ -10,8 +10,10 @@ import {
 } from "@/lib/reportRepository";
 import { buildCashCut, buildDailyReport, parseCashAmount } from "@/lib/reports";
 import { fetchDailyReport } from "@/lib/reportsApi";
+import { voidTicket } from "@/lib/ticketRepository";
 import type { CashCut, DailyReport, RemoteDailyReport } from "@/types/report";
 import type { Cents } from "@/types/catalog";
+import type { LocalTicket } from "@/types/sale";
 
 export interface UseReportsOptions {
   businessDate: string | null;
@@ -22,6 +24,7 @@ export interface UseReportsOptions {
 
 export interface UseReportsResult {
   report: DailyReport | null;
+  tickets: LocalTicket[];
   cut: CashCut | null;
   unsynced: number;
   history: CashCut[];
@@ -31,6 +34,7 @@ export interface UseReportsResult {
   saving: boolean;
   error: string | null;
   saveCash: (opening: string, counted: string) => Promise<boolean>;
+  voidSale: (clientOrderUuid: string, reason: string) => Promise<boolean>;
   reload: () => void;
 }
 
@@ -47,6 +51,7 @@ export function useReports(options: UseReportsOptions): UseReportsResult {
       ((date: string) => fetchDailyReport(date)),
   }));
   const [report, setReport] = useState<DailyReport | null>(null);
+  const [tickets, setTickets] = useState<LocalTicket[]>([]);
   const [cut, setCut] = useState<CashCut | null>(null);
   const [unsynced, setUnsynced] = useState(0);
   const [history, setHistory] = useState<CashCut[]>([]);
@@ -76,13 +81,14 @@ export function useReports(options: UseReportsOptions): UseReportsResult {
       setError(null);
       setRemote(null);
       try {
-        const tickets = await listTicketsByBusinessDate(deps.db, date);
-        const nextReport = buildDailyReport(tickets, date);
+        const dayTickets = await listTicketsByBusinessDate(deps.db, date);
+        const nextReport = buildDailyReport(dayTickets, date);
         const [nextCut, nextUnsynced, nextHistory] = await Promise.all([
           readCashCut(deps.db, date),
           countUnsyncedTickets(deps.db, date),
           listCashCuts(deps.db),
         ]);
+        setTickets(dayTickets);
         setReport(nextReport);
         setCut(nextCut ?? null);
         setUnsynced(nextUnsynced);
@@ -148,6 +154,22 @@ export function useReports(options: UseReportsOptions): UseReportsResult {
 
   const reload = useCallback(() => setReloadToken((token) => token + 1), []);
 
+  const voidSale = useCallback(
+    async (clientOrderUuid: string, reason: string): Promise<boolean> => {
+      if (!businessDate) return false;
+      try {
+        await voidTicket(deps.db, clientOrderUuid, reason);
+        await load(businessDate);
+        return true;
+      } catch (cause) {
+        console.warn("VOID_TICKET_FAILED", cause);
+        setError("No se pudo anular la venta. Vuelve a intentar.");
+        return false;
+      }
+    },
+    [businessDate, deps.db, load],
+  );
+
   const currentReport =
     report && report.businessDate === businessDate ? report : null;
   const currentCut = cut && cut.businessDate === businessDate ? cut : null;
@@ -156,6 +178,7 @@ export function useReports(options: UseReportsOptions): UseReportsResult {
 
   return {
     report: currentReport,
+    tickets,
     cut: currentCut,
     unsynced,
     history,
@@ -165,6 +188,7 @@ export function useReports(options: UseReportsOptions): UseReportsResult {
     saving,
     error,
     saveCash,
+    voidSale,
     reload,
   };
 }

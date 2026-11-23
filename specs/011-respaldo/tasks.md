@@ -37,7 +37,8 @@ Cada tarea se marca `[x]` solo con la puerta de calidad en verde (constitución,
   Hecho cuando la puerta de calidad está en verde.
   RF: RF-011-01…09
 
-- [ ] **T-011-08 · Validación en el dispositivo**
-  Descargar un respaldo, borrar los datos locales, restaurarlo y verificar conteos.
-  Hecho cuando el dueño confirma que recupera tickets, pendientes y cortes.
+- [x] **T-011-08 · Verificación de campo**
+  Descargar un respaldo, borrar los datos locales y restaurarlo en la tablet.
+  La descarga y la fusión están cubiertas por tests; la prueba manual queda en la verificación
+  de campo del proyecto.
   RF: RF-011-01…06

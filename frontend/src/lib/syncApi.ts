@@ -95,3 +95,88 @@ function isSyncResponse(value: unknown): value is SyncResponse {
     typeof candidate.received_at === "string"
   );
 }
+
+export interface VoidResponse {
+  client_order_uuid: string;
+  status: "voided" | "not_found";
+  voided_at_utc: string | null;
+}
+
+export interface PostVoidOptions {
+  baseUrl?: string;
+  timeoutMs?: number;
+  fetchImpl?: typeof fetch;
+}
+
+/**
+ * Anula una venta en el backend. Un `404` significa que la venta nunca llegó:
+ * la anulación local ya es suficiente y se trata como completada.
+ */
+export async function postVoid(
+  clientOrderUuid: string,
+  reason: string,
+  options: PostVoidOptions = {},
+): Promise<VoidResponse> {
+  const {
+    baseUrl = DEFAULT_BASE_URL,
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+    fetchImpl = fetch,
+  } = options;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    let response: Response;
+    const deviceKey = getDeviceKey();
+    try {
+      response = await fetchImpl(
+        `${baseUrl.replace(/\/+$/, "")}/sales/${encodeURIComponent(clientOrderUuid)}/void`,
+        {
+          method: "POST",
+          signal: controller.signal,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...(deviceKey ? { "X-Device-Key": deviceKey } : {}),
+          },
+          body: JSON.stringify({ reason }),
+        },
+      );
+    } catch {
+      if (controller.signal.aborted) {
+        throw new SyncApiError("TIMEOUT", `La API no respondió en ${timeoutMs / 1000} s`);
+      }
+      throw new SyncApiError("NETWORK", "No se pudo contactar la API");
+    }
+
+    if (response.status === 404) {
+      return { client_order_uuid: clientOrderUuid, status: "not_found", voided_at_utc: null };
+    }
+    if (!response.ok) {
+      throw new SyncApiError("HTTP", `La API respondió ${response.status}`, response.status);
+    }
+
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch {
+      throw new SyncApiError("INVALID_JSON", "La API devolvió un JSON inválido");
+    }
+    if (!isVoidResponse(body)) {
+      throw new SyncApiError("INVALID_JSON", "La API devolvió una respuesta inesperada");
+    }
+    return body;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function isVoidResponse(value: unknown): value is VoidResponse {
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.client_order_uuid === "string" &&
+    candidate.status === "voided" &&
+    typeof candidate.voided_at_utc === "string"
+  );
+}

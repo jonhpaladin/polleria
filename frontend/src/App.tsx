@@ -189,6 +189,7 @@ export default function App() {
             key={dailyPrices.businessDate ?? "sin-fecha"}
             businessDate={dailyPrices.businessDate}
             report={reports.report}
+            tickets={reports.tickets}
             cut={reports.cut}
             unsynced={reports.unsynced}
             history={reports.history}
@@ -198,6 +199,7 @@ export default function App() {
             saving={reports.saving}
             error={reports.error}
             onSaveCash={reports.saveCash}
+            onVoid={reports.voidSale}
           />
         ) : activeTab === "backup" ? (
           <BackupTab />

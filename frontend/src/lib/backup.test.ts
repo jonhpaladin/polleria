@@ -160,6 +160,23 @@ describe("validateBackup", () => {
     if (checked.ok) expect(checked.backup.counts.tickets).toBe(1);
   });
 
+  it("acepta tickets anulados con su motivo", async () => {
+    const db = newDb();
+    await db.tickets.add(
+      ticket("11111111-1111-4111-8111-111111111111", {
+        status: "voided",
+        voidedAtUtc: "2026-11-22T19:00:00.000Z",
+        voidReason: "Cobro incorrecto",
+        voidPending: false,
+      }),
+    );
+    const backup = await buildBackup(db);
+
+    const checked = validateBackup(backup);
+
+    expect(checked.ok).toBe(true);
+  });
+
   it("rechaza otro formato o una versión distinta", async () => {
     expect(validateBackup({ format: "otra-cosa", version: 1 }).ok).toBe(false);
     expect(validateBackup({ format: "polleria-backup", version: 99 }).ok).toBe(false);
