@@ -11,7 +11,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
-| 007 | `007-catalogo-real` | Catálogo real del local y diseño de la marca | 002, 005, 006 | activa (22 productos; faltan pollo entero, nuggets, pollo KFC y bebidas) |
+| 007 | `007-catalogo-real` | Catálogo real del local y diseño de la marca | 002, 005, 006 | cerrada por ratificación del dueño (2026-11-23) |
 | 008 | `008-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
 | 009 | `009-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
@@ -98,9 +98,8 @@ conteo de efectivo, foto recalculable y conciliación remota.
 
 ## 007 — Catálogo real y diseño
 
-**Estado**: activa (2026-11-22); 22 productos: 11 de precio visible y 11 temporales a $100.
-Faltan pollo entero, nuggets, pollo KFC y bebidas; los precios temporales se ajustan en
-Precios del día.
+**Estado**: cerrada (2026-11-23). 29 productos activos; 18 llevan $100.00 temporal hasta que el
+dueño los ajuste.
 
 **Objetivo**: sustituir el catálogo provisional por los productos reales de la pollería de pollo
 crudo (cortes, congelados, moles, preparados, complementos y bebidas) y alinear la identidad
@@ -108,9 +107,9 @@ visual con el letrero del local: rojo, amarillo y blanco, nombre «El Wero».
 
 **Fuera de alcance**: imágenes por producto (003), inventario, costos, proveedores y reportes.
 
-**Dudas abiertas**: lista definitiva con unidades y precios; qué productos provisionales se
-retiran; si se usa el mascota/logo del letrero; si las tarjetas llevan imagen en esta spec o se
-dejan para 003.
+**Decisiones**: pollo, moles, preparados y huevo por kilo; congelados, papas, dedos y bebidas por
+pieza; los productos sin precio confirmado usan $100 temporal; los 17 provisionales quedaron
+inactivos; mascota SVG y tarjetas de texto hasta 003.
 
 ## 008 — Administración de precios
 

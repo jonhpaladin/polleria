@@ -42,7 +42,7 @@ def test_seed_includes_updated_at_in_utc() -> None:
 def test_seed_is_valid_and_reproducible_json() -> None:
     raw = json.loads(SEED_PATH.read_text(encoding="utf-8"))
 
-    assert raw["updated_at"] == "2026-11-22T21:00:00Z"
+    assert raw["updated_at"] == "2026-11-23T06:32:37Z"
     assert datetime.fromisoformat(raw["updated_at"].replace("Z", "+00:00")).year == 2026
 
 

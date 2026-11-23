@@ -1,11 +1,11 @@
 # MEMORY.md — Memoria de Arquitectura y Estado del POS
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
-## Estado actual (2026-11-22)
-- Specs 001, 002, 004, 005 y 006 cerradas; 003 pospuesta por falta de imágenes.
-- Spec 007 (catálogo real y diseño) activa; 22 productos: 11 de precio visible y 11 temporales a $100; diseño rojo/amarillo aplicado.
+## Estado actual (2026-11-23)
+- Specs 001, 002, 004, 005, 006 y 007 cerradas; 003 pospuesta por falta de imágenes.
+- Catálogo real con 29 productos activos: 11 con precio confirmado y 18 temporales a $100; 17 provisionales inactivos.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
-- Tests: backend 40 passed + 2 skipped; frontend 241 passed en 35 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
+- Tests: backend 40 passed + 3 skipped; frontend 241 passed en 35 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
 - Supabase con `0001_catalog` y `0002_sales`; RLS deshabilitado hasta 008.
 - Guía de despliegue en `docs/despliegue.md`.
 
@@ -37,18 +37,16 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Reporte local por `businessDate`: total, tickets, promedio, métodos, producto y categoría.
 - Corte manual con fondo/contado, foto recalculable en `cashCuts` (Dexie v4) y conciliación con `/reports/daily`.
 
-## Spec 007 — Catálogo real y diseño (activa)
-- Catálogo con 22 productos: 11 de precio visible y 11 temporales a $100 (alitas, pechuga, milanesa, patitas, menudencias, papas, moles y dedos de queso).
-- Diseño del letrero: rojo/amarillo/crema, mascota SVG y encabezado «Pollería El Wero»; imágenes por producto quedan para 003.
-- Faltan pollo entero, nuggets, pollo KFC y bebidas; los $100 se ajustan en Precios del día.
+## Spec 007 — Catálogo real y diseño (cerrada)
+- 29 productos en 6 categorías: pollo, moles, preparados y huevo por kg; congelados, papas, dedos y bebidas por pieza.
+- 18 precios temporales de $100 se ajustan en Precios del día; la corrección base queda para 008.
+- Diseño rojo/amarillo/crema con mascota SVG; las imágenes por producto quedan para 003.
 
 ## Próximos pasos
-1. Completar 007 con pollo entero, nuggets, pollo KFC y bebidas (precios y unidades).
-2. RLS y rol mínimo de base en 008.
-3. Retomar 003 con las imágenes por SKU.
-4. Verificación de campo en celular/tablet.
+1. Abrir 008: administración de precios, RLS, llaves y acceso a la API.
+2. Retomar 003 con las imágenes por SKU.
+3. Verificación de campo en celular/tablet.
 
 ## Decisiones de producto pendientes
-- 007: lista y precios reales del local.
 - 008: promociones, precios por cliente y quién puede editar.
 - 009: modelo y conexión de la impresora.

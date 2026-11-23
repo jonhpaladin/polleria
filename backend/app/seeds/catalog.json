@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-22T21:00:00Z",
+  "updated_at": "2026-11-23T06:32:37Z",
   "categories": [
     { "id": "cat-pollo", "name": "Pollo crudo", "sort_order": 1 },
     { "id": "cat-congelados", "name": "Congelados", "sort_order": 2 },
@@ -9,6 +9,15 @@
     { "id": "cat-bebidas", "name": "Bebidas", "sort_order": 6 }
   ],
   "products": [
+    {
+      "id": "prd-pollo-entero",
+      "sku": "POLLO-ENTERO",
+      "name": "Pollo entero",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
     {
       "id": "prd-pierna-muslo",
       "sku": "PIERNA-MUSLO",
@@ -63,6 +72,24 @@
       "name": "Menudencias",
       "category_id": "cat-pollo",
       "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-nuggets",
+      "sku": "NUGGETS",
+      "name": "Nuggets",
+      "category_id": "cat-congelados",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-pollo-kfc",
+      "sku": "POLLO-KFC",
+      "name": "Pollo KFC",
+      "category_id": "cat-congelados",
+      "unit": "piece",
       "active": true,
       "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
     },
@@ -206,6 +233,42 @@
       "sku": "DEDOS-QUESO",
       "name": "Dedos de queso",
       "category_id": "cat-complementos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-refresco",
+      "sku": "REFRESCO",
+      "name": "Refresco",
+      "category_id": "cat-bebidas",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-agua",
+      "sku": "AGUA",
+      "name": "Agua 600 ml",
+      "category_id": "cat-bebidas",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-agua-litro",
+      "sku": "AGUA-LITRO",
+      "name": "Agua 1.5 L",
+      "category_id": "cat-bebidas",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-jugo",
+      "sku": "JUGO",
+      "name": "Jugo natural",
+      "category_id": "cat-bebidas",
       "unit": "piece",
       "active": true,
       "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
