@@ -2,6 +2,7 @@ import Dexie, { type EntityTable } from "dexie";
 
 import type { Category, Product } from "@/types/catalog";
 import type { DailyPrice } from "@/types/dailyPrice";
+import type { CashCut } from "@/types/report";
 import type { LocalTicket, OutboxRecord } from "@/types/sale";
 
 export interface CatalogMetaRow {
@@ -20,6 +21,7 @@ export class PolleriaDb extends Dexie {
   dailyPrices!: EntityTable<DailyPrice, "id">;
   tickets!: EntityTable<LocalTicket, "clientOrderUuid">;
   outbox!: EntityTable<OutboxRecord, "clientOrderUuid">;
+  cashCuts!: EntityTable<CashCut, "businessDate">;
 
   constructor(name = "polleria") {
     super(name);
@@ -44,6 +46,16 @@ export class PolleriaDb extends Dexie {
       dailyPrices: "&id, businessDate, productId",
       tickets: "&clientOrderUuid, businessDate, soldAtUtc",
       outbox: "&clientOrderUuid, status, enqueuedAt, nextAttemptAt",
+    });
+    // v4 agrega los cortes de caja; ninguna tabla existente cambia.
+    this.version(4).stores({
+      categories: "id, sortOrder",
+      products: "id, &sku, categoryId",
+      meta: "key",
+      dailyPrices: "&id, businessDate, productId",
+      tickets: "&clientOrderUuid, businessDate, soldAtUtc",
+      outbox: "&clientOrderUuid, status, enqueuedAt, nextAttemptAt",
+      cashCuts: "&businessDate, closedAtUtc",
     });
   }
 }

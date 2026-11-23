@@ -4,6 +4,7 @@ import { formatUpdatedAt, selectProducts, visibleCategories } from "@/lib/catalo
 import { useCatalog } from "@/hooks/useCatalog";
 import { useDailyPrices } from "@/hooks/useDailyPrices";
 import { usePwaUpdate } from "@/hooks/usePwaUpdate";
+import { useReports } from "@/hooks/useReports";
 import { useSale } from "@/hooks/useSale";
 import { useSync } from "@/hooks/useSync";
 import { Cart } from "@/components/pos/Cart";
@@ -13,16 +14,18 @@ import { ConnectionBadge } from "@/components/pos/ConnectionBadge";
 import { DailyPricesTab } from "@/components/pos/DailyPricesTab";
 import { ProductGrid } from "@/components/pos/ProductGrid";
 import { ProductSheet } from "@/components/pos/ProductSheet";
+import { ReportsTab } from "@/components/pos/ReportsTab";
 import { SyncBadge } from "@/components/pos/SyncBadge";
 import { UpdateBanner } from "@/components/ui/UpdateBanner";
 import type { Product } from "@/types/catalog";
 
-type Tab = "sale" | "cart" | "prices";
+type Tab = "sale" | "cart" | "prices" | "reports";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "sale", label: "Venta" },
   { id: "cart", label: "Carrito" },
   { id: "prices", label: "Precios del día" },
+  { id: "reports", label: "Corte" },
 ];
 
 export default function App() {
@@ -31,6 +34,10 @@ export default function App() {
   const { catalog, origin, online, selectedCategory, selectCategory } = useCatalog();
   const sync = useSync({ online });
   const dailyPrices = useDailyPrices(catalog);
+  const reports = useReports({
+    businessDate: dailyPrices.businessDate,
+    active: activeTab === "reports",
+  });
   const sale = useSale(
     catalog,
     dailyPrices.rows,
@@ -122,6 +129,21 @@ export default function App() {
             onCheckout={() => void sale.checkout()}
             onBackToSale={() => setActiveTab("sale")}
           />
+        ) : activeTab === "reports" ? (
+          <ReportsTab
+            key={dailyPrices.businessDate ?? "sin-fecha"}
+            businessDate={dailyPrices.businessDate}
+            report={reports.report}
+            cut={reports.cut}
+            unsynced={reports.unsynced}
+            history={reports.history}
+            remote={reports.remote}
+            remoteLoading={reports.remoteLoading}
+            loading={reports.loading}
+            saving={reports.saving}
+            error={reports.error}
+            onSaveCash={reports.saveCash}
+          />
         ) : (
           <>
             <CategoryBar
@@ -143,7 +165,7 @@ export default function App() {
         )}
       </main>
 
-      {activeTab !== "cart" ? (
+      {activeTab === "sale" || activeTab === "prices" ? (
         <CartFloatingButton
           count={sale.cart.lines.length}
           onOpen={() => setActiveTab("cart")}

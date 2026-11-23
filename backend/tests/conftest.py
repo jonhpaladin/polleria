@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 import pytest
@@ -8,8 +8,10 @@ from fastapi.testclient import TestClient
 from app.main import create_app
 from app.routers.catalog import get_catalog_repository
 from app.routers.health import check_database
+from app.routers.reports import get_report_repository
 from app.routers.sync import get_sale_repository
 from app.schemas.catalog import CatalogOut, CategoryOut, PriceOut, ProductOut
+from app.schemas.reports import CategoryReportOut, DailyReportOut, ProductReportOut
 from app.schemas.sync import SyncTicketIn
 
 
@@ -85,13 +87,56 @@ def fake_sale_repository() -> FakeSaleRepository:
     return FakeSaleRepository()
 
 
+def build_report() -> DailyReportOut:
+    return DailyReportOut(
+        business_date=date(2026, 11, 14),
+        ticket_count=2,
+        total=Decimal("641.75"),
+        by_payment_method={
+            "cash": Decimal("440.00"),
+            "card": Decimal("201.75"),
+            "transfer": Decimal("0.00"),
+        },
+        products=[
+            ProductReportOut(
+                product_id="prd-pollo-asado",
+                sku="POLLO-ASADO",
+                name="Pollo asado",
+                unit="piece",
+                pieces=2,
+                grams=0,
+                total=Decimal("440.00"),
+            )
+        ],
+        categories=[CategoryReportOut(name="Pollo fresco", total=Decimal("641.75"))],
+    )
+
+
+class FakeReportRepository:
+    def __init__(self, report: DailyReportOut) -> None:
+        self.report = report
+        self.requested: date | None = None
+
+    async def daily_report(self, business_date: date) -> DailyReportOut:
+        self.requested = business_date
+        return self.report
+
+
+@pytest.fixture
+def fake_report_repository() -> FakeReportRepository:
+    return FakeReportRepository(build_report())
+
+
 @pytest.fixture
 def client(
-    fake_repository: FakeCatalogRepository, fake_sale_repository: FakeSaleRepository
+    fake_repository: FakeCatalogRepository,
+    fake_sale_repository: FakeSaleRepository,
+    fake_report_repository: FakeReportRepository,
 ) -> Iterator[TestClient]:
     app = create_app()
     app.dependency_overrides[get_catalog_repository] = lambda: fake_repository
     app.dependency_overrides[get_sale_repository] = lambda: fake_sale_repository
+    app.dependency_overrides[get_report_repository] = lambda: fake_report_repository
     app.dependency_overrides[check_database] = lambda: "ok"
     with TestClient(app) as test_client:
         yield test_client
