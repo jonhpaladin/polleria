@@ -44,13 +44,13 @@ Cada tarea se marca `[x]` solo con la puerta de calidad en verde (constitución,
   Hecho cuando `npm run test` pasa con los casos nuevos.
   RF: todos
 
-- [ ] **T-005-09 · Revisión visual táctil**
+- [x] **T-005-09 · Revisión visual táctil**
   Revisar 360/768/1280: rejilla desplazable, hoja con scroll, X y «Agregar» alcanzables,
   targets de 48 px.
   Hecho cuando la revisión queda registrada en `MEMORY.md`.
   RF: RF-005-10, RF-005-11
 
-- [ ] **T-005-10 · Cierre documental**
+- [x] **T-005-10 · Cierre documental**
   Actualizar `AGENTS.md` (regla de UI), `MEMORY.md` y `specs/README.md`.
   Hecho cuando 005 queda cerrada y 006 toma el siguiente turno.
   RF: —

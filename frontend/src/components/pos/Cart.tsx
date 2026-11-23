@@ -34,25 +34,29 @@ export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, o
   }, [success]);
 
   return (
-    <aside aria-labelledby="carrito-title" className="border-t border-stone-300 bg-cream-50 px-4 pb-10 pt-4">
+    <section aria-labelledby="carrito-title" className="border-t border-stone-300 bg-cream-50 px-4 pb-10 pt-4">
       <div className="mx-auto max-w-6xl">
         <div className="flex items-center justify-between gap-3">
           <h2 id="carrito-title" className="text-xl font-black text-stone-900">Carrito</h2>
           <span className="text-sm font-semibold text-stone-500">{cart.lines.length} línea{cart.lines.length === 1 ? "" : "s"}</span>
         </div>
         {cart.lines.length === 0 ? (
-          <div className="py-6">
-            <p className="text-sm text-stone-600">Toca un producto para configurarlo y agregarlo.</p>
-            {onBackToSale && !success ? (
-              <button
-                type="button"
-                onClick={onBackToSale}
-                className="mt-3 min-h-12 rounded-xl border border-stone-300 bg-white px-4 text-sm font-bold text-stone-800 transition-colors hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-              >
-                Ir a vender
-              </button>
-            ) : null}
-          </div>
+          success ? null : (
+            <div className="py-6">
+              <p className="text-sm text-stone-600">
+                Toca un producto para configurarlo y agregarlo.
+              </p>
+              {onBackToSale ? (
+                <button
+                  type="button"
+                  onClick={onBackToSale}
+                  className="mt-3 min-h-12 rounded-xl border border-stone-300 bg-white px-4 text-sm font-bold text-stone-800 transition-colors hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                >
+                  Ir a vender
+                </button>
+              ) : null}
+            </div>
+          )
         ) : (
           <ul>
             {cart.lines.map((line) => (
@@ -109,6 +113,6 @@ export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, o
           </div>
         ) : null}
       </div>
-    </aside>
+    </section>
   );
 }

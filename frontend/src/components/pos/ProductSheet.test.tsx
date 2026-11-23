@@ -116,6 +116,18 @@ describe("ProductSheet", () => {
     ).toBeInTheDocument();
   });
 
+  it("avisa y no se cierra si el carrito rechaza la línea", () => {
+    const onAdd = vi.fn(() => false);
+    const { onClose } = renderSheet({ onAdd });
+
+    fireEvent.click(screen.getByRole("button", { name: "Agregar" }));
+
+    expect(
+      screen.getByText("No se pudo agregar. Revisa los precios de hoy."),
+    ).toBeInTheDocument();
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
   it("se cierra con la X", () => {
     const { onClose } = renderSheet();
 

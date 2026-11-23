@@ -46,6 +46,12 @@ export function lineTotalCents(
   return Math.floor((unitPriceCents * grams + 500) / 1000) as CartLine["lineTotalCents"];
 }
 
+/** Evita NaN o valores no finitos si una selección llega fuera de la hoja. */
+function pieceQuantity(value: number | undefined): number {
+  if (value === undefined || !Number.isFinite(value)) return 1;
+  return Math.max(1, Math.trunc(value));
+}
+
 function createLine(
   product: Product,
   categoryName: string,
@@ -54,8 +60,7 @@ function createLine(
 ): CartLine {
   const priceSource = selection.priceSource ?? "lista";
   const unitPriceCents = selectDailyPrice(dailyPrice, priceSource) ?? dailyPrice.normalPriceCents;
-  const quantity =
-    product.unit === "piece" ? Math.max(1, Math.trunc(selection.quantity ?? 1)) : 1;
+  const quantity = product.unit === "piece" ? pieceQuantity(selection.quantity) : 1;
   const grams = product.unit === "kg" ? assertGrams(selection.grams ?? 1000) : null;
   const line = {
     lineId: crypto.randomUUID(),

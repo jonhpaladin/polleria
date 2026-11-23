@@ -288,4 +288,24 @@ describe("cartReducer", () => {
       lineTotalCents: 75000,
     });
   });
+
+  it("usa una pieza si la cantidad llega inválida", () => {
+    const piecePrice = dailyPrice({
+      id: "2026-11-13:prd-combo",
+      productId: "prd-combo",
+      unit: "piece",
+      normalPriceCents: 29900 as Cents,
+      promotionPriceCents: null,
+    });
+    const cart = cartReducer(EMPTY_CART, {
+      type: "addProduct",
+      product: combo,
+      categoryName: "Promociones",
+      dailyPrice: piecePrice,
+      selection: { quantity: Number.NaN },
+    });
+
+    expect(cart.lines[0]!.quantity).toBe(1);
+    expect(cart.lines[0]!.lineTotalCents).toBe(29900);
+  });
 });

@@ -40,6 +40,7 @@ export function ProductSheet({
   const [priceSource, setPriceSource] = useState<DailyPriceSource>("lista");
   const [grams, setGrams] = useState<Grams>(() => assertGrams(1000));
   const [quantity, setQuantity] = useState(1);
+  const [addError, setAddError] = useState<string | null>(null);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -87,7 +88,11 @@ export function ProductSheet({
     if (!canAdd) return;
     const selection: LineSelection =
       product.unit === "kg" ? { priceSource, grams } : { priceSource, quantity };
-    if (onAdd(selection)) onClose();
+    if (onAdd(selection)) {
+      onClose();
+      return;
+    }
+    setAddError("No se pudo agregar. Revisa los precios de hoy.");
   }
 
   return (
@@ -191,6 +196,11 @@ export function ProductSheet({
       </div>
 
       <footer className="shrink-0 border-t border-stone-200 bg-cream-50 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        {addError ? (
+          <p role="status" className="mb-3 text-sm font-semibold text-red-700">
+            {addError}
+          </p>
+        ) : null}
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
