@@ -1,6 +1,6 @@
 # Spec 006 — Corte de caja y reportes
 
-- Estado: activa (implementada 2026-11-22; pendiente validación del dueño)
+- Estado: activa (implementada y desplegada 2026-11-22; pendiente validación del dueño)
 - Spec activa: sí
 - Depende de: `specs/002-venta-offline`, `specs/004-sincronizacion` y `docs/constitution.md` v1.0
 - Fecha: 2026-11-22

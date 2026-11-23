@@ -10,7 +10,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 | pospuesta (2026-11-22) |
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | cerrada por ratificación del dueño (2026-11-22) |
-| 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | activa (implementada; falta validación del dueño) |
+| 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | activa (desplegada; falta validación del dueño) |
 | 007 | `007-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
 | 008 | `008-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
 | 009 | `009-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
@@ -84,8 +84,8 @@ contador y pestaña Carrito (D-005-02); hoja inferior en celular y diálogo cent
 
 ## 006 — Corte de caja y reportes
 
-**Estado**: implementada el 2026-11-22; pendiente la validación del dueño y el redeploy de la
-API con `GET /reports/daily`.
+**Estado**: implementada y desplegada el 2026-11-22; el endpoint se verificó con ventas reales.
+Pendiente la validación del dueño en celular/tablet para cerrarla.
 
 **Objetivo**: corte por turno/día y reportes de ventas agrupados por fecha local
 `America/Mexico_City`, calculados desde datos locales y conciliados con el backend.

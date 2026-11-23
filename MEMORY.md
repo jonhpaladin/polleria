@@ -3,7 +3,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual (2026-11-22)
 - Specs 001, 002, 004 y 005 cerradas por ratificación del dueño; 003 pospuesta por falta de imágenes.
-- Spec 006 (corte y reportes) activa e implementada: reporte diario, efectivo y conciliación; falta validación del dueño.
+- Spec 006 (corte y reportes) activa, desplegada y verificada contra la API; falta la validación visual del dueño.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
 - Tests: backend 40 passed + 2 skipped; frontend 241 passed en 35 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
 - Supabase con `0001_catalog` y `0002_sales`; RLS deshabilitado hasta 007.
@@ -37,10 +37,10 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 ## Spec 006 — Corte y reportes (activa)
 - Reporte local por `businessDate`: total, tickets, promedio, métodos, producto y categoría.
 - Corte manual con fondo/contado; foto recalculable en `cashCuts` (Dexie v4).
-- `GET /reports/daily` suma solo ventas sincronizadas; la diferencia se explica por outbox pendiente/fallido.
+- `GET /reports/daily` suma solo ventas sincronizadas; verificado con ventas reales del 2026-11-22 (3 tickets, $839.00).
 
 ## Próximos pasos
-1. Desplegar y validar 006 en celular/tablet.
+1. Validar 006 en celular/tablet y cerrarla.
 2. RLS y rol mínimo de base en 007 antes de exponer escrituras.
 3. Retomar 003 con las imágenes por SKU.
 4. Sustituir el catálogo provisional por la lista real.
