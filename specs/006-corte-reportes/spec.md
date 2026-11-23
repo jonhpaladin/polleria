@@ -1,7 +1,7 @@
 # Spec 006 — Corte de caja y reportes
 
-- Estado: activa (implementada y desplegada 2026-11-22; pendiente validación del dueño)
-- Spec activa: sí
+- Estado: cerrada por ratificación del dueño (2026-11-22)
+- Spec activa: no
 - Depende de: `specs/002-venta-offline`, `specs/004-sincronizacion` y `docs/constitution.md` v1.0
 - Fecha: 2026-11-22
 
@@ -61,8 +61,8 @@ foto que se puede recalcular si aparece una venta nueva del mismo día.
 
 - Turnos fijos; esta iteración usa un cierre manual por día.
 - Propinas, arqueo por denominaciones, edición o anulación de tickets.
-- Exportar a CSV/PDF, imprimir (008) y envío de reportes.
-- Autenticación o PIN para cerrar caja (007/009).
+- Exportar a CSV/PDF, imprimir (009) y envío de reportes.
+- Autenticación o PIN para cerrar caja (008/010).
 
 ## Decisiones
 

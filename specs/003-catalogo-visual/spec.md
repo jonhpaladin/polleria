@@ -113,7 +113,7 @@ frontend/src/assets/products/<nombre-descriptivo>.webp
 ## Fuera de alcance
 
 Sincronización y outbox (004), subida o edición de imágenes desde la app, fotos reales del
-local, iconos de categoría, búsqueda, favoritos, impresión (007), cambios de backend, Alembic o
+local, iconos de categoría, búsqueda, favoritos, impresión (009), cambios de backend, Alembic o
 esquema Dexie, y variantes de arte por temporada.
 
 ## Criterios de finalización

@@ -64,9 +64,9 @@ imágenes aprobadas; no bloquea 004.
 ## Fuera de alcance
 
 - Resolución de conflictos de catálogo, multi-sucursal y sincronización bidireccional.
-- Autenticación, roles o PIN (spec 008).
+- Autenticación, roles o PIN (spec 010).
 - Edición, anulación o reimpresión de tickets sincronizados.
-- Publicación de precios del día a otros dispositivos (006).
+- Publicación de precios del día a otros dispositivos (008).
 
 ## Decisiones
 

@@ -10,10 +10,11 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 | pospuesta (2026-11-22) |
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | cerrada por ratificación del dueño (2026-11-22) |
-| 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | activa (desplegada; falta validación del dueño) |
-| 007 | `007-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
-| 008 | `008-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
-| 009 | `009-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
+| 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
+| 007 | `007-catalogo-real` | Catálogo real del local y diseño de la marca | 002, 005, 006 | activa (dudas por resolver) |
+| 008 | `008-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
+| 009 | `009-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
+| 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 
 ## 002 — Venta offline
 
@@ -24,9 +25,9 @@ tarjeta o transferencia), totales en centavos y ticket persistido en IndexedDB c
 `client_order_uuid`. La línea del ticket congela el precio elegido, aunque el catálogo cambie
 después.
 
-**Fuera de alcance**: sincronizar (004), imprimir (008), anular con auditoría, descuentos,
+**Fuera de alcance**: sincronizar (004), imprimir (009), anular con auditoría, descuentos,
 propinas, redondeo, procesamiento bancario, PIN/roles y precios ligados a un cliente
-registrado (007).
+registrado (008).
 
 **Decisión**: el precio manual se captura sin autorización (D-002-06); PIN, roles y
 autenticación se revisan en una spec posterior.
@@ -42,7 +43,7 @@ respaldo por inicial si falta el archivo. La imagen se resuelve por SKU, sin cam
 ni de Dexie.
 
 **Fuera de alcance**: subir o editar imágenes desde la app, fotos reales del local, iconos de
-categoría, búsqueda, favoritos, sincronización (004) e impresión (008).
+categoría, búsqueda, favoritos, sincronización (004) e impresión (009).
 
 **Decisiones**: foto de estudio generada con IA y muestra aprobada como referencia; 26 SKU
 provisionales reemplazables por SKU; WebP 512×512, ≤60 KB cada una; 2/3/4 columnas.
@@ -73,8 +74,8 @@ producto, la pestaña Carrito y el icono flotante en celular/tablet.
 **Objetivo**: que el cajero configure el producto en una hoja de detalle (peso o cantidad y
 precio) y revise la venta en una pestaña de carrito, sin que ningún panel tape la rejilla.
 
-**Fuera de alcance**: imágenes (003), pago por línea, reportes (006), impresión (008),
-multidispositivo (009).
+**Fuera de alcance**: imágenes (003), pago por línea, reportes (006), impresión (009),
+multidispositivo (010).
 
 **Decisiones**: un método de pago por venta en el carrito (D-005-01); icono flotante con
 contador y pestaña Carrito (D-005-02); hoja inferior en celular y diálogo centrado en laptop
@@ -84,18 +85,33 @@ contador y pestaña Carrito (D-005-02); hoja inferior en celular y diálogo cent
 
 ## 006 — Corte de caja y reportes
 
-**Estado**: implementada y desplegada el 2026-11-22; el endpoint se verificó con ventas reales.
-Pendiente la validación del dueño en celular/tablet para cerrarla.
+**Estado**: cerrada por ratificación del dueño (2026-11-22). El endpoint se verificó con ventas
+reales y el dueño validó la pestaña Corte, el menú desplazable y el cierre del día.
 
 **Objetivo**: corte por turno/día y reportes de ventas agrupados por fecha local
 `America/Mexico_City`, calculados desde datos locales y conciliados con el backend.
 
 **Fuera de alcance**: contabilidad, exportación fiscal, gráficas elaboradas.
 
-**Dudas abiertas**: ¿turnos fijos o botón "cerrar caja"? ¿qué se hace con ventas
-sincronizadas después del corte? ¿propinas se reportan aparte?
+**Dudas abiertas**: ninguna. Resueltas el 2026-11-22: cierre manual por día, corte completo con
+conteo de efectivo, foto recalculable y conciliación remota.
 
-## 007 — Administración de precios
+## 007 — Catálogo real y diseño
+
+**Estado**: activa (2026-11-22); la lista de productos, unidades y precios está por confirmar
+con el dueño.
+
+**Objetivo**: sustituir el catálogo provisional por los productos reales de la pollería de pollo
+crudo (cortes, congelados, moles, preparados, complementos y bebidas) y alinear la identidad
+visual con el letrero del local: rojo, amarillo y blanco, nombre «El Wero».
+
+**Fuera de alcance**: imágenes por producto (003), inventario, costos, proveedores y reportes.
+
+**Dudas abiertas**: lista definitiva con unidades y precios; qué productos provisionales se
+retiran; si se usa el mascota/logo del letrero; si las tarjetas llevan imagen en esta spec o se
+dejan para 003.
+
+## 008 — Administración de precios
 
 **Objetivo**: desde la laptop, editar precios por nivel (lista, promoción, mayoreo),
 activar/desactivar productos, registrar clientes con precios negociados y publicar el
@@ -103,7 +119,7 @@ catálogo a las cajas sin tocar la base a mano.
 
 **Fuera de alcance**: inventario, costos, proveedores, facturación.
 
-**Seguridad (añadido 2026-11-22)**: antes de exponer la escritura, 007 debe cerrar el acceso
+**Seguridad (añadido 2026-11-22)**: antes de exponer la escritura, 008 debe cerrar el acceso
 público a la base. Hoy RLS está deshabilitado en las 7 tablas de `public`. Hay que habilitarlo,
 definir políticas por tabla o dejar sin acceso a `anon`/`authenticated` si ningún cliente usa la
 llave pública, crear un rol de base con privilegios mínimos para la API y separar las llaves de
@@ -113,7 +129,7 @@ Supabase. La API seguirá conectando con su usuario de base, nunca con `anon`.
 captura al vuelo en cada venta? ¿quién puede editar (PIN)? ¿vigencia programada e historial
 de cambios?
 
-## 008 — Impresión
+## 009 — Impresión
 
 **Objetivo**: ticket en impresora térmica 58/80 mm por ESC/POS y etiquetas por TSPL, con
 `--kiosk-printing` en Chromium.
@@ -123,7 +139,7 @@ de cambios?
 **Dudas abiertas**: ¿modelo de impresora? ¿USB, Bluetooth o red? ¿se imprime antes o
 después de confirmar el cobro?
 
-## 009 — Multidispositivo (condicional)
+## 010 — Multidispositivo (condicional)
 
 **Objetivo**: dos o más cajas operando a la vez sin pisarse precios ni folios. Solo se abre
 si el local realmente lo necesita; hoy la concurrencia está sin definir.

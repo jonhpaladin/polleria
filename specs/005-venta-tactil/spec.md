@@ -73,7 +73,7 @@ No hay cambios de backend, `/sync` ni Dexie. El ticket y el outbox siguen igual.
 ## Fuera de alcance
 
 - Imágenes de producto (spec 003, pospuesta) y cambios de catálogo.
-- Reportes y corte (006), precios administrativos (007), impresión (008), multidispositivo.
+- Reportes y corte (006), precios administrativos (008), impresión (009), multidispositivo (010).
 - Pago por línea, propinas, descuentos o facturación.
 - Cambios al ticket, al outbox, a `/sync` o a Dexie.
 

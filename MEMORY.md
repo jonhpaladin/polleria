@@ -2,11 +2,11 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
 ## Estado actual (2026-11-22)
-- Specs 001, 002, 004 y 005 cerradas por ratificación del dueño; 003 pospuesta por falta de imágenes.
-- Spec 006 (corte y reportes) activa, desplegada y verificada contra la API; falta la validación visual del dueño.
+- Specs 001, 002, 004, 005 y 006 cerradas; 003 pospuesta por falta de imágenes.
+- Spec 007 (catálogo real y diseño) activa, pendiente la lista de productos, unidades y precios del dueño.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
 - Tests: backend 40 passed + 2 skipped; frontend 241 passed en 35 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
-- Supabase con `0001_catalog` y `0002_sales`; RLS deshabilitado hasta 007.
+- Supabase con `0001_catalog` y `0002_sales`; RLS deshabilitado hasta 008.
 - Guía de despliegue en `docs/despliegue.md`.
 
 ## Decisiones (y por qué)
@@ -18,7 +18,6 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **Semilla canónica en `backend/app/seeds/catalog.json`:** `seed:check` falla si frontend y backend divergen.
 - **4xx terminal en `/sync`:** un dato inválido no se arregla reintentando; se reintenta a mano.
 - **Venta como snapshot sin FK a productos:** un cambio de catálogo no deja ventas pendientes.
-- **`/sync` solo ventas:** el catálogo sigue por `GET /catalog`.
 - **Carrito en pestaña con icono flotante:** ningún panel tapa la rejilla en celular.
 - **Corte local + conciliación remota:** el mostrador manda; el backend solo compara lo sincronizado.
 
@@ -27,24 +26,29 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Dexie v2: ticket + outbox atómicos; el mismo UUID no duplica el cobro.
 
 ## Spec 004 — Sincronización (cerrada)
-- `drainOutbox` envía uno por uno, borra al confirmar y aplica backoff 2 s→5 min con jitter; un 4xx pasa a `failed`.
+- `drainOutbox` envía uno por uno, borra al confirmar y aplica backoff 2 s→5 min; un 4xx pasa a `failed`.
 - Dexie v3: `attempts`, `nextAttemptAt`, `lastError`; `useSync` drena al arrancar, al volver online, al cobrar y cada 30 s.
 
 ## Spec 005 — Venta táctil (cerrada)
 - Tocar producto abre `<dialog>` con peso/cantidad y precio; solo «Agregar» crea la línea.
 - Pestañas Venta, Carrito, Precios y Corte; icono flotante con contador; el carrito ya no es sticky.
 
-## Spec 006 — Corte y reportes (activa)
+## Spec 006 — Corte y reportes (cerrada)
 - Reporte local por `businessDate`: total, tickets, promedio, métodos, producto y categoría.
-- Corte manual con fondo/contado; foto recalculable en `cashCuts` (Dexie v4).
-- `GET /reports/daily` suma solo ventas sincronizadas; verificado con ventas reales del 2026-11-22 (3 tickets, $839.00).
+- Corte manual con fondo/contado, foto recalculable en `cashCuts` (Dexie v4) y conciliación con `/reports/daily`.
+
+## Spec 007 — Catálogo real y diseño (activa)
+- Sustituir los 26 SKU provisionales por cortes, congelados, moles, preparados, complementos y bebidas.
+- Identidad del letrero: rojo/amarillo/blanco; las imágenes por producto quedan para 003.
+- Pendiente: lista definitiva con unidades y precios; sin ellos no se puede cobrar.
 
 ## Próximos pasos
-1. Validar 006 en celular/tablet y cerrarla.
-2. RLS y rol mínimo de base en 007 antes de exponer escrituras.
+1. Confirmar catálogo, unidades y precios, y cerrar 007.
+2. RLS y rol mínimo de base en 008.
 3. Retomar 003 con las imágenes por SKU.
-4. Sustituir el catálogo provisional por la lista real.
+4. Verificación de campo en celular/tablet.
 
 ## Decisiones de producto pendientes
-- 007: promociones, precios por cliente y quién puede editar.
-- 008: modelo y conexión de la impresora.
+- 007: lista y precios reales del local.
+- 008: promociones, precios por cliente y quién puede editar.
+- 009: modelo y conexión de la impresora.

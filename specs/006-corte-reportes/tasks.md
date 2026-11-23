@@ -47,7 +47,7 @@ Cada tarea se marca `[x]` solo con la puerta de calidad en verde (constitución,
   Hecho cuando los tests de la pestaña y del repositorio pasan.
   RF: RF-006-03…07
 
-- [ ] **T-006-10 · Cierre documental**
+- [x] **T-006-10 · Cierre documental**
   Actualizar `MEMORY.md`, `specs/README.md` y las decisiones de producto.
   Hecho cuando 006 queda cerrada y 007 toma el siguiente turno.
   RF: —
