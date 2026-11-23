@@ -5,10 +5,15 @@
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif;
   --color-cream-50: #fffbf5;
-  --color-brand-50: #fdf2f0;
-  --color-brand-100: #fbe3df;
-  --color-brand-600: #b3261e;
-  --color-brand-700: #8f1d17;
+  --color-brand-50: #fef2f2;
+  --color-brand-100: #fee2e2;
+  --color-brand-600: #d32f2f;
+  --color-brand-700: #b71c1c;
+  --color-accent-100: #fef9c3;
+  --color-accent-300: #fde047;
+  --color-accent-400: #facc15;
+  --color-accent-500: #fbc02d;
+  --color-accent-700: #a16207;
 }
 
 @layer base {

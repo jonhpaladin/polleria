@@ -67,8 +67,8 @@ class SqlCatalogRepository:
     async def seed(self, seed: CatalogOut) -> None:
         """Upsert idempotente por `id` de categoría y por `sku` de producto.
 
-        Los productos retirados de la semilla no se borran: solo se actualizan los
-        presentes. La versión del catálogo avanza siempre.
+        Los productos retirados de la semilla se desactivan para que dejen de
+        aparecer en `GET /catalog`; no se borran para conservar historial.
         """
         session = self._session
 
@@ -84,6 +84,9 @@ class SqlCatalogRepository:
                 },
             )
             await session.execute(category_stmt)
+
+        # Primero se apaga todo; la semilla vuelve a activar solo sus productos.
+        await session.execute(update(Product).values(active=False))
 
         for product in seed.products:
             product_stmt = insert(Product).values(

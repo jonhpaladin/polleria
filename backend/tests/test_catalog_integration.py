@@ -6,6 +6,7 @@ from alembic.config import Config
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from alembic import command
+from app.models.catalog import Product
 from app.repositories.catalog import SqlCatalogRepository
 from app.seed import load_seed
 
@@ -45,3 +46,30 @@ async def test_migration_seed_is_idempotent_and_ordered() -> None:
     assert all(
         sum(price.is_default for price in product.prices) == 1 for product in second.products
     )
+
+
+async def test_seed_deactivates_products_missing_from_the_new_seed() -> None:
+    url = _database_url()
+    config = Config("alembic.ini")
+    config.set_main_option("sqlalchemy.url", url)
+    await asyncio.to_thread(command.upgrade, config, "head")
+
+    engine = create_async_engine(url)
+    factory = async_sessionmaker(engine, expire_on_commit=False)
+    seed = load_seed()
+    removed_id = seed.products[1].id
+    try:
+        async with factory() as session:
+            repository = SqlCatalogRepository(session)
+            await repository.seed(seed)
+            await repository.seed(
+                seed.model_copy(update={"products": seed.products[:1]})
+            )
+            removed = await session.get(Product, removed_id)
+            visible = await repository.get_catalog()
+    finally:
+        await engine.dispose()
+
+    assert removed is not None
+    assert removed.active is False
+    assert all(product.id != removed_id for product in visible.products)

@@ -17,6 +17,7 @@ import { ProductSheet } from "@/components/pos/ProductSheet";
 import { ReportsTab } from "@/components/pos/ReportsTab";
 import { SyncBadge } from "@/components/pos/SyncBadge";
 import { UpdateBanner } from "@/components/ui/UpdateBanner";
+import { BrandMark } from "@/components/ui/BrandMark";
 import type { Product } from "@/types/catalog";
 
 type Tab = "sale" | "cart" | "prices" | "reports";
@@ -63,13 +64,21 @@ export default function App() {
   return (
     <div className="min-h-dvh bg-cream-50">
       <UpdateBanner visible={needRefresh} onUpdate={update} onDismiss={dismiss} />
-      <header className="sticky top-0 z-20 border-b border-stone-200 bg-cream-50/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-700">
-              Pollería
-            </p>
-            <h1 className="text-2xl font-black tracking-tight text-stone-900">el wero</h1>
+      <header className="sticky top-0 z-20 border-b border-stone-200 bg-white/95 backdrop-blur">
+        <div className="h-1.5 bg-brand-600" aria-hidden="true" />
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2.5">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid size-12 shrink-0 place-items-center rounded-full bg-accent-300">
+              <BrandMark className="size-10" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-brand-700">
+                Pollería
+              </p>
+              <h1 className="truncate text-2xl font-black leading-none tracking-tight text-brand-700">
+                El Wero
+              </h1>
+            </div>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-2">
             <SyncBadge

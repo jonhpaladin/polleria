@@ -3,7 +3,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual (2026-11-22)
 - Specs 001, 002, 004, 005 y 006 cerradas; 003 pospuesta por falta de imágenes.
-- Spec 007 (catálogo real y diseño) activa, pendiente la lista de productos, unidades y precios del dueño.
+- Spec 007 (catálogo real y diseño) activa; primera parte implementada (11 productos visibles y diseño rojo/amarillo); faltan productos y precios por confirmar.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
 - Tests: backend 40 passed + 2 skipped; frontend 241 passed en 35 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
 - Supabase con `0001_catalog` y `0002_sales`; RLS deshabilitado hasta 008.
@@ -38,12 +38,12 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Corte manual con fondo/contado, foto recalculable en `cashCuts` (Dexie v4) y conciliación con `/reports/daily`.
 
 ## Spec 007 — Catálogo real y diseño (activa)
-- Sustituir los 26 SKU provisionales por cortes, congelados, moles, preparados, complementos y bebidas.
-- Identidad del letrero: rojo/amarillo/blanco; las imágenes por producto quedan para 003.
-- Pendiente: lista definitiva con unidades y precios; sin ellos no se puede cobrar.
+- Catálogo con 11 productos de precio visible: pierna y muslo, carne para hamburguesa, albóndigas, empanadas, teppanyaki, jardinera, poblano, adobado y huevo.
+- Diseño del letrero: rojo/amarillo/crema, mascota SVG y encabezado «Pollería El Wero»; imágenes por producto quedan para 003.
+- Faltan pollo entero, alitas, milanesa, congelados, moles y bebidas: se agregarán cuando el dueño dé precios y unidades.
 
 ## Próximos pasos
-1. Confirmar catálogo, unidades y precios, y cerrar 007.
+1. Completar 007 con pollo entero, alitas, milanesa, congelados, moles y bebidas (precios y unidades).
 2. RLS y rol mínimo de base en 008.
 3. Retomar 003 con las imágenes por SKU.
 4. Verificación de campo en celular/tablet.

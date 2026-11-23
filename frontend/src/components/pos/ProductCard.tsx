@@ -47,7 +47,7 @@ export function ProductCard({
           {normalPriceCents !== undefined ? formatCents(normalPriceCents) : "—"}
         </span>
         {promotionPriceCents !== null ? (
-          <span className="rounded-full bg-amber-100 px-2 py-1 text-sm font-semibold tabular-nums text-amber-900">
+          <span className="rounded-full bg-accent-100 px-2 py-1 text-sm font-semibold tabular-nums text-accent-700">
             promo {formatCents(promotionPriceCents)}
           </span>
         ) : null}
