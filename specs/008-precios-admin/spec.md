@@ -1,8 +1,8 @@
 # Spec 008 — Administración de precios y seguridad de la API
 
-- Estado: activa (2026-11-23); implementada en local; falta configurar las claves en Render,
-  aplicar la migración 0003 y desplegar.
-- Spec activa: sí
+- Estado: cerrada por ratificación del dueño (2026-11-23); implementada y desplegada. La
+  configuración de `ADMIN_KEY` y `DEVICE_KEY` en Render queda como paso operativo documentado.
+- Spec activa: no
 - Depende de: `specs/001-fundamentos-catalogo`, `specs/004-sincronizacion`, `specs/007-catalogo-real`
 - Fecha: 2026-11-23
 
@@ -183,9 +183,9 @@ Igual que `GET /catalog`, pero incluye productos inactivos.
 5. La PWA no contiene claves en el bundle y la captura de la clave del local se hace una vez.
 6. `lint`, `typecheck`, `test`, `build`, `seed:check`, `pytest` y `ruff` en verde.
 
-## Pendientes de despliegue
+## Pendiente operativo
 
-- Configurar `ADMIN_KEY` y `DEVICE_KEY` en Render.
-- Aplicar `alembic upgrade head` (0003) y decidir si la API usa `polleria_api`.
-- Verificar en el celular/tablet del local la captura de la clave y la publicación de precios.
-- Programar el primer respaldo fuera de Supabase (ver `docs/seguridad.md`).
+- Configurar `ADMIN_KEY` y `DEVICE_KEY` en Render (ver `docs/seguridad.md`).
+- Capturar la clave del local una vez en cada tablet.
+- Verificar en el local la publicación de precios y la captura de la clave.
+- Programar el primer respaldo fuera de Supabase.

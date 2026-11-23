@@ -12,9 +12,15 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
 | 007 | `007-catalogo-real` | Catálogo real del local y diseño de la marca | 002, 005, 006 | cerrada por ratificación del dueño (2026-11-23) |
-| 008 | `008-precios-admin` | Edición de precios, publicación y seguridad de la API | 001 (+004 para propagar) | activa (implementada en local; falta configurar claves y desplegar) |
+| 008 | `008-precios-admin` | Edición de precios, publicación y seguridad de la API | 001 (+004 para propagar) | cerrada por ratificación del dueño (2026-11-23); claves de Render como paso operativo |
 | 009 | `009-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
+| 011 | `011-respaldo` | Respaldo y restauración de los datos locales | 002, 004, 006 | activa (implementada; pendiente validación) |
+| 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | borrador |
+| 013 | `013-historial-ventas` | Historial de ventas y exportación CSV | 006 | borrador |
+
+Orden de trabajo acordado (2026-11-23): **011 respaldo → 003 imágenes → 012 anulaciones → 009
+impresión → 013 historial → 010 multidispositivo**.
 
 ## 002 — Venta offline
 
@@ -113,8 +119,8 @@ inactivos; mascota SVG y tarjetas de texto hasta 003.
 
 ## 008 — Administración de precios y seguridad
 
-**Estado**: activa (2026-11-23); implementada en local. Falta configurar `ADMIN_KEY` y
-`DEVICE_KEY` en Render, aplicar la migración 0003 y desplegar.
+**Estado**: cerrada por ratificación del dueño (2026-11-23). Implementada y desplegada; la
+configuración de `ADMIN_KEY` y `DEVICE_KEY` en Render queda como paso operativo.
 
 **Objetivo**: desde la laptop, editar precios por nivel (lista, promoción, mayoreo), activar o
 desactivar productos y publicar el catálogo a las cajas sin tocar la base a mano. En la misma
@@ -148,6 +154,20 @@ si el local realmente lo necesita; hoy la concurrencia está sin definir.
 
 **Dudas abiertas**: ¿folios por dispositivo o globales? ¿qué caja manda el catálogo?
 ¿se requiere un dispositivo "servidor" local?
+
+## 011 — Respaldo y restauración
+
+**Estado**: activa (2026-11-23); implementada y desplegada, pendiente la validación del dueño en
+el dispositivo.
+
+**Objetivo**: descargar un JSON con tickets, ventas pendientes, cortes y hojas de precios, y
+restaurarlo en la misma u otra tablet sin red. La restauración fusiona y nunca borra lo existente.
+
+**Fuera de alcance**: respaldo en la nube, cifrado con contraseña, sincronizar cortes con el
+backend, fusionar catálogo y resolver folios entre dispositivos (010).
+
+**Decisiones**: JSON local descargado por el usuario; fusión por llave con prioridad a lo actual;
+recordatorio a los 7 días; pestaña «Respaldo» sin clave de administración; sin cambio de Dexie.
 
 ## Reglas para abrir la siguiente spec
 

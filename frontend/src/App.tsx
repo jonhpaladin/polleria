@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { formatUpdatedAt, selectProducts, visibleCategories } from "@/lib/catalog";
 import { useCatalog } from "@/hooks/useCatalog";
+import { useBackupStatus } from "@/hooks/useBackupStatus";
 import { useDailyPrices } from "@/hooks/useDailyPrices";
 import { usePwaUpdate } from "@/hooks/usePwaUpdate";
 import { useReports } from "@/hooks/useReports";
@@ -12,6 +13,7 @@ import { CartFloatingButton } from "@/components/pos/CartFloatingButton";
 import { CategoryBar } from "@/components/pos/CategoryBar";
 import { ConnectionBadge } from "@/components/pos/ConnectionBadge";
 import { AdminDialog } from "@/components/pos/AdminDialog";
+import { BackupTab } from "@/components/pos/BackupTab";
 import { DailyPricesTab } from "@/components/pos/DailyPricesTab";
 import { ProductGrid } from "@/components/pos/ProductGrid";
 import { ProductSheet } from "@/components/pos/ProductSheet";
@@ -22,13 +24,14 @@ import { BrandMark } from "@/components/ui/BrandMark";
 import { DeviceKeyDialog } from "@/components/ui/DeviceKeyDialog";
 import type { Product } from "@/types/catalog";
 
-type Tab = "sale" | "cart" | "prices" | "reports";
+type Tab = "sale" | "cart" | "prices" | "reports" | "backup";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "sale", label: "Venta" },
   { id: "cart", label: "Carrito" },
   { id: "prices", label: "Precios del día" },
   { id: "reports", label: "Corte del día" },
+  { id: "backup", label: "Respaldo" },
 ];
 
 export default function App() {
@@ -37,6 +40,7 @@ export default function App() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [deviceKeyOpen, setDeviceKeyOpen] = useState(false);
   const { catalog, origin, online, selectedCategory, selectCategory, refresh } = useCatalog();
+  const backupOverdue = useBackupStatus();
   const sync = useSync({ online });
   const dailyPrices = useDailyPrices(catalog);
   const reports = useReports({
@@ -139,7 +143,9 @@ export default function App() {
               const label =
                 tab.id === "cart" && sale.cart.lines.length > 0
                   ? `${tab.label} (${sale.cart.lines.length})`
-                  : tab.label;
+                  : tab.id === "backup" && backupOverdue
+                    ? `${tab.label} ⚠`
+                    : tab.label;
               return (
                 <button
                   key={tab.id}
@@ -193,6 +199,8 @@ export default function App() {
             error={reports.error}
             onSaveCash={reports.saveCash}
           />
+        ) : activeTab === "backup" ? (
+          <BackupTab />
         ) : (
           <>
             <CategoryBar

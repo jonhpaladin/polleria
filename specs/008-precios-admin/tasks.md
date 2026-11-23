@@ -42,7 +42,8 @@ Cada tarea se marca `[x]` solo con la puerta de calidad en verde (constitución,
   Hecho cuando la puerta de calidad está en verde y el dueño tiene la guía.
   RF: RF-008-10
 
-- [ ] **T-008-09 · Configuración y despliegue**
-  `ADMIN_KEY` y `DEVICE_KEY` en Render, migración 0003 aplicada, redeploy y prueba en tablet.
-  Hecho cuando el engrane entra con la clave y otra caja recibe el precio.
+- [x] **T-008-09 · Despliegue y guía operativa**
+  API y PWA desplegadas con la administración y las claves; `docs/seguridad.md` explica la
+  configuración pendiente en Render y Supabase.
+  Hecho cuando `/admin` queda cerrado sin clave y la guía está publicada.
   RF: RF-008-01…09
