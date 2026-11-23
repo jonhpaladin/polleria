@@ -22,6 +22,51 @@
       ]
     },
     {
+      "id": "prd-alitas",
+      "sku": "ALITAS",
+      "name": "Alitas",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-pechuga",
+      "sku": "PECHUGA",
+      "name": "Pechuga",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-milanesa",
+      "sku": "MILANESA",
+      "name": "Milanesa",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-patitas",
+      "sku": "PATITAS",
+      "name": "Patitas",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-menudencias",
+      "sku": "MENUDENCIAS",
+      "name": "Menudencias",
+      "category_id": "cat-pollo",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
       "id": "prd-carne-hamburguesa",
       "sku": "CARNE-HAMBURGUESA",
       "name": "Carne para hamburguesa",
@@ -110,6 +155,60 @@
       "unit": "kg",
       "active": true,
       "prices": [{ "tier": "lista", "price": "32.00", "is_default": true }]
+    },
+    {
+      "id": "prd-papas-francesa",
+      "sku": "PAPAS-FRANCESA",
+      "name": "Papas a la francesa",
+      "category_id": "cat-complementos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-papas-gajo",
+      "sku": "PAPAS-GAJO",
+      "name": "Papas gajo",
+      "category_id": "cat-complementos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-mole-dulce",
+      "sku": "MOLE-DULCE",
+      "name": "Mole dulce",
+      "category_id": "cat-complementos",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-mole-poblano",
+      "sku": "MOLE-POBLANO",
+      "name": "Mole poblano",
+      "category_id": "cat-complementos",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-mole-ranchero",
+      "sku": "MOLE-RANCHERO",
+      "name": "Mole ranchero",
+      "category_id": "cat-complementos",
+      "unit": "kg",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
+    },
+    {
+      "id": "prd-dedos-queso",
+      "sku": "DEDOS-QUESO",
+      "name": "Dedos de queso",
+      "category_id": "cat-complementos",
+      "unit": "piece",
+      "active": true,
+      "prices": [{ "tier": "lista", "price": "100.00", "is_default": true }]
     }
   ]
 }

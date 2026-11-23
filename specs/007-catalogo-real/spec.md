@@ -1,6 +1,6 @@
 # Spec 007 — Catálogo real y diseño de la marca
 
-- Estado: activa (2026-11-22); primera parte implementada con los productos y precios visibles en las fotos y la identidad rojo/amarillo. Faltan productos y precios por confirmar.
+- Estado: activa (2026-11-22); 22 productos activos: 11 de precio visible y 11 temporales a $100. Faltan pollo entero, nuggets, pollo KFC y bebidas.
 - Spec activa: sí
 - Depende de: `specs/002-venta-offline`, `specs/005-venta-tactil`, `specs/006-corte-reportes`
 - Fecha: 2026-11-22

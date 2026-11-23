@@ -3,7 +3,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual (2026-11-22)
 - Specs 001, 002, 004, 005 y 006 cerradas; 003 pospuesta por falta de imágenes.
-- Spec 007 (catálogo real y diseño) activa; primera parte implementada (11 productos visibles y diseño rojo/amarillo); faltan productos y precios por confirmar.
+- Spec 007 (catálogo real y diseño) activa; 22 productos: 11 de precio visible y 11 temporales a $100; diseño rojo/amarillo aplicado.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
 - Tests: backend 40 passed + 2 skipped; frontend 241 passed en 35 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
 - Supabase con `0001_catalog` y `0002_sales`; RLS deshabilitado hasta 008.
@@ -38,12 +38,12 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Corte manual con fondo/contado, foto recalculable en `cashCuts` (Dexie v4) y conciliación con `/reports/daily`.
 
 ## Spec 007 — Catálogo real y diseño (activa)
-- Catálogo con 11 productos de precio visible: pierna y muslo, carne para hamburguesa, albóndigas, empanadas, teppanyaki, jardinera, poblano, adobado y huevo.
+- Catálogo con 22 productos: 11 de precio visible y 11 temporales a $100 (alitas, pechuga, milanesa, patitas, menudencias, papas, moles y dedos de queso).
 - Diseño del letrero: rojo/amarillo/crema, mascota SVG y encabezado «Pollería El Wero»; imágenes por producto quedan para 003.
-- Faltan pollo entero, alitas, milanesa, congelados, moles y bebidas: se agregarán cuando el dueño dé precios y unidades.
+- Faltan pollo entero, nuggets, pollo KFC y bebidas; los $100 se ajustan en Precios del día.
 
 ## Próximos pasos
-1. Completar 007 con pollo entero, alitas, milanesa, congelados, moles y bebidas (precios y unidades).
+1. Completar 007 con pollo entero, nuggets, pollo KFC y bebidas (precios y unidades).
 2. RLS y rol mínimo de base en 008.
 3. Retomar 003 con las imágenes por SKU.
 4. Verificación de campo en celular/tablet.
