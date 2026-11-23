@@ -156,6 +156,8 @@ $env:DATABASE_URL = "postgresql+asyncpg://..."
 |---|---|
 | `DATABASE_URL` | Cadena de Supabase con prefijo `postgresql+asyncpg://` |
 | `FRONTEND_ORIGIN` | URL exacta de Cloudflare Pages, por ejemplo `https://polleria.pages.dev` |
+| `ADMIN_KEY` | Clave larga del dueño para editar precios (ver `docs/seguridad.md`) |
+| `DEVICE_KEY` | Clave del local para sincronizar ventas y consultar reportes |
 | `APP_VERSION` | `0.1.0` |
 | `APP_TIME_ZONE` | `America/Mexico_City` |
 

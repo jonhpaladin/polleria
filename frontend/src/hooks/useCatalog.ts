@@ -24,6 +24,7 @@ export interface UseCatalogResult {
   online: boolean;
   selectedCategory: string;
   selectCategory: (id: string) => void;
+  refresh: () => Promise<void>;
 }
 
 /**
@@ -135,9 +136,35 @@ export function useCatalog(options: UseCatalogOptions = {}): UseCatalogResult {
     };
   }, [refreshRemote]);
 
+  // Publicación de precios: las cajas reciben la versión nueva sin recargar.
+  useEffect(() => {
+    if (!online) return;
+    const timer = window.setInterval(() => void refreshRemote(), 5 * 60_000);
+    return () => window.clearInterval(timer);
+  }, [online, refreshRemote]);
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void refreshRemote();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
+  }, [refreshRemote]);
+
   const selectCategory = useCallback((id: string) => {
     setSelectedCategory(id);
   }, []);
 
-  return { catalog, origin, online, selectedCategory, selectCategory };
+  return {
+    catalog,
+    origin,
+    online,
+    selectedCategory,
+    selectCategory,
+    refresh: refreshRemote,
+  };
 }

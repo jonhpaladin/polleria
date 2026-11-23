@@ -18,6 +18,7 @@ export interface UseSyncResult {
   failed: number;
   syncing: boolean;
   lastError: string | null;
+  authRequired: boolean;
   drain: () => Promise<void>;
   retryFailed: () => Promise<void>;
   nudge: () => void;
@@ -36,6 +37,7 @@ export function useSync(options: UseSyncOptions): UseSyncResult {
   const [counts, setCounts] = useState({ pending: 0, failed: 0 });
   const [syncing, setSyncing] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
+  const [authRequired, setAuthRequired] = useState(false);
   const running = useRef(false);
 
   const refresh = useCallback(async () => {
@@ -52,8 +54,13 @@ export function useSync(options: UseSyncOptions): UseSyncResult {
     setSyncing(true);
     try {
       const summary = await drainOutbox({ db: deps.db, post: deps.post });
+      setAuthRequired(summary.auth);
       setLastError(
-        summary.retried > 0 ? "No se pudo contactar la API; se reintentará solo." : null,
+        summary.auth
+          ? "Falta la clave del local o es incorrecta."
+          : summary.retried > 0
+            ? "No se pudo contactar la API; se reintentará solo."
+            : null,
       );
     } catch (error) {
       console.warn("SYNC_DRAIN_FAILED", error);
@@ -96,6 +103,7 @@ export function useSync(options: UseSyncOptions): UseSyncResult {
     failed: counts.failed,
     syncing,
     lastError,
+    authRequired,
     drain,
     retryFailed,
     nudge,

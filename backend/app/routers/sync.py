@@ -5,6 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth import require_device
 from app.db import get_session
 from app.repositories.sales import SqlSaleRepository
 from app.schemas.sync import SyncOut, SyncTicketIn
@@ -19,7 +20,7 @@ def get_sale_repository(
     return SqlSaleRepository(session)
 
 
-@router.post("/sync", response_model=SyncOut)
+@router.post("/sync", response_model=SyncOut, dependencies=[Depends(require_device)])
 async def sync_ticket(
     ticket: SyncTicketIn,
     response: Response,

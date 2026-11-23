@@ -11,6 +11,7 @@ import { Cart } from "@/components/pos/Cart";
 import { CartFloatingButton } from "@/components/pos/CartFloatingButton";
 import { CategoryBar } from "@/components/pos/CategoryBar";
 import { ConnectionBadge } from "@/components/pos/ConnectionBadge";
+import { AdminDialog } from "@/components/pos/AdminDialog";
 import { DailyPricesTab } from "@/components/pos/DailyPricesTab";
 import { ProductGrid } from "@/components/pos/ProductGrid";
 import { ProductSheet } from "@/components/pos/ProductSheet";
@@ -18,6 +19,7 @@ import { ReportsTab } from "@/components/pos/ReportsTab";
 import { SyncBadge } from "@/components/pos/SyncBadge";
 import { UpdateBanner } from "@/components/ui/UpdateBanner";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { DeviceKeyDialog } from "@/components/ui/DeviceKeyDialog";
 import type { Product } from "@/types/catalog";
 
 type Tab = "sale" | "cart" | "prices" | "reports";
@@ -32,7 +34,9 @@ const TABS: { id: Tab; label: string }[] = [
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("sale");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const { catalog, origin, online, selectedCategory, selectCategory } = useCatalog();
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [deviceKeyOpen, setDeviceKeyOpen] = useState(false);
+  const { catalog, origin, online, selectedCategory, selectCategory, refresh } = useCatalog();
   const sync = useSync({ online });
   const dailyPrices = useDailyPrices(catalog);
   const reports = useReports({
@@ -88,9 +92,45 @@ export default function App() {
               onRetry={() => void sync.retryFailed()}
             />
             <ConnectionBadge online={online} />
+            <button
+              type="button"
+              onClick={() => setAdminOpen(true)}
+              aria-label="Administración"
+              className="grid size-12 place-items-center rounded-full border border-stone-300 bg-white text-stone-700"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6 fill-none stroke-current">
+                <path
+                  d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+                  strokeWidth="1.8"
+                />
+                <path
+                  d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.7 7.7 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.7 7.7 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.7 7.7 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.7 7.7 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.6Z"
+                  strokeWidth="1.4"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </header>
+
+      {sync.authRequired ? (
+        <div className="border-b border-amber-300 bg-amber-50">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2 text-sm text-amber-900">
+            <p>
+              Falta la clave del local o es incorrecta. Las ventas siguen guardadas y se enviarán
+              al configurarla.
+            </p>
+            <button
+              type="button"
+              onClick={() => setDeviceKeyOpen(true)}
+              className="min-h-12 rounded-full bg-amber-900 px-4 font-bold text-white"
+            >
+              Configurar
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       <main className="mx-auto max-w-6xl">
         <nav aria-label="Secciones" className="border-b border-stone-200 py-3">
@@ -191,6 +231,24 @@ export default function App() {
             sale.addProduct(selectedProduct.id, selectedCategoryName, selection)
           }
           onClose={() => setSelectedProduct(null)}
+        />
+      ) : null}
+
+      {adminOpen ? (
+        <AdminDialog
+          onClose={() => setAdminOpen(false)}
+          onPublished={() => void refresh()}
+          onConfigureDeviceKey={() => {
+            setAdminOpen(false);
+            setDeviceKeyOpen(true);
+          }}
+        />
+      ) : null}
+
+      {deviceKeyOpen ? (
+        <DeviceKeyDialog
+          onClose={() => setDeviceKeyOpen(false)}
+          onSaved={() => void sync.drain()}
         />
       ) : null}
     </div>

@@ -3,11 +3,12 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual (2026-11-23)
 - Specs 001, 002, 004, 005, 006 y 007 cerradas; 003 pospuesta por falta de imágenes.
+- Spec 008 activa e implementada en local: administración de precios, claves de API y RLS; falta configurar claves en Render y desplegar.
 - Catálogo real con 29 productos activos: 11 con precio confirmado y 18 temporales a $100; 17 provisionales inactivos.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
-- Tests: backend 40 passed + 3 skipped; frontend 241 passed en 35 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
-- Supabase con `0001_catalog` y `0002_sales`; RLS deshabilitado hasta 008.
-- Guía de despliegue en `docs/despliegue.md`.
+- Tests: backend 54 passed + 3 skipped; frontend 248 passed en 36 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
+- Supabase con `0001_catalog`, `0002_sales` y RLS aplicado; `0003_seguridad` prepara el rol mínimo.
+- Guía de despliegue en `docs/despliegue.md`; pasos de seguridad en `docs/seguridad.md`.
 
 ## Decisiones (y por qué)
 - **Neon/Supabase free tier en vez de laptop en casa:** evita exponer túneles/DNS y dejar un equipo encendido.
@@ -42,8 +43,14 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - 18 precios temporales de $100 se ajustan en Precios del día; la corrección base queda para 008.
 - Diseño rojo/amarillo/crema con mascota SVG; las imágenes por producto quedan para 003.
 
+## Spec 008 — Precios y seguridad (activa)
+- Engrane de administración con clave en memoria; edita lista/promoción/mayoreo y activa productos.
+- Clave del local por dispositivo para `/sync` y `/reports/daily`; un 401 es reintentable y avisa.
+- Publicar avanza `catalog_meta`; las cajas refrescan cada 5 min y reemplazan la hoja del día.
+- RLS activo y `anon`/`authenticated` sin permisos; `docs/seguridad.md` tiene los pasos pendientes.
+
 ## Próximos pasos
-1. Abrir 008: administración de precios, RLS, llaves y acceso a la API.
+1. Configurar `ADMIN_KEY` y `DEVICE_KEY` en Render, aplicar 0003 y desplegar 008.
 2. Retomar 003 con las imágenes por SKU.
 3. Verificación de campo en celular/tablet.
 

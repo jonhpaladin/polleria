@@ -1,4 +1,5 @@
 import type { TicketWire } from "@/types/sale";
+import { getDeviceKey } from "@/lib/deviceKey";
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 const DEFAULT_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
@@ -47,11 +48,16 @@ export async function postTicket(
 
   try {
     let response: Response;
+    const deviceKey = getDeviceKey();
     try {
       response = await fetchImpl(`${baseUrl.replace(/\/+$/, "")}/sync`, {
         method: "POST",
         signal: controller.signal,
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          ...(deviceKey ? { "X-Device-Key": deviceKey } : {}),
+        },
         body: JSON.stringify(payload),
       });
     } catch {

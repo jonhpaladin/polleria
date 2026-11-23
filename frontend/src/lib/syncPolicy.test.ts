@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { SyncApiError } from "@/lib/syncApi";
 import {
   backoffDelayMs,
+  isAuthError,
   isPermanentSyncError,
   SYNC_BASE_DELAY_MS,
   SYNC_MAX_DELAY_MS,
@@ -15,10 +16,17 @@ describe("isPermanentSyncError", () => {
     }
   });
 
-  it("reintenta 408, 429 y 5xx", () => {
-    for (const status of [408, 429, 500, 503]) {
+  it("reintenta 401, 403, 408, 429 y 5xx", () => {
+    for (const status of [401, 403, 408, 429, 500, 503]) {
       expect(isPermanentSyncError(new SyncApiError("HTTP", "x", status))).toBe(false);
     }
+  });
+
+  it("identifica los errores de clave del local", () => {
+    expect(isAuthError(new SyncApiError("HTTP", "x", 401))).toBe(true);
+    expect(isAuthError(new SyncApiError("HTTP", "x", 403))).toBe(true);
+    expect(isAuthError(new SyncApiError("HTTP", "x", 422))).toBe(false);
+    expect(isAuthError(new SyncApiError("NETWORK", "x"))).toBe(false);
   });
 
   it("reintenta fallos de red, timeout y JSON inválido", () => {

@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { createDb, type PolleriaDb } from "@/lib/db";
 import { openDailyPrices, saveDailyPriceDrafts } from "@/lib/dailyPriceRepository";
-import { makeCatalog } from "@/test/fixtures";
+import { makeCatalog, makeWireCatalog } from "@/test/fixtures";
 
 const openDbs: PolleriaDb[] = [];
 let counter = 0;
@@ -102,6 +102,32 @@ describe("openDailyPrices", () => {
 
     const result = await openDailyPrices(catalog, new Date("2026-11-13T19:00:00Z"), db);
     expect(result.rows).toHaveLength(2);
+  });
+
+  it("reemplaza la hoja del día cuando el catálogo publicado cambia de versión", async () => {
+    const db = newDb();
+    const catalog = makeCatalog();
+    const now = new Date("2026-11-13T18:00:00Z");
+    await openDailyPrices(catalog, now, db);
+    await saveDailyPriceDrafts(
+      catalog,
+      "2026-11-13",
+      [{ productId: "prd-pierna", normal: "160.00", promotion: "", wholesale: "" }],
+      now,
+      db,
+    );
+
+    const wire = makeWireCatalog({ updated_at: "2026-11-13T20:00:00Z" });
+    const piernaWire = wire.products.find((product) => product.id === "prd-pierna");
+    if (!piernaWire) throw new Error("La fixture no tiene pierna");
+    piernaWire.prices = [{ tier: "lista", price: "175.00", is_default: true }];
+    const updated = makeCatalog(wire);
+
+    const result = await openDailyPrices(updated, new Date("2026-11-13T20:05:00Z"), db);
+    const pierna = result.rows.find((row) => row.productId === "prd-pierna");
+
+    expect(pierna?.normalPriceCents).toBe(17500);
+    expect(pierna?.promotionPriceCents).toBeNull();
   });
 
   it("agrega un producto nuevo sin tocar los precios ya editados del día", async () => {

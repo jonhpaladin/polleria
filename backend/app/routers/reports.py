@@ -6,6 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth import require_device
 from app.db import get_session
 from app.repositories.reports import SqlReportRepository
 from app.schemas.reports import DailyReportOut
@@ -20,7 +21,7 @@ def get_report_repository(
     return SqlReportRepository(session)
 
 
-@router.get("/reports/daily", response_model=DailyReportOut)
+@router.get("/reports/daily", response_model=DailyReportOut, dependencies=[Depends(require_device)])
 async def daily_report(
     business_date: date,
     repository: Annotated[SqlReportRepository, Depends(get_report_repository)],

@@ -92,7 +92,7 @@ describe("drainOutbox", () => {
       "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
       "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
     ]);
-    expect(summary).toEqual({ synced: 2, retried: 0, failed: 0 });
+    expect(summary).toEqual({ synced: 2, retried: 0, failed: 0, auth: false });
     expect(await db.outbox.count()).toBe(0);
   });
 
@@ -126,7 +126,7 @@ describe("drainOutbox", () => {
     });
 
     const record = await db.outbox.get(uuid);
-    expect(summary).toEqual({ synced: 0, retried: 1, failed: 0 });
+    expect(summary).toEqual({ synced: 0, retried: 1, failed: 0, auth: false });
     expect(record?.status).toBe("pending");
     expect(record?.attempts).toBe(1);
     expect(record?.nextAttemptAt).toBe("2026-11-14T12:00:02.000Z");
@@ -166,11 +166,33 @@ describe("drainOutbox", () => {
     });
 
     const record = await db.outbox.get(rejected);
-    expect(summary).toEqual({ synced: 1, retried: 0, failed: 1 });
+    expect(summary).toEqual({ synced: 1, retried: 0, failed: 1, auth: false });
     expect(record?.status).toBe("failed");
     expect(record?.attempts).toBe(1);
     expect(record?.nextAttemptAt).toBeNull();
     expect(await db.outbox.get(accepted)).toBeUndefined();
+  });
+
+  it("un 401 deja el ticket pendiente y pide la clave del local", async () => {
+    const db = newDb();
+    const first = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+    const second = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+    await db.outbox.bulkAdd([
+      outboxRecord(first, "2026-11-14T09:00:00.000Z"),
+      outboxRecord(second, "2026-11-14T10:00:00.000Z"),
+    ]);
+    const post = vi.fn(async () => {
+      throw new SyncApiError("HTTP", "clave inválida", 401);
+    });
+
+    const summary = await drainOutbox({ db, post, now: () => NOW, random: () => 1 });
+
+    const record = await db.outbox.get(first);
+    expect(summary).toEqual({ synced: 0, retried: 1, failed: 0, auth: true });
+    expect(post).toHaveBeenCalledTimes(1);
+    expect(record?.status).toBe("pending");
+    expect(record?.lastError).toBe("clave inválida");
+    expect((await db.outbox.get(second))?.status).toBe("pending");
   });
 
   it("no vuelve a intentar un fallido en pasadas automáticas", async () => {

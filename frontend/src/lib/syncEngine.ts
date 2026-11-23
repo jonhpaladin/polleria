@@ -6,7 +6,7 @@ import {
   markSynced,
   resetFailed,
 } from "@/lib/outboxRepository";
-import { backoffDelayMs, isPermanentSyncError } from "@/lib/syncPolicy";
+import { backoffDelayMs, isAuthError, isPermanentSyncError } from "@/lib/syncPolicy";
 import type { TicketWire } from "@/types/sale";
 
 export interface DrainOptions {
@@ -21,6 +21,7 @@ export interface DrainSummary {
   synced: number;
   retried: number;
   failed: number;
+  auth: boolean;
 }
 
 const DEFAULT_BATCH_SIZE = 20;
@@ -32,7 +33,7 @@ const DEFAULT_BATCH_SIZE = 20;
 export async function drainOutbox(options: DrainOptions): Promise<DrainSummary> {
   const now = options.now ?? (() => new Date());
   const random = options.random ?? Math.random;
-  const summary: DrainSummary = { synced: 0, retried: 0, failed: 0 };
+  const summary: DrainSummary = { synced: 0, retried: 0, failed: 0, auth: false };
   const startedAt = now().toISOString();
   const batch = await listDuePending(options.db, startedAt, options.batchSize ?? DEFAULT_BATCH_SIZE);
 
@@ -44,6 +45,15 @@ export async function drainOutbox(options: DrainOptions): Promise<DrainSummary> 
       summary.synced += 1;
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Error desconocido";
+      if (isAuthError(error)) {
+        // Sin la clave del local no tiene sentido seguir con el resto del lote.
+        const delay = backoffDelayMs(attempts, random);
+        const nextAttemptAt = new Date(now().getTime() + delay).toISOString();
+        await markRetried(options.db, record.clientOrderUuid, attempts, nextAttemptAt, message);
+        summary.retried += 1;
+        summary.auth = true;
+        break;
+      }
       if (isPermanentSyncError(error)) {
         await markFailed(options.db, record.clientOrderUuid, attempts, message);
         summary.failed += 1;

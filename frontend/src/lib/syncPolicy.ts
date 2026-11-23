@@ -5,13 +5,30 @@ export const SYNC_MAX_DELAY_MS = 300_000;
 
 /**
  * Un 4xx de validación es definitivo: reintentarlo no cambia el dato. Se
- * exceptúan 408 (timeout del servidor) y 429 (demasiadas solicitudes).
+ * exceptúan 401/403 (clave del local), 408 (timeout del servidor) y 429
+ * (demasiadas solicitudes).
  */
 export function isPermanentSyncError(error: unknown): boolean {
   if (!(error instanceof SyncApiError)) return false;
   if (error.code !== "HTTP" || error.status === undefined) return false;
   const status = error.status;
-  return status >= 400 && status < 500 && status !== 408 && status !== 429;
+  return (
+    status >= 400 &&
+    status < 500 &&
+    status !== 401 &&
+    status !== 403 &&
+    status !== 408 &&
+    status !== 429
+  );
+}
+
+/** Un 401/403 pide configurar o corregir la clave del local; no es un dato inválido. */
+export function isAuthError(error: unknown): boolean {
+  return (
+    error instanceof SyncApiError &&
+    error.code === "HTTP" &&
+    (error.status === 401 || error.status === 403)
+  );
 }
 
 /**

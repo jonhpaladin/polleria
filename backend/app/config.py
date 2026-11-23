@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     frontend_origin: str = "http://localhost:5173"
     app_version: str = "0.1.0"
     app_time_zone: str = DEFAULT_TIME_ZONE
+    admin_key: str = ""
+    device_key: str = ""
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 

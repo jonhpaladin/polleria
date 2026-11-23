@@ -1,4 +1,5 @@
 import type { RemoteDailyReport } from "@/types/report";
+import { getDeviceKey } from "@/lib/deviceKey";
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 const DEFAULT_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
@@ -26,9 +27,16 @@ export async function fetchDailyReport(
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
+    const deviceKey = getDeviceKey();
     const response = await fetchImpl(
       `${baseUrl.replace(/\/+$/, "")}/reports/daily?business_date=${encodeURIComponent(businessDate)}`,
-      { signal: controller.signal, headers: { Accept: "application/json" } },
+      {
+        signal: controller.signal,
+        headers: {
+          Accept: "application/json",
+          ...(deviceKey ? { "X-Device-Key": deviceKey } : {}),
+        },
+      },
     );
     if (!response.ok) return null;
     const body: unknown = await response.json();

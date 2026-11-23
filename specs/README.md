@@ -12,7 +12,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
 | 007 | `007-catalogo-real` | Catálogo real del local y diseño de la marca | 002, 005, 006 | cerrada por ratificación del dueño (2026-11-23) |
-| 008 | `008-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
+| 008 | `008-precios-admin` | Edición de precios, publicación y seguridad de la API | 001 (+004 para propagar) | activa (implementada en local; falta configurar claves y desplegar) |
 | 009 | `009-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 
@@ -111,23 +111,25 @@ visual con el letrero del local: rojo, amarillo y blanco, nombre «El Wero».
 pieza; los productos sin precio confirmado usan $100 temporal; los 17 provisionales quedaron
 inactivos; mascota SVG y tarjetas de texto hasta 003.
 
-## 008 — Administración de precios
+## 008 — Administración de precios y seguridad
 
-**Objetivo**: desde la laptop, editar precios por nivel (lista, promoción, mayoreo),
-activar/desactivar productos, registrar clientes con precios negociados y publicar el
-catálogo a las cajas sin tocar la base a mano.
+**Estado**: activa (2026-11-23); implementada en local. Falta configurar `ADMIN_KEY` y
+`DEVICE_KEY` en Render, aplicar la migración 0003 y desplegar.
 
-**Fuera de alcance**: inventario, costos, proveedores, facturación.
+**Objetivo**: desde la laptop, editar precios por nivel (lista, promoción, mayoreo), activar o
+desactivar productos y publicar el catálogo a las cajas sin tocar la base a mano. En la misma
+iteración se cierra el acceso público a la base y a los endpoints sensibles.
 
-**Seguridad (añadido 2026-11-22)**: antes de exponer la escritura, 008 debe cerrar el acceso
-público a la base. Hoy RLS está deshabilitado en las 7 tablas de `public`. Hay que habilitarlo,
-definir políticas por tabla o dejar sin acceso a `anon`/`authenticated` si ningún cliente usa la
-llave pública, crear un rol de base con privilegios mínimos para la API y separar las llaves de
-Supabase. La API seguirá conectando con su usuario de base, nunca con `anon`.
+**Fuera de alcance**: alta de productos, precios por cliente, historial de cambios, inventario,
+costos, proveedores y facturación.
 
-**Dudas abiertas**: ¿un precio negociado vive en el cliente (producto + cliente) o se
-captura al vuelo en cada venta? ¿quién puede editar (PIN)? ¿vigencia programada e historial
-de cambios?
+**Seguridad aplicada (2026-11-23)**: RLS habilitado en las 7 tablas de `public`, cero permisos
+para `anon`/`authenticated` y la migración `0003_seguridad` prepara el rol `polleria_api`. La API
+exige clave de administración para escribir y clave del local para sincronizar y ver reportes.
+Los pasos pendientes están en `docs/seguridad.md`.
+
+**Decisiones**: precios base y activar/desactivar; clave de admin + clave del local; publicar
+reemplaza la hoja del día en curso; sin historial de precios en esta iteración.
 
 ## 009 — Impresión
 

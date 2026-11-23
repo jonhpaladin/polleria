@@ -19,6 +19,10 @@ function sortRows(rows: DailyPrice[], catalog: Catalog): DailyPrice[] {
   return [...rows].sort((a, b) => (order.get(a.productId) ?? 0) - (order.get(b.productId) ?? 0));
 }
 
+function catalogVersionKey(date: string): string {
+  return `dailyPricesCatalog:${date}`;
+}
+
 export async function openDailyPrices(
   catalog: Catalog,
   now = new Date(),
@@ -26,9 +30,24 @@ export async function openDailyPrices(
 ): Promise<OpenDailyPricesResult> {
   const date = businessDate(now);
   const updatedAtUtc = now.toISOString();
-  return db.transaction("rw", db.dailyPrices, async () => {
+  return db.transaction("rw", db.dailyPrices, db.meta, async () => {
     const current = await db.dailyPrices.where("businessDate").equals(date).toArray();
     const currentByProduct = new Map(current.map((row) => [row.productId, row]));
+    const versionRow = await db.meta.get(catalogVersionKey(date));
+    const version = versionRow?.value.updatedAt;
+
+    // Publicar precios en el catálogo reemplaza la hoja del día en curso.
+    if (version !== undefined && version !== catalog.updatedAt && current.length > 0) {
+      const rows = buildBaseDailyPrices(catalog, date, updatedAtUtc);
+      await db.dailyPrices.where("businessDate").equals(date).delete();
+      await db.dailyPrices.bulkAdd(rows);
+      await db.meta.put({
+        key: catalogVersionKey(date),
+        value: { updatedAt: catalog.updatedAt },
+      });
+      return { rows: sortRows(rows, catalog), saved: true, businessDate: date };
+    }
+
     const activeProducts = catalog.products.filter((product) => product.active);
     const missing = activeProducts.filter((product) => {
       const row = currentByProduct.get(product.id);
@@ -36,6 +55,12 @@ export async function openDailyPrices(
     });
 
     if (missing.length === 0) {
+      if (version === undefined) {
+        await db.meta.put({
+          key: catalogVersionKey(date),
+          value: { updatedAt: catalog.updatedAt },
+        });
+      }
       return { rows: sortRows(current, catalog), saved: true, businessDate: date };
     }
 
@@ -56,6 +81,10 @@ export async function openDailyPrices(
     const added = candidates.filter((row) => missingIds.has(row.productId));
 
     await db.dailyPrices.bulkPut(added);
+    await db.meta.put({
+      key: catalogVersionKey(date),
+      value: { updatedAt: catalog.updatedAt },
+    });
     const merged = [
       ...current.filter((row) => !missingIds.has(row.productId)),
       ...added,
