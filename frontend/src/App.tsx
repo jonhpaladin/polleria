@@ -25,7 +25,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "sale", label: "Venta" },
   { id: "cart", label: "Carrito" },
   { id: "prices", label: "Precios del día" },
-  { id: "reports", label: "Corte" },
+  { id: "reports", label: "Corte del día" },
 ];
 
 export default function App() {
@@ -84,8 +84,8 @@ export default function App() {
       </header>
 
       <main className="mx-auto max-w-6xl">
-        <nav aria-label="Secciones" className="border-b border-stone-200 px-4 py-3">
-          <div className="mx-auto flex max-w-6xl flex-wrap gap-2">
+        <nav aria-label="Secciones" className="border-b border-stone-200 py-3">
+          <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {TABS.map((tab) => {
               const label =
                 tab.id === "cart" && sale.cart.lines.length > 0
@@ -97,7 +97,7 @@ export default function App() {
                   type="button"
                   aria-pressed={activeTab === tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`min-h-12 whitespace-nowrap rounded-full px-5 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${activeTab === tab.id ? "bg-brand-600 text-white" : "bg-white text-stone-700 hover:bg-brand-50"}`}
+                  className={`min-h-12 shrink-0 whitespace-nowrap rounded-full px-5 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${activeTab === tab.id ? "bg-brand-600 text-white" : "bg-white text-stone-700 hover:bg-brand-50"}`}
                 >
                   {label}
                 </button>
