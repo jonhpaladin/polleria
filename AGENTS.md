@@ -10,8 +10,10 @@ Nada se implementa fuera de la spec activa.
   (backend); peso en gramos enteros (frontend) y `NUMERIC(8,3)` (backend).
 - ✅ Siempre: textos de UI, comentarios (el porqué, no el qué) y docs en español;
   type hints en todo Python nuevo.
+- ✅ Siempre: usa variables y nombres relacionados a la funcion que tendran.
 - ✅ Siempre: al terminar una tarea, correr la puerta de calidad (ver Comandos) y
   actualizar `MEMORY.md`.
+- ✅ Siempre: Manten el codigo lo mas simple y funcional posible.
 - ⚠️ Pregunta antes: añadir una dependencia de producción; tocar contratos de `/sync`;
   cambiar el esquema de Dexie o el payload del outbox; si falta una decisión de negocio
   (se enmienda la spec antes de codificar).
