@@ -75,8 +75,13 @@ Nada se implementa fuera de la spec activa.
 
 ## UI de mostrador
 - Uso primario: celular/tablet, manos ocupadas, horas pico. Área táctil ≥48 px, contraste
-  alto, carrito siempre visible y editable. Uso secundario: laptop (precios y reportes).
-- Atajos de peso `0.500`, `1.000`, `1.500`, `2.000` kg y ajuste de ±250 g en el carrito.
+  alto. Uso secundario: laptop (precios y reportes).
+- Tocar un producto abre una hoja de detalle (peso/cantidad y precio); solo «Agregar» toca el
+  carrito. Ningún panel tapa la rejilla.
+- El carrito vive en su pestaña y se abre con un icono flotante con contador; ahí se edita,
+  se elige el pago y se confirma.
+- Atajos de peso `0.500`, `1.000`, `1.500`, `2.000` kg y ajuste de ±250 g en la hoja y en el
+  carrito.
 - Impresión térmica: en Chromium, `--kiosk-printing` evita el diálogo de confirmación.
 
 ## Verificación manual (PWA / offline)

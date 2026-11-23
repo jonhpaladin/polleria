@@ -16,9 +16,10 @@ interface CartProps {
   success: string | null;
   onAction: (action: CartAction) => void;
   onCheckout: () => void;
+  onBackToSale?: () => void;
 }
 
-export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, onAction, onCheckout }: CartProps) {
+export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, onAction, onCheckout, onBackToSale }: CartProps) {
   const dailyPriceByProduct = new Map(dailyPrices.map((price) => [price.productId, price]));
   const total = cartTotalCents(cart);
   const errorRef = useRef<HTMLParagraphElement | null>(null);
@@ -33,16 +34,27 @@ export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, o
   }, [success]);
 
   return (
-    <aside aria-labelledby="carrito-title" className="sticky bottom-0 z-10 border-t border-stone-300 bg-cream-50/98 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_rgba(28,25,23,0.08)] backdrop-blur">
+    <aside aria-labelledby="carrito-title" className="border-t border-stone-300 bg-cream-50 px-4 pb-10 pt-4">
       <div className="mx-auto max-w-6xl">
         <div className="flex items-center justify-between gap-3">
           <h2 id="carrito-title" className="text-xl font-black text-stone-900">Carrito</h2>
           <span className="text-sm font-semibold text-stone-500">{cart.lines.length} línea{cart.lines.length === 1 ? "" : "s"}</span>
         </div>
         {cart.lines.length === 0 ? (
-          <p className="py-4 text-sm text-stone-600">Toca un producto para agregarlo.</p>
+          <div className="py-6">
+            <p className="text-sm text-stone-600">Toca un producto para configurarlo y agregarlo.</p>
+            {onBackToSale && !success ? (
+              <button
+                type="button"
+                onClick={onBackToSale}
+                className="mt-3 min-h-12 rounded-xl border border-stone-300 bg-white px-4 text-sm font-bold text-stone-800 transition-colors hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              >
+                Ir a vender
+              </button>
+            ) : null}
+          </div>
         ) : (
-          <ul className="max-h-[40vh] overflow-y-auto pr-1">
+          <ul>
             {cart.lines.map((line) => (
               <CartLine key={line.lineId} line={line} dailyPrice={dailyPriceByProduct.get(line.productId)} onAction={onAction} />
             ))}
@@ -82,7 +94,20 @@ export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, o
             {error}
           </p>
         ) : null}
-        {success ? <p ref={successRef} tabIndex={-1} className="mt-3 text-sm font-semibold text-emerald-700 focus:outline-none" role="status" aria-live="polite">{success}</p> : null}
+        {success ? (
+          <div className="mt-3">
+            <p ref={successRef} tabIndex={-1} className="text-sm font-semibold text-emerald-700 focus:outline-none" role="status" aria-live="polite">{success}</p>
+            {onBackToSale ? (
+              <button
+                type="button"
+                onClick={onBackToSale}
+                className="mt-3 min-h-12 rounded-xl bg-stone-900 px-4 text-sm font-bold text-white transition-colors hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-700 focus-visible:ring-offset-2"
+              >
+                Volver a vender
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </aside>
   );

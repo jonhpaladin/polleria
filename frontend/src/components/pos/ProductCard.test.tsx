@@ -15,13 +15,13 @@ function productBySku(sku: string) {
 }
 
 describe("ProductCard", () => {
-  it("agrega el producto al tocarlo", () => {
+  it("abre el detalle del producto al tocarlo", () => {
     const onSelect = vi.fn();
     render(
       <ProductCard product={productBySku("PIERNA-MUSLO")} categoryName="Pollo" onSelect={onSelect} />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Agregar Pierna y muslo al carrito" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ver Pierna y muslo" }));
 
     expect(onSelect).toHaveBeenCalledTimes(1);
   });

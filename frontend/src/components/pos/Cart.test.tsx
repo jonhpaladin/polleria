@@ -45,8 +45,10 @@ function renderCart(overrides: {
   canCheckout?: boolean;
   saving?: boolean;
   error?: string | null;
+  success?: string | null;
   onAction?: (action: unknown) => void;
   onCheckout?: () => void;
+  onBackToSale?: () => void;
 } = {}) {
   const onAction = overrides.onAction ?? vi.fn();
   const onCheckout = overrides.onCheckout ?? vi.fn();
@@ -57,9 +59,10 @@ function renderCart(overrides: {
       canCheckout={overrides.canCheckout ?? true}
       saving={overrides.saving ?? false}
       error={overrides.error ?? null}
-      success={null}
+      success={overrides.success ?? null}
       onAction={onAction}
       onCheckout={onCheckout}
+      onBackToSale={overrides.onBackToSale}
     />,
   );
   return { onAction, onCheckout };
@@ -105,8 +108,32 @@ describe("Cart", () => {
   it("mantiene visible el botón de confirmar y lo deshabilita con el carrito vacío", () => {
     renderCart({ cart: cart({ lines: [] }) });
 
-    expect(screen.getByText("Toca un producto para agregarlo.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Toca un producto para configurarlo y agregarlo."),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Confirmar venta" })).toBeDisabled();
+  });
+
+  it("vuelve a vender desde el carrito vacío", () => {
+    const onBackToSale = vi.fn();
+    renderCart({ cart: cart({ lines: [] }), onBackToSale });
+
+    fireEvent.click(screen.getByRole("button", { name: "Ir a vender" }));
+
+    expect(onBackToSale).toHaveBeenCalledTimes(1);
+  });
+
+  it("ofrece volver a vender después de cobrar", () => {
+    const onBackToSale = vi.fn();
+    renderCart({
+      cart: cart({ lines: [] }),
+      success: "Venta confirmada: $75.00 en Efectivo. Folio local 1.",
+      onBackToSale,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Volver a vender" }));
+
+    expect(onBackToSale).toHaveBeenCalledTimes(1);
   });
 
   it("deshabilita confirmar mientras guarda la venta", () => {

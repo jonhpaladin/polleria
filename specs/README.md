@@ -9,10 +9,11 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | cerrada por ratificación del dueño (2026-11-13) |
 | 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 | pospuesta (2026-11-22) |
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | cerrada por ratificación del dueño (2026-11-22) |
-| 005 | `005-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | siguiente (borrador) |
-| 006 | `006-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
-| 007 | `007-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
-| 008 | `008-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
+| 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | activa (implementada; falta validación del dueño) |
+| 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | borrador |
+| 007 | `007-precios-admin` | Edición de precios y publicación a los dispositivos | 001 (+004 para propagar) | borrador |
+| 008 | `008-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
+| 009 | `009-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 
 ## 002 — Venta offline
 
@@ -23,9 +24,9 @@ tarjeta o transferencia), totales en centavos y ticket persistido en IndexedDB c
 `client_order_uuid`. La línea del ticket congela el precio elegido, aunque el catálogo cambie
 después.
 
-**Fuera de alcance**: sincronizar (004), imprimir (007), anular con auditoría, descuentos,
+**Fuera de alcance**: sincronizar (004), imprimir (008), anular con auditoría, descuentos,
 propinas, redondeo, procesamiento bancario, PIN/roles y precios ligados a un cliente
-registrado (006).
+registrado (007).
 
 **Decisión**: el precio manual se captura sin autorización (D-002-06); PIN, roles y
 autenticación se revisan en una spec posterior.
@@ -41,7 +42,7 @@ respaldo por inicial si falta el archivo. La imagen se resuelve por SKU, sin cam
 ni de Dexie.
 
 **Fuera de alcance**: subir o editar imágenes desde la app, fotos reales del local, iconos de
-categoría, búsqueda, favoritos, sincronización (004) e impresión (007).
+categoría, búsqueda, favoritos, sincronización (004) e impresión (008).
 
 **Decisiones**: foto de estudio generada con IA y muestra aprobada como referencia; 26 SKU
 provisionales reemplazables por SKU; WebP 512×512, ≤60 KB cada una; 2/3/4 columnas.
@@ -64,7 +65,24 @@ seguros y `POST /sync` idempotente. Un fallo de red no pierde ni duplica tickets
 `failed` con reintento manual; el backend guarda el ticket como snapshot; el catálogo sigue
 por `GET /catalog` y `/sync` solo transporta ventas.
 
-## 005 — Corte de caja y reportes
+## 005 — Venta táctil
+
+**Estado**: implementada el 2026-11-22; pendiente la validación visual del dueño en celular y
+tablet para cerrarla.
+
+**Objetivo**: que el cajero configure el producto en una hoja de detalle (peso o cantidad y
+precio) y revise la venta en una pestaña de carrito, sin que ningún panel tape la rejilla.
+
+**Fuera de alcance**: imágenes (003), pago por línea, reportes (006), impresión (008),
+multidispositivo (009).
+
+**Decisiones**: un método de pago por venta en el carrito (D-005-01); icono flotante con
+contador y pestaña Carrito (D-005-02); hoja inferior en celular y diálogo centrado en laptop
+(D-005-03); precio manual y quitar línea en el carrito (D-005-04).
+
+**Dudas abiertas**: ninguna.
+
+## 006 — Corte de caja y reportes
 
 **Objetivo**: corte por turno/día y reportes de ventas agrupados por fecha local
 `America/Mexico_City`, calculados desde datos locales y conciliados con el backend.
@@ -74,7 +92,7 @@ por `GET /catalog` y `/sync` solo transporta ventas.
 **Dudas abiertas**: ¿turnos fijos o botón "cerrar caja"? ¿qué se hace con ventas
 sincronizadas después del corte? ¿propinas se reportan aparte?
 
-## 006 — Administración de precios
+## 007 — Administración de precios
 
 **Objetivo**: desde la laptop, editar precios por nivel (lista, promoción, mayoreo),
 activar/desactivar productos, registrar clientes con precios negociados y publicar el
@@ -82,7 +100,7 @@ catálogo a las cajas sin tocar la base a mano.
 
 **Fuera de alcance**: inventario, costos, proveedores, facturación.
 
-**Seguridad (añadido 2026-11-22)**: antes de exponer la escritura, 006 debe cerrar el acceso
+**Seguridad (añadido 2026-11-22)**: antes de exponer la escritura, 007 debe cerrar el acceso
 público a la base. Hoy RLS está deshabilitado en las 7 tablas de `public`. Hay que habilitarlo,
 definir políticas por tabla o dejar sin acceso a `anon`/`authenticated` si ningún cliente usa la
 llave pública, crear un rol de base con privilegios mínimos para la API y separar las llaves de
@@ -92,7 +110,7 @@ Supabase. La API seguirá conectando con su usuario de base, nunca con `anon`.
 captura al vuelo en cada venta? ¿quién puede editar (PIN)? ¿vigencia programada e historial
 de cambios?
 
-## 007 — Impresión
+## 008 — Impresión
 
 **Objetivo**: ticket en impresora térmica 58/80 mm por ESC/POS y etiquetas por TSPL, con
 `--kiosk-printing` en Chromium.
@@ -102,7 +120,7 @@ de cambios?
 **Dudas abiertas**: ¿modelo de impresora? ¿USB, Bluetooth o red? ¿se imprime antes o
 después de confirmar el cobro?
 
-## 008 — Multidispositivo (condicional)
+## 009 — Multidispositivo (condicional)
 
 **Objetivo**: dos o más cajas operando a la vez sin pisarse precios ni folios. Solo se abre
 si el local realmente lo necesita; hoy la concurrencia está sin definir.

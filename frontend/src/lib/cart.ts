@@ -4,10 +4,16 @@ import { sumCents } from "@/lib/money";
 import { assertGrams, GRAM_STEP } from "@/lib/weight";
 import type { Product } from "@/types/catalog";
 import type { DailyPrice, DailyPriceSource } from "@/types/dailyPrice";
-import type { CartLine, CartState, Grams, PriceSource } from "@/types/sale";
+import type { CartLine, CartState, Grams } from "@/types/sale";
 
 export type CartAction =
-  | { type: "addProduct"; product: Product; categoryName: string; dailyPrice: DailyPrice }
+  | {
+      type: "addProduct";
+      product: Product;
+      categoryName: string;
+      dailyPrice: DailyPrice;
+      selection?: LineSelection;
+    }
   | { type: "removeLine"; lineId: string }
   | { type: "incrementPiece"; lineId: string }
   | { type: "decrementPiece"; lineId: string }
@@ -17,6 +23,13 @@ export type CartAction =
   | { type: "setManualPrice"; lineId: string; unitPriceCents: CartLine["unitPriceCents"] }
   | { type: "setPayment"; paymentMethod: CartState["paymentMethod"] }
   | { type: "clear" };
+
+/** Lo que el cajero elige en la hoja de producto antes de agregar. */
+export interface LineSelection {
+  priceSource?: DailyPriceSource;
+  grams?: Grams;
+  quantity?: number;
+}
 
 export const EMPTY_CART: CartState = { lines: [], paymentMethod: "cash" };
 
@@ -33,9 +46,17 @@ export function lineTotalCents(
   return Math.floor((unitPriceCents * grams + 500) / 1000) as CartLine["lineTotalCents"];
 }
 
-function createLine(product: Product, categoryName: string, dailyPrice: DailyPrice): CartLine {
-  const grams = product.unit === "kg" ? assertGrams(1000) : null;
-  const unitPriceCents = dailyPrice.normalPriceCents;
+function createLine(
+  product: Product,
+  categoryName: string,
+  dailyPrice: DailyPrice,
+  selection: LineSelection = {},
+): CartLine {
+  const priceSource = selection.priceSource ?? "lista";
+  const unitPriceCents = selectDailyPrice(dailyPrice, priceSource) ?? dailyPrice.normalPriceCents;
+  const quantity =
+    product.unit === "piece" ? Math.max(1, Math.trunc(selection.quantity ?? 1)) : 1;
+  const grams = product.unit === "kg" ? assertGrams(selection.grams ?? 1000) : null;
   const line = {
     lineId: crypto.randomUUID(),
     productId: product.id,
@@ -43,9 +64,9 @@ function createLine(product: Product, categoryName: string, dailyPrice: DailyPri
     name: product.name,
     categoryName,
     unit: product.unit,
-    quantity: 1,
+    quantity,
     grams,
-    priceSource: "lista" as PriceSource,
+    priceSource,
     catalogUnitPriceCents: defaultPrice(product)?.priceCents ?? dailyPrice.normalPriceCents,
     unitPriceCents,
     lineTotalCents: 0 as CartLine["lineTotalCents"],
@@ -68,7 +89,12 @@ export function cartTotalCents(state: CartState) {
 export function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "addProduct": {
-      const line = createLine(action.product, action.categoryName, action.dailyPrice);
+      const line = createLine(
+        action.product,
+        action.categoryName,
+        action.dailyPrice,
+        action.selection,
+      );
       if (action.product.unit === "piece") {
         const existing = state.lines.find(
           (item) => item.productId === line.productId && item.unitPriceCents === line.unitPriceCents && item.priceSource === line.priceSource,

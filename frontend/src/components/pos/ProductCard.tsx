@@ -29,7 +29,7 @@ export function ProductCard({
     <button
       type="button"
       onClick={onSelect}
-      aria-label={`Agregar ${product.name} al carrito`}
+      aria-label={`Ver ${product.name}`}
       className="flex min-h-40 w-full flex-col justify-between gap-3 rounded-2xl border border-stone-200 bg-white p-4 text-left shadow-sm transition-colors hover:border-brand-300 hover:bg-brand-50/40 active:bg-brand-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
     >
       <div>

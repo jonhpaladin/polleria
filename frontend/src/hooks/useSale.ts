@@ -1,6 +1,6 @@
 import { useCallback, useReducer, useRef, useState } from "react";
 
-import { cartReducer, EMPTY_CART, type CartAction } from "@/lib/cart";
+import { cartReducer, EMPTY_CART, type CartAction, type LineSelection } from "@/lib/cart";
 import { businessDate } from "@/lib/dailyPrices";
 import { formatCents } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/payment";
@@ -12,7 +12,7 @@ import type { CartState } from "@/types/sale";
 export interface UseSaleResult {
   cart: CartState;
   dispatch: (action: CartAction) => void;
-  addProduct: (productId: string, categoryName: string) => void;
+  addProduct: (productId: string, categoryName: string, selection?: LineSelection) => boolean;
   canCheckout: boolean;
   saving: boolean;
   error: string | null;
@@ -53,21 +53,22 @@ export function useSale(
     cart.lines.every((line) => dailyPrices.some((row) => row.productId === line.productId));
 
   const addProduct = useCallback(
-    (productId: string, categoryName: string) => {
+    (productId: string, categoryName: string, selection?: LineSelection): boolean => {
       const product = catalog?.products.find((item) => item.id === productId);
       const dailyPrice = dailyPrices.find((row) => row.productId === productId);
-      if (!product) return;
+      if (!product) return false;
       if (!isToday || pricesAreStale()) {
         setError("Los precios no son de hoy. Abre Precios del día para cargar la hoja de hoy.");
-        return;
+        return false;
       }
       if (!dailyPrice) {
         setError("Abre Precios del día para cargar los precios de hoy.");
-        return;
+        return false;
       }
       setError(null);
       setSuccess(null);
-      dispatch({ type: "addProduct", product, categoryName, dailyPrice });
+      dispatch({ type: "addProduct", product, categoryName, dailyPrice, selection });
+      return true;
     },
     [catalog, dailyPrices, isToday, pricesAreStale],
   );

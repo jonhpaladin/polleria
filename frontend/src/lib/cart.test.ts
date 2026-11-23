@@ -244,4 +244,48 @@ describe("cartReducer", () => {
   it("mantiene efectivo como método por defecto", () => {
     expect(withPierna().paymentMethod).toBe("cash");
   });
+
+  it("agrega con el peso y el nivel de precio elegidos en la hoja", () => {
+    const cart = cartReducer(EMPTY_CART, {
+      type: "addProduct",
+      product: pierna,
+      categoryName: "Pollo",
+      dailyPrice: dailyPrice(),
+      selection: { priceSource: "promocion", grams: 500 as never },
+    });
+
+    expect(cart.lines[0]).toMatchObject({
+      grams: 500,
+      quantity: 1,
+      priceSource: "promocion",
+      unitPriceCents: 13000,
+      lineTotalCents: 6500,
+    });
+  });
+
+  it("agrega varias piezas con el nivel de precio elegido", () => {
+    const piecePrice = dailyPrice({
+      id: "2026-11-13:prd-combo",
+      productId: "prd-combo",
+      unit: "piece",
+      normalPriceCents: 29900 as Cents,
+      promotionPriceCents: null,
+      wholesalePriceCents: 25000 as Cents,
+    });
+    const cart = cartReducer(EMPTY_CART, {
+      type: "addProduct",
+      product: combo,
+      categoryName: "Promociones",
+      dailyPrice: piecePrice,
+      selection: { priceSource: "mayoreo", quantity: 3 },
+    });
+
+    expect(cart.lines[0]).toMatchObject({
+      quantity: 3,
+      grams: null,
+      priceSource: "mayoreo",
+      unitPriceCents: 25000,
+      lineTotalCents: 75000,
+    });
+  });
 });

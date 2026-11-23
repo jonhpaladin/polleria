@@ -84,11 +84,50 @@ describe("useSale", () => {
 
   it("no agrega productos si la hoja del día aún no está disponible", () => {
     const { result } = renderHook(() => useSale(catalog, [], false));
+    let added = true;
 
-    act(() => result.current.addProduct("prd-pierna", "Pollo"));
+    act(() => {
+      added = result.current.addProduct("prd-pierna", "Pollo");
+    });
 
+    expect(added).toBe(false);
     expect(result.current.cart.lines).toHaveLength(0);
     expect(result.current.error).toContain("Precios del día");
+  });
+
+  it("agrega con el peso y el nivel de precio elegidos", () => {
+    const { result } = renderHook(() => useSale(catalog, dailyPrices, true));
+    let added = false;
+
+    act(() => {
+      added = result.current.addProduct("prd-pierna", "Pollo", {
+        priceSource: "promocion",
+        grams: 500 as never,
+      });
+    });
+
+    expect(added).toBe(true);
+    expect(result.current.cart.lines[0]).toMatchObject({
+      grams: 500,
+      priceSource: "promocion",
+      unitPriceCents: 13000,
+      lineTotalCents: 6500,
+    });
+  });
+
+  it("agrega varias piezas de una vez", () => {
+    const { result } = renderHook(() => useSale(catalog, dailyPrices, true));
+
+    act(() => {
+      result.current.addProduct("prd-combo", "Promociones", { quantity: 3 });
+    });
+
+    expect(result.current.cart.lines[0]).toMatchObject({
+      quantity: 3,
+      grams: null,
+      unitPriceCents: 29900,
+      lineTotalCents: 89700,
+    });
   });
 
   it("bloquea agregar y cobrar si la hoja es de ayer aunque el render diga que es hoy", async () => {

@@ -7,15 +7,27 @@ import { usePwaUpdate } from "@/hooks/usePwaUpdate";
 import { useSale } from "@/hooks/useSale";
 import { useSync } from "@/hooks/useSync";
 import { Cart } from "@/components/pos/Cart";
+import { CartFloatingButton } from "@/components/pos/CartFloatingButton";
 import { CategoryBar } from "@/components/pos/CategoryBar";
 import { ConnectionBadge } from "@/components/pos/ConnectionBadge";
 import { DailyPricesTab } from "@/components/pos/DailyPricesTab";
 import { ProductGrid } from "@/components/pos/ProductGrid";
+import { ProductSheet } from "@/components/pos/ProductSheet";
 import { SyncBadge } from "@/components/pos/SyncBadge";
 import { UpdateBanner } from "@/components/ui/UpdateBanner";
+import type { Product } from "@/types/catalog";
+
+type Tab = "sale" | "cart" | "prices";
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: "sale", label: "Venta" },
+  { id: "cart", label: "Carrito" },
+  { id: "prices", label: "Precios del día" },
+];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"sale" | "prices">("sale");
+  const [activeTab, setActiveTab] = useState<Tab>("sale");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { catalog, origin, online, selectedCategory, selectCategory } = useCatalog();
   const sync = useSync({ online });
   const dailyPrices = useDailyPrices(catalog);
@@ -34,6 +46,12 @@ export default function App() {
   const visibleProducts = catalog ? selectProducts(products, selectedCategory) : [];
   const updatedLabel = catalog ? formatUpdatedAt(catalog.updatedAt, new Date()) : null;
   const categoryNames = new Map(categories.map((category) => [category.id, category.name]));
+  const selectedCategoryName = selectedProduct
+    ? (categoryNames.get(selectedProduct.categoryId) ?? selectedProduct.categoryId)
+    : "";
+  const selectedDailyPrice = selectedProduct
+    ? dailyPrices.rows.find((row) => row.productId === selectedProduct.id)
+    : undefined;
 
   return (
     <div className="min-h-dvh bg-cream-50">
@@ -60,23 +78,24 @@ export default function App() {
 
       <main className="mx-auto max-w-6xl">
         <nav aria-label="Secciones" className="border-b border-stone-200 px-4 py-3">
-          <div className="mx-auto flex max-w-6xl gap-2">
-            <button
-              type="button"
-              aria-pressed={activeTab === "sale"}
-              onClick={() => setActiveTab("sale")}
-              className={`min-h-12 rounded-full px-5 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${activeTab === "sale" ? "bg-brand-600 text-white" : "bg-white text-stone-700 hover:bg-brand-50"}`}
-            >
-              Venta
-            </button>
-            <button
-              type="button"
-              aria-pressed={activeTab === "prices"}
-              onClick={() => setActiveTab("prices")}
-              className={`min-h-12 rounded-full px-5 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${activeTab === "prices" ? "bg-brand-600 text-white" : "bg-white text-stone-700 hover:bg-brand-50"}`}
-            >
-              Precios del día
-            </button>
+          <div className="mx-auto flex max-w-6xl flex-wrap gap-2">
+            {TABS.map((tab) => {
+              const label =
+                tab.id === "cart" && sale.cart.lines.length > 0
+                  ? `${tab.label} (${sale.cart.lines.length})`
+                  : tab.label;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  aria-pressed={activeTab === tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`min-h-12 whitespace-nowrap rounded-full px-5 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${activeTab === tab.id ? "bg-brand-600 text-white" : "bg-white text-stone-700 hover:bg-brand-50"}`}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
         </nav>
         {activeTab === "prices" ? (
@@ -91,6 +110,18 @@ export default function App() {
             error={dailyPrices.error}
             onSave={dailyPrices.save}
           />
+        ) : activeTab === "cart" ? (
+          <Cart
+            cart={sale.cart}
+            dailyPrices={dailyPrices.rows}
+            canCheckout={sale.canCheckout}
+            saving={sale.saving}
+            error={sale.error}
+            success={sale.success}
+            onAction={sale.dispatch}
+            onCheckout={() => void sale.checkout()}
+            onBackToSale={() => setActiveTab("sale")}
+          />
         ) : (
           <>
             <CategoryBar
@@ -103,29 +134,34 @@ export default function App() {
               categories={categories}
               dailyPrices={dailyPrices.rows}
               loading={origin === "loading" || dailyPrices.loading}
-              onSelect={(product) =>
-                sale.addProduct(
-                  product.id,
-                  categoryNames.get(product.categoryId) ?? product.categoryId,
-                )
-              }
+              onSelect={(product) => setSelectedProduct(product)}
             />
             {updatedLabel ? (
-              <p className="px-4 pb-6 text-xs text-stone-500">{updatedLabel}</p>
+              <p className="px-4 pb-24 text-xs text-stone-500">{updatedLabel}</p>
             ) : null}
-            <Cart
-              cart={sale.cart}
-              dailyPrices={dailyPrices.rows}
-              canCheckout={sale.canCheckout}
-              saving={sale.saving}
-              error={sale.error}
-              success={sale.success}
-              onAction={sale.dispatch}
-              onCheckout={() => void sale.checkout()}
-            />
           </>
         )}
       </main>
+
+      {activeTab !== "cart" ? (
+        <CartFloatingButton
+          count={sale.cart.lines.length}
+          onOpen={() => setActiveTab("cart")}
+        />
+      ) : null}
+
+      {selectedProduct ? (
+        <ProductSheet
+          product={selectedProduct}
+          categoryName={selectedCategoryName}
+          dailyPrice={selectedDailyPrice}
+          canSell={dailyPrices.isToday && dailyPrices.canSave}
+          onAdd={(selection) =>
+            sale.addProduct(selectedProduct.id, selectedCategoryName, selection)
+          }
+          onClose={() => setSelectedProduct(null)}
+        />
+      ) : null}
     </div>
   );
 }
