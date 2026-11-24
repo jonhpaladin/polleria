@@ -1,6 +1,6 @@
-# Prompts 003 — Catálogo visual de Pollería El Wero
+# Prompts 003 — Catálogo visual de Pollería El Wero (25 productos, sin bebidas)
 
-Guía para generar las 29 imágenes del catálogo actual. Cada prompt ya incluye el estilo, así que
+Guía para generar las 25 imágenes del catálogo actual. Las 4 bebidas quedan sin imagen y usan el respaldo con inicial. Cada prompt ya incluye el estilo, así que
 puedes copiarlo completo. El texto va en inglés porque los generadores de imagen suelen respetar
 mejor las indicaciones en ese idioma; los nombres de los productos quedan en español.
 
@@ -12,7 +12,7 @@ mejor las indicaciones en ese idioma; los nombres de los productos quedan en esp
 3. Revisa una hoja de contactos antes de aceptar el lote: fondo crema, madera clara, luz desde
    la izquierda, ángulo cenital suave y la mascota arriba a la derecha.
 4. Si el modelo no mantiene bien la mascota, genera la imagen sin ella y en la app superponemos
-   el SVG real de `BrandMark`; así el sello queda idéntico en las 29 tarjetas.
+   el SVG real de `BrandMark`; así el sello queda idéntico en las 25 tarjetas.
 5. No incluyas nombres, precios, logotipos ni marcas de agua: la tarjeta ya muestra el texto.
 6. Devuelve las imágenes en PNG o JPG; aquí las convierto a WebP 512×512 y las optimizo a ≤60 KB.
 
@@ -319,50 +319,11 @@ watermark, no hands, no people; a small flat white cartoon chicken mascot sticke
 comb, yellow beak, red outline and a friendly smile in the top-right corner, about 12% of the
 frame.
 
-## Bebidas
+## Bebidas sin imagen
 
-### 26. Refresco — `REFRESCO` → `refresco.webp`
-
-A chilled generic glass cola bottle with condensation and no label text, a glass with ice, a
-red-and-yellow napkin. Square 1:1 professional food photography for a Mexican neighborhood
-chicken shop, warm cream background, light oak wood surface, deep red and warm yellow accents,
-soft diffused daylight from the upper left, gentle natural shadows, 45-degree overhead angle,
-shallow depth of field, crisp focus on the food, appetizing and clean, no text, no letters, no
-logos, no watermark, no hands, no people; a small flat white cartoon chicken mascot sticker with
-a red comb, yellow beak, red outline and a friendly smile in the top-right corner, about 12% of
-the frame.
-
-### 27. Agua 600 ml — `AGUA` → `agua-600-ml.webp`
-
-A clear 600 ml plastic water bottle with a blue cap and condensation, no label text, on a light
-oak surface. Square 1:1 professional food photography for a Mexican neighborhood chicken shop,
-warm cream background, light oak wood surface, deep red and warm yellow accents, soft diffused
-daylight from the upper left, gentle natural shadows, 45-degree overhead angle, shallow depth of
-field, crisp focus on the food, appetizing and clean, no text, no letters, no logos, no
-watermark, no hands, no people; a small flat white cartoon chicken mascot sticker with a red
-comb, yellow beak, red outline and a friendly smile in the top-right corner, about 12% of the
-frame.
-
-### 28. Agua 1.5 L — `AGUA-LITRO` → `agua-1-5-l.webp`
-
-A large 1.5 L clear plastic water bottle with a blue cap and condensation, no label text. Square
-1:1 professional food photography for a Mexican neighborhood chicken shop, warm cream
-background, light oak wood surface, deep red and warm yellow accents, soft diffused daylight
-from the upper left, gentle natural shadows, 45-degree overhead angle, shallow depth of field,
-crisp focus on the food, appetizing and clean, no text, no letters, no logos, no watermark, no
-hands, no people; a small flat white cartoon chicken mascot sticker with a red comb, yellow
-beak, red outline and a friendly smile in the top-right corner, about 12% of the frame.
-
-### 29. Jugo natural — `JUGO` → `jugo-natural.webp`
-
-A tall glass of fresh orange juice with ice and an orange slice, a small glass pitcher of juice,
-light oak board. Square 1:1 professional food photography for a Mexican neighborhood chicken
-shop, warm cream background, light oak wood surface, deep red and warm yellow accents, soft
-diffused daylight from the upper left, gentle natural shadows, 45-degree overhead angle, shallow
-depth of field, crisp focus on the food, appetizing and clean, no text, no letters, no logos, no
-watermark, no hands, no people; a small flat white cartoon chicken mascot sticker with a red
-comb, yellow beak, red outline and a friendly smile in the top-right corner, about 12% of the
-frame.
+Las 4 bebidas (`REFRESCO`, `AGUA`, `AGUA-LITRO`, `JUGO`) no llevan imagen en este lote. La
+tarjeta usa el respaldo con la inicial y el color de la categoría; cuando haya fotos de bebidas
+se agregan por SKU sin cambiar el resto del set.
 
 ## Archivos esperados
 
@@ -393,16 +354,12 @@ frame.
 | 23 | `MOLE-POBLANO` | Mole poblano | `mole-poblano.webp` |
 | 24 | `MOLE-RANCHERO` | Mole ranchero | `mole-ranchero.webp` |
 | 25 | `DEDOS-QUESO` | Dedos de queso | `dedos-queso.webp` |
-| 26 | `REFRESCO` | Refresco | `refresco.webp` |
-| 27 | `AGUA` | Agua 600 ml | `agua-600-ml.webp` |
-| 28 | `AGUA-LITRO` | Agua 1.5 L | `agua-1-5-l.webp` |
-| 29 | `JUGO` | Jugo natural | `jugo-natural.webp` |
 
 ## Después de generarlas
 
 - Revisa que ninguna tenga texto, precio, marca ni manos.
 - Si una imagen no coincide con el estilo, regenera solo esa.
-- Entrega las 29 con el nombre de archivo de la tabla; aquí las recorto a 512×512, las convierto
+- Entrega las 25 con el nombre de archivo de la tabla; aquí las recorto a 512×512, las convierto
   a WebP y las dejo por debajo de 60 KB.
 - Si la mascota sale distinta en cada imagen, no es un problema: puedo ocultarla del asset y
   superponer el SVG real en la tarjeta para que sea idéntica en todo el catálogo.

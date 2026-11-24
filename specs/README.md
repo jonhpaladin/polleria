@@ -7,7 +7,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 |---|---|---|---|---|
 | 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | cerrada por ratificación del dueño |
 | 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | cerrada por ratificación del dueño (2026-11-13) |
-| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 (+007 para el catálogo real) | activa (2026-11-23); prompts listos, esperando imágenes |
+| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 (+007 para el catálogo real) | activa (2026-11-23); 25 prompts listos, bebidas con respaldo |
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
@@ -40,9 +40,9 @@ autenticación se revisan en una spec posterior.
 
 ## 003 — Catálogo visual
 
-**Estado**: activa (reabierta 2026-11-23). Los 29 prompts están en
-`specs/003-catalogo-visual/prompts.md`; el dueño genera las imágenes y las entrega para
-optimizarlas e integrarlas.
+**Estado**: activa (reabierta 2026-11-23). Los 25 prompts de producto están en
+`specs/003-catalogo-visual/prompts.md`; las 4 bebidas usan respaldo con inicial. El dueño genera
+las imágenes y las entrega para optimizarlas e integrarlas.
 
 **Objetivo**: que el cajero reconozca cada producto por su imagen. Cada tarjeta activa lleva una
 foto de estudio como fondo, con estilo uniforme en todo el set, servida desde el precache y con
@@ -53,7 +53,8 @@ ni de Dexie.
 categoría, búsqueda, favoritos, sincronización (004) e impresión (009).
 
 **Decisiones**: fotografía de estudio cálida con paleta rojo/amarillo del letrero, fondo crema,
-madera clara y mascota como sello; 29 SKU reales; WebP 512×512, ≤60 KB cada una; 2/3/4 columnas.
+madera clara y mascota como sello; 25 SKU con imagen y 4 bebidas con respaldo; WebP 512×512,
+≤60 KB cada una; 2/3/4 columnas.
 
 **Duda abierta**: ninguna bloqueante. Si la IA no mantiene la mascota, se superpone el SVG real.
 

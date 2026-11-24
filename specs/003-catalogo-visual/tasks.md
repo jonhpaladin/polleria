@@ -16,12 +16,12 @@
 - [x] **T-003-02 · Definir estilo y prompts**
   Fijar el estilo del set y escribir un prompt por producto en `prompts.md`, con prompt negativo,
   nombres de archivo y reglas de la mascota.
-  Hecho cuando los 29 productos reales tienen prompt y la paleta coincide con el letrero.
+  Hecho cuando los 25 productos con imagen tienen prompt y la paleta coincide con el letrero.
   RF: RF-003-02
 
-- [ ] **T-003-03 · Generar las 29 imágenes**
+- [ ] **T-003-03 · Generar las 25 imágenes**
   Usar los prompts de `prompts.md` y una semilla fija; revisar una hoja de contactos.
-  Hecho cuando las 29 imágenes comparten estilo y ninguna rompe la paleta.
+  Hecho cuando las 25 imágenes comparten estilo y ninguna rompe la paleta.
   RF: RF-003-01, RF-003-02
 
 - [ ] **T-003-04 · Optimizar y asignar nombres descriptivos**
@@ -32,14 +32,14 @@
 
 - [ ] **T-003-05 · Verificar presencia y peso**
   Crear `frontend/scripts/check-product-images.mjs` y ejecutarlo.
-  Hecho cuando el script falla si falta un SKU activo o se excede el presupuesto.
+  Hecho cuando el script falla si falta un SKU con imagen o fallback declarado, o se excede el presupuesto.
   RF: RF-003-07, RF-003-08
 
 ## Fase 2 — Código
 
 - [ ] **T-003-06 · Crear el mapa de imágenes**
   Implementar `productImages.ts` con `import.meta.glob`, `productImageUrl` y `fallbackInitial`;
-  agregar el test de cobertura contra los 29 SKU.
+  agregar el test de cobertura contra los 25 SKU con imagen y los 4 fallbacks.
   Hecho cuando el test pasa y un SKU desconocido devuelve `null`.
   RF: RF-003-01, RF-003-04, RF-003-07
 

@@ -35,12 +35,12 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Reportes local y remoto excluyen anuladas; el corte las muestra aparte y avisa si cambió.
 
 ## Spec 003 — Catálogo visual (activa)
-- 29 prompts en `specs/003-catalogo-visual/prompts.md`; el dueño genera y entrega las imágenes.
-- Estilo: foto de estudio cálida, crema/madera, acentos rojo/amarillo y mascota como sello.
+- 25 prompts (sin bebidas) en `specs/003-catalogo-visual/prompts.md`; el dueño genera y entrega las imágenes.
+- Las 4 bebidas usan respaldo con inicial; estilo foto de estudio, crema/madera, rojo/amarillo y mascota.
 
 ## Próximos pasos
-1. Generar las 29 imágenes con los prompts y entregarlas con el nombre de archivo indicado.
-2. Optimizar a WebP 512×512, integrar el mapa por SKU y validar el layout offline.
+1. Generar las 25 imágenes con los prompts y entregarlas con el nombre de archivo indicado.
+2. Optimizar a WebP 512×512, integrar el mapa por SKU y validar el layout offline; las bebidas quedan con respaldo.
 3. 009 impresión pendiente del modelo y la conexión de la impresora.
 4. Verificación de campo: respaldo/restauración y anulación en la tablet.
 5. Publicar precios reales cuando el dueño los defina.

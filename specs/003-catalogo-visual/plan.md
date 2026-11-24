@@ -31,7 +31,7 @@ frontend/src/assets/products/<nombre-descriptivo>.webp
 |---|---|
 | Formato | WebP |
 | Tamaño | 512×512 px, recorte cuadrado |
-| Peso | ≤60 KB por imagen; ≤2 MB el set de 29 |
+| Peso | ≤60 KB por imagen; ≤2 MB el set de 25 |
 | Fondo | Crema cálido, madera clara |
 | Paleta | Rojo `#D32F2F`, amarillo `#FBC02D`, crema `#FFFBF5` |
 | Luz | Difusa desde la izquierda |
@@ -45,7 +45,7 @@ worker las precachea con `webp` dentro de `globPatterns`.
 
 ## 3. Estilo y prompts
 
-El estilo y los 29 prompts están en `prompts.md`. Resumen del estilo:
+El estilo y los 25 prompts están en `prompts.md`. Resumen del estilo:
 
 - Fotografía de estudio cálida, no caricatura.
 - Fondo crema, madera clara y acentos rojo/amarillo del letrero.
@@ -81,10 +81,8 @@ El estilo y los 29 prompts están en `prompts.md`. Resumen del estilo:
 | `MOLE-POBLANO` | Mole poblano | `mole-poblano.webp` |
 | `MOLE-RANCHERO` | Mole ranchero | `mole-ranchero.webp` |
 | `DEDOS-QUESO` | Dedos de queso | `dedos-queso.webp` |
-| `REFRESCO` | Refresco | `refresco.webp` |
-| `AGUA` | Agua 600 ml | `agua-600-ml.webp` |
-| `AGUA-LITRO` | Agua 1.5 L | `agua-1-5-l.webp` |
-| `JUGO` | Jugo natural | `jugo-natural.webp` |
+
+Las 4 bebidas (`REFRESCO`, `AGUA`, `AGUA-LITRO`, `JUGO`) no llevan imagen y usan el respaldo con inicial.
 
 ## 4. Flujo de generación
 
@@ -115,7 +113,7 @@ const modules = import.meta.glob("../assets/products/*.webp", {
 export const PRODUCT_IMAGE_BY_SKU: Readonly<Record<string, string>> = {
   "POLLO-ENTERO": "pollo-entero",
   "PIERNA-MUSLO": "pierna-muslo",
-  // ...los 29 SKU
+  // ...los 25 SKU con imagen
 };
 export const INTENTIONAL_FALLBACKS: readonly string[] = [];
 
@@ -137,7 +135,7 @@ export function fallbackInitial(name: string): string;
 
 ## 6. Pruebas
 
-- Cobertura de los 29 SKU activos contra el mapa.
+- Cobertura de los 25 SKU con imagen y los 4 fallbacks declarados.
 - Peso por archivo y total.
 - Imagen presente, respaldo, chips, `alt=""` y precio de la hoja.
 - Layout a 360/768/1280 y smoke sin red.
