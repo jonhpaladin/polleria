@@ -2,9 +2,9 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
 ## Estado actual (2026-11-23)
-- Specs 001, 002, 004, 005, 006, 007, 008, 011 y 012 cerradas; 003 pospuesta por imágenes.
+- Specs 001, 002, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 003 activa esperando imágenes.
+- 013 validada por el dueño: historial local por rango, búsqueda por folio y CSV con anuladas.
 - 012 validada por el dueño: anulación de ticket completo con PIN, sincronización y reportes filtrados.
-- 013 activa implementada: historial local por rango, búsqueda por folio y CSV para el contador; falta validarla en campo.
 - 008: administración de precios, claves de API y RLS desplegadas; `ADMIN_KEY` y `DEVICE_KEY` ya configuradas en Render.
 - Catálogo real con 29 productos activos: 11 con precio confirmado y 18 temporales a $100; 17 inactivos.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
@@ -20,7 +20,6 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **Venta como snapshot sin FK a productos:** un cambio de catálogo no altera tickets.
 - **Corte local + conciliación remota:** el mostrador manda; el backend solo compara lo sincronizado.
 - **Precios base publicados:** las cajas refrescan cada 5 min y reemplazan la hoja del día.
-- **Respaldo local en JSON:** fusión por llave, sin nube ni cifrado en esta iteración.
 - **Anulación conserva el ticket:** estado `voided`, PIN local y `voidPending` hasta que el backend confirma.
 
 ## Specs cerradas
@@ -35,13 +34,13 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - El outbox de la venta se elimina; `POST /sales/{uuid}/void` idempotente con clave del local; 404 = no-op.
 - Reportes local y remoto excluyen anuladas; el corte las muestra aparte y avisa si cambió.
 
-## Spec 013 — Historial y CSV (activa)
-- Historial local por rango de fechas, búsqueda por folio y detalle de líneas.
-- CSV con una fila por línea, anuladas incluidas, BOM UTF-8 y hasta 500 tickets en pantalla.
+## Spec 003 — Catálogo visual (activa)
+- 29 prompts en `specs/003-catalogo-visual/prompts.md`; el dueño genera y entrega las imágenes.
+- Estilo: foto de estudio cálida, crema/madera, acentos rojo/amarillo y mascota como sello.
 
 ## Próximos pasos
-1. Validar 013 en campo: consultar un rango y abrir el CSV en Excel.
-2. 003 bloqueada hasta tener imágenes aprobadas por SKU.
+1. Generar las 29 imágenes con los prompts y entregarlas con el nombre de archivo indicado.
+2. Optimizar a WebP 512×512, integrar el mapa por SKU y validar el layout offline.
 3. 009 impresión pendiente del modelo y la conexión de la impresora.
 4. Verificación de campo: respaldo/restauración y anulación en la tablet.
 5. Publicar precios reales cuando el dueño los defina.

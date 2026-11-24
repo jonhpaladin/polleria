@@ -7,7 +7,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 |---|---|---|---|---|
 | 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | cerrada por ratificación del dueño |
 | 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | cerrada por ratificación del dueño (2026-11-13) |
-| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 | pospuesta (2026-11-22) |
+| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 (+007 para el catálogo real) | activa (2026-11-23); prompts listos, esperando imágenes |
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
@@ -17,10 +17,10 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 | 011 | `011-respaldo` | Respaldo y restauración de los datos locales | 002, 004, 006 | cerrada por ratificación del dueño (2026-11-23); verificación de campo pendiente |
 | 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | cerrada por ratificación del dueño (2026-11-23) |
-| 013 | `013-historial-ventas` | Historial de ventas y exportación CSV | 006 | activa (implementada; pendiente validación) |
+| 013 | `013-historial-ventas` | Historial de ventas y exportación CSV | 006 | cerrada por ratificación del dueño (2026-11-23) |
 
-Orden de trabajo acordado (2026-11-23): **011 respaldo → 003 imágenes → 012 anulaciones → 009
-impresión → 013 historial → 010 multidispositivo**.
+Orden de trabajo acordado (2026-11-23): **003 imágenes → 009 impresión**; 010 multidispositivo
+queda condicional.
 
 ## 002 — Venta offline
 
@@ -40,8 +40,9 @@ autenticación se revisan en una spec posterior.
 
 ## 003 — Catálogo visual
 
-**Estado**: pospuesta el 2026-11-22 por consumo de contexto y por falta de imágenes aprobadas.
-Se retoma cuando el dueño entregue el set por SKU; no hay código de 003 todavía.
+**Estado**: activa (reabierta 2026-11-23). Los 29 prompts están en
+`specs/003-catalogo-visual/prompts.md`; el dueño genera las imágenes y las entrega para
+optimizarlas e integrarlas.
 
 **Objetivo**: que el cajero reconozca cada producto por su imagen. Cada tarjeta activa lleva una
 foto de estudio como fondo, con estilo uniforme en todo el set, servida desde el precache y con
@@ -51,11 +52,10 @@ ni de Dexie.
 **Fuera de alcance**: subir o editar imágenes desde la app, fotos reales del local, iconos de
 categoría, búsqueda, favoritos, sincronización (004) e impresión (009).
 
-**Decisiones**: foto de estudio generada con IA y muestra aprobada como referencia; 26 SKU
-provisionales reemplazables por SKU; WebP 512×512, ≤60 KB cada una; 2/3/4 columnas.
+**Decisiones**: fotografía de estudio cálida con paleta rojo/amarillo del letrero, fondo crema,
+madera clara y mascota como sello; 29 SKU reales; WebP 512×512, ≤60 KB cada una; 2/3/4 columnas.
 
-**Duda abierta**: ninguna bloqueante. La lista real de productos reemplazará las imágenes por
-SKU.
+**Duda abierta**: ninguna bloqueante. Si la IA no mantiene la mascota, se superpone el SVG real.
 
 ## 004 — Sincronización e idempotencia
 
@@ -184,7 +184,7 @@ curso; la venta se conserva como anulada; el backend filtra las anuladas del rep
 
 ## 013 — Historial de ventas y CSV
 
-**Estado**: activa (2026-11-23); implementada y desplegada, pendiente la validación de campo.
+**Estado**: cerrada por ratificación del dueño (2026-11-23). Implementada, desplegada y validada.
 
 **Objetivo**: consultar tickets locales por rango de fechas, buscar por folio, abrir el detalle
 de líneas y descargar un CSV para el contador, incluidas las ventas anuladas.

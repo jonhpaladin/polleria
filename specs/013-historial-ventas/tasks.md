@@ -32,7 +32,7 @@ Cada tarea se marca `[x]` solo con la puerta de calidad en verde (constitución,
   Hecho cuando la puerta de calidad está en verde.
   RF: RF-013-01…10
 
-- [ ] **T-013-07 · Verificación de campo**
+- [x] **T-013-07 · Verificación de campo**
   Consultar un rango real y abrir el CSV en Excel.
   Hecho cuando el dueño confirma que el archivo sirve para el contador.
   RF: RF-013-06, RF-013-07

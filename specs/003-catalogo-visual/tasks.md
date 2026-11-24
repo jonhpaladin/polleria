@@ -2,7 +2,7 @@
 
 - Spec: `specs/003-catalogo-visual/spec.md`
 - Plan: `specs/003-catalogo-visual/plan.md`
-- Estado: activo (2026-11-13)
+- Estado: activo (reabierto 2026-11-23)
 
 ## Fase 0 — Gobierno
 
@@ -13,19 +13,20 @@
 
 ## Fase 1 — Assets
 
-- [ ] **T-003-02 · Definir y aprobar el estilo visual**
-  Explorar realismo, caricatura y el híbrido semirrealista; revisar fondo, luz, ángulo y sujeto.
-  Hecho cuando el dueño aprueba el estilo final; el primer lote híbrido es solo un punto de partida.
+- [x] **T-003-02 · Definir estilo y prompts**
+  Fijar el estilo del set y escribir un prompt por producto en `prompts.md`, con prompt negativo,
+  nombres de archivo y reglas de la mascota.
+  Hecho cuando los 29 productos reales tienen prompt y la paleta coincide con el letrero.
   RF: RF-003-02
 
-- [ ] **T-003-03 · Generar las 26 imágenes**
-  Usar el prompt híbrido fijo y la cuota disponible; revisar una hoja de contactos.
-  Hecho cuando las 26 imágenes comparten estilo y ninguna rompe la paleta.
+- [ ] **T-003-03 · Generar las 29 imágenes**
+  Usar los prompts de `prompts.md` y una semilla fija; revisar una hoja de contactos.
+  Hecho cuando las 29 imágenes comparten estilo y ninguna rompe la paleta.
   RF: RF-003-01, RF-003-02
 
 - [ ] **T-003-04 · Optimizar y asignar nombres descriptivos**
-  Redimensionar a 512×512, convertir a WebP con Pillow y usar nombres simples como
-  `pollo-entero.webp` y `combo-familiar.webp`.
+  Redimensionar a 512×512, convertir a WebP con Pillow y usar los nombres de `prompts.md`
+  (`pollo-entero.webp`, `empanada-pollo.webp`, etc.).
   Hecho cuando cada archivo pesa ≤60 KB y el set completo ≤2 MB.
   RF: RF-003-08
 
@@ -38,7 +39,7 @@
 
 - [ ] **T-003-06 · Crear el mapa de imágenes**
   Implementar `productImages.ts` con `import.meta.glob`, `productImageUrl` y `fallbackInitial`;
-  agregar el test de cobertura contra el catálogo semilla.
+  agregar el test de cobertura contra los 29 SKU.
   Hecho cuando el test pasa y un SKU desconocido devuelve `null`.
   RF: RF-003-01, RF-003-04, RF-003-07
 

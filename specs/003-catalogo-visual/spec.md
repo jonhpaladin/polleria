@@ -1,14 +1,14 @@
 # Spec 003 — Catálogo visual con imágenes
 
-- Estado: activa (aprobada 2026-11-13)
+- Estado: activa (reabierta 2026-11-23); 29 SKU reales, prompts listos y set de imágenes en generación.
 - Spec activa: sí
-- Depende de: `specs/001-fundamentos-catalogo`, `specs/002-venta-offline` y `docs/constitution.md` v1.0
-- Fecha: 2026-11-13
+- Depende de: `specs/001-fundamentos-catalogo`, `specs/002-venta-offline`, `specs/007-catalogo-real` y `docs/constitution.md` v1.0
+- Fecha: 2026-11-13; actualizada 2026-11-23
 
 ## Contexto y objetivo
 
 El catálogo ya se pinta y se vende sin red, pero en el celular cada producto es una tarjeta de
-texto. En horas pico el cajero necesita reconocer de un vistazo qué es cada cosa, no leer 26
+texto. En horas pico el cajero necesita reconocer de un vistazo qué es cada cosa, no leer 29
 nombres. Esta iteración convierte la rejilla en un catálogo visual: cada producto activo lleva
 una imagen representativa como fondo de su tarjeta, con un estilo uniforme en todo el set.
 
@@ -16,8 +16,9 @@ Las imágenes viven en el propio frontend y se precachean con el service worker,
 catálogo visual funciona igual sin conexión. No hay cambios de backend, de Alembic ni del
 esquema Dexie: la imagen se resuelve por SKU.
 
-El catálogo actual es provisional. Las imágenes se generan para los 26 SKU existentes y se
-reemplazan una por una cuando llegue la lista real de productos y precios.
+El catálogo ya es el real del local: 29 productos entre pollo crudo, congelados, preparados,
+complementos y bebidas. El set se genera para esos 29 SKU y se reemplaza por SKU si cambia un
+producto.
 
 ## Usuarios / actores
 
@@ -39,9 +40,10 @@ reemplazan una por una cuando llegue la lista real de productos y precios.
 
 - **RF-003-01**: CUANDO se muestra un producto activo, EL SISTEMA pinta su imagen como fondo de
   la tarjeta, recortada para llenar el marco sin deformarse.
-- **RF-003-02**: EL SISTEMA usa un solo estilo visual en todo el set: fondo crema liso, luz
-  cálida difusa, vista cenital en ángulo suave, sombra natural sutil, sin texto, sin marcas y
-  sin manos.
+- **RF-003-02**: EL SISTEMA usa un solo estilo visual en todo el set: fotografía de estudio
+  cálida, fondo crema liso, madera clara, acentos rojo y amarillo del letrero, luz difusa,
+  vista cenital en ángulo suave, sombra natural sutil, sin texto, sin marcas y sin manos. La
+  mascota aparece como un sello pequeño en la esquina superior derecha.
 - **RF-003-03**: MIENTRAS la app está sin conexión, EL SISTEMA sirve las imágenes desde el
   precache del service worker y no realiza peticiones de red al abrir la pestaña de venta.
 - **RF-003-04**: SI un producto no tiene imagen o el archivo falla al cargar, ENTONCES EL
@@ -68,7 +70,7 @@ reemplazan una por una cuando llegue la lista real de productos y precios.
 frontend/src/assets/products/<nombre-descriptivo>.webp
 ```
 
-- El nombre es corto, legible y descriptivo (`pollo-entero.webp`, `combo-familiar.webp`,
+- El nombre es corto, legible y descriptivo (`pollo-entero.webp`, `empanada-pollo.webp`,
   `agua-600-ml.webp`), en minúsculas y sin acentos.
 - Un mapa estático en `productImages.ts` relaciona cada SKU con su archivo descriptivo.
 - Formato WebP, 512×512 px, fondo crema, sin texto, sin logotipos y sin marcas de agua.
@@ -105,7 +107,7 @@ frontend/src/assets/products/<nombre-descriptivo>.webp
 - **Rendimiento**: carga diferida y decodificación asíncrona; sin saltos de layout.
 - **Accesibilidad**: contraste AA sobre el degradado, foco visible, imagen decorativa,
   nombre accesible desde el texto y targets de 48 px.
-- **Consistencia**: un solo estilo y una sola paleta en las 26 imágenes.
+- **Consistencia**: un solo estilo y una sola paleta en las 29 imágenes.
 - **Mantenibilidad**: TypeScript estricto, identificadores en inglés, mapa de imágenes aislado
   y reemplazo por SKU.
 - **Idioma**: textos de interfaz, errores y documentación en español.
@@ -118,7 +120,7 @@ esquema Dexie, y variantes de arte por temporada.
 
 ## Criterios de finalización
 
-1. Las 26 imágenes existen, comparten estilo y fueron aprobadas por el dueño.
+1. Las 29 imágenes existen, comparten estilo y fueron aprobadas por el dueño.
 2. Toda tarjeta activa muestra imagen o respaldo; no hay huecos ni íconos rotos.
 3. La cobertura SKU ↔ imagen pasa en un test automático.
 4. La pestaña de venta funciona sin red con las imágenes precacheadas.
@@ -129,10 +131,12 @@ esquema Dexie, y variantes de arte por temporada.
 
 ## Decisiones ratificadas
 
-- **D-003-01**: las imágenes se generan con IA y un prompt fijo. El dueño autorizó iniciar el
-  primer lote con un estilo híbrido de textura semirrealista y formas caricaturescas como punto
-  de partida; la aprobación visual final sigue pendiente y no se presume.
-- **D-003-02**: se generan para los 26 SKU del catálogo provisional; el reemplazo es por SKU.
+- **D-003-01**: las imágenes se generan con IA a partir de un prompt fijo. El estilo aprobado
+  para el set es fotografía de estudio cálida con la paleta rojo/amarillo del letrero, fondo
+  crema, madera clara y la mascota como sello pequeño. El dueño genera las imágenes y las
+  entrega; la aprobación visual final se hace sobre el set completo.
+- **D-003-02**: se generan para los 29 SKU reales del catálogo; el reemplazo es por SKU. Los
+  prompts y los nombres de archivo están en `specs/003-catalogo-visual/prompts.md`.
 - **D-003-03**: los assets viven en `frontend/src/assets/products/` y se resuelven por SKU, sin
   cambios de backend ni de Dexie.
 - **D-003-04**: WebP 512×512, máximo 60 KB por imagen y 2 MB el set.

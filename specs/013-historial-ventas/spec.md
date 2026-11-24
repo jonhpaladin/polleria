@@ -1,7 +1,7 @@
 # Spec 013 — Historial de ventas y exportación CSV
 
-- Estado: activa (2026-11-23); implementada y desplegada, pendiente la validación de campo.
-- Spec activa: sí
+- Estado: cerrada por ratificación del dueño (2026-11-23); implementada, desplegada y validada.
+- Spec activa: no
 - Depende de: `specs/002-venta-offline`, `specs/006-corte-reportes`, `specs/012-anulaciones`
 - Fecha: 2026-11-23
 
