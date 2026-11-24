@@ -1,7 +1,7 @@
 # Spec 012 — Anulación de tickets con auditoría
 
-- Estado: activa (2026-11-23); implementada y desplegada, pendiente la validación de campo.
-- Spec activa: sí
+- Estado: cerrada por ratificación del dueño (2026-11-23); implementada, desplegada y validada.
+- Spec activa: no
 - Depende de: `specs/002-venta-offline`, `specs/004-sincronizacion`, `specs/006-corte-reportes`
 - Fecha: 2026-11-23
 

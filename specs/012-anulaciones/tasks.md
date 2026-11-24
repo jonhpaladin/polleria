@@ -42,7 +42,7 @@ Cada tarea se marca `[x]` solo con la puerta de calidad en verde (constitución,
   Hecho cuando la puerta de calidad está en verde.
   RF: RF-012-01…12
 
-- [ ] **T-012-09 · Verificación de campo**
+- [x] **T-012-09 · Verificación de campo**
   Anular una venta real, verla fuera del corte y confirmar la conciliación.
   Hecho cuando el dueño valida el flujo en la tablet.
   RF: RF-012-01…10

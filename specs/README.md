@@ -16,7 +16,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 009 | `009-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 | 011 | `011-respaldo` | Respaldo y restauración de los datos locales | 002, 004, 006 | cerrada por ratificación del dueño (2026-11-23); verificación de campo pendiente |
-| 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | activa (implementada; pendiente validación) |
+| 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | cerrada por ratificación del dueño (2026-11-23) |
 | 013 | `013-historial-ventas` | Historial de ventas y exportación CSV | 006 | borrador |
 
 Orden de trabajo acordado (2026-11-23): **011 respaldo → 003 imágenes → 012 anulaciones → 009
@@ -171,7 +171,7 @@ recordatorio a los 7 días; pestaña «Respaldo» sin clave de administración; 
 
 ## 012 — Anulación de tickets
 
-**Estado**: activa (2026-11-23); implementada y desplegada, pendiente la validación de campo.
+**Estado**: cerrada por ratificación del dueño (2026-11-23). Implementada, desplegada y validada.
 
 **Objetivo**: anular un ticket completo del día con motivo, PIN del dueño y sincronización al
 backend, sin borrar la venta original y excluyéndola de los reportes y del corte.
