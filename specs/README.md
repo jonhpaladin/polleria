@@ -17,7 +17,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 | 011 | `011-respaldo` | Respaldo y restauración de los datos locales | 002, 004, 006 | cerrada por ratificación del dueño (2026-11-23); verificación de campo pendiente |
 | 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | cerrada por ratificación del dueño (2026-11-23) |
-| 013 | `013-historial-ventas` | Historial de ventas y exportación CSV | 006 | borrador |
+| 013 | `013-historial-ventas` | Historial de ventas y exportación CSV | 006 | activa (implementada; pendiente validación) |
 
 Orden de trabajo acordado (2026-11-23): **011 respaldo → 003 imágenes → 012 anulaciones → 009
 impresión → 013 historial → 010 multidispositivo**.
@@ -181,6 +181,19 @@ procesado por el sistema, borrar tickets y roles con nombre de usuario (010).
 
 **Decisiones**: ticket completo; PIN local de 4-6 dígitos con hash y bloqueo; solo el día en
 curso; la venta se conserva como anulada; el backend filtra las anuladas del reporte diario.
+
+## 013 — Historial de ventas y CSV
+
+**Estado**: activa (2026-11-23); implementada y desplegada, pendiente la validación de campo.
+
+**Objetivo**: consultar tickets locales por rango de fechas, buscar por folio, abrir el detalle
+de líneas y descargar un CSV para el contador, incluidas las ventas anuladas.
+
+**Fuera de alcance**: ventas que solo existen en Supabase, PDF, reportes fiscales, gráficas,
+anular días anteriores y editar o borrar tickets.
+
+**Decisiones**: fuente local; rango con el día actual por defecto; CSV con una fila por línea,
+comillas, comas y BOM UTF-8; lista de hasta 500 tickets y exportación del rango completo.
 
 ## Reglas para abrir la siguiente spec
 

@@ -15,6 +15,7 @@ import { ConnectionBadge } from "@/components/pos/ConnectionBadge";
 import { AdminDialog } from "@/components/pos/AdminDialog";
 import { BackupTab } from "@/components/pos/BackupTab";
 import { DailyPricesTab } from "@/components/pos/DailyPricesTab";
+import { HistoryTab } from "@/components/pos/HistoryTab";
 import { ProductGrid } from "@/components/pos/ProductGrid";
 import { ProductSheet } from "@/components/pos/ProductSheet";
 import { ReportsTab } from "@/components/pos/ReportsTab";
@@ -24,13 +25,14 @@ import { BrandMark } from "@/components/ui/BrandMark";
 import { DeviceKeyDialog } from "@/components/ui/DeviceKeyDialog";
 import type { Product } from "@/types/catalog";
 
-type Tab = "sale" | "cart" | "prices" | "reports" | "backup";
+type Tab = "sale" | "cart" | "prices" | "reports" | "history" | "backup";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "sale", label: "Venta" },
   { id: "cart", label: "Carrito" },
   { id: "prices", label: "Precios del día" },
   { id: "reports", label: "Corte del día" },
+  { id: "history", label: "Historial" },
   { id: "backup", label: "Respaldo" },
 ];
 
@@ -201,6 +203,8 @@ export default function App() {
             onSaveCash={reports.saveCash}
             onVoid={reports.voidSale}
           />
+        ) : activeTab === "history" ? (
+          <HistoryTab />
         ) : activeTab === "backup" ? (
           <BackupTab />
         ) : (

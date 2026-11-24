@@ -4,10 +4,11 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 ## Estado actual (2026-11-23)
 - Specs 001, 002, 004, 005, 006, 007, 008, 011 y 012 cerradas; 003 pospuesta por imágenes.
 - 012 validada por el dueño: anulación de ticket completo con PIN, sincronización y reportes filtrados.
+- 013 activa implementada: historial local por rango, búsqueda por folio y CSV para el contador; falta validarla en campo.
 - 008: administración de precios, claves de API y RLS desplegadas; `ADMIN_KEY` y `DEVICE_KEY` ya configuradas en Render.
 - Catálogo real con 29 productos activos: 11 con precio confirmado y 18 temporales a $100; 17 inactivos.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
-- Tests: backend 59 passed + 4 skipped; frontend 269 passed en 40 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
+- Tests: backend 59 passed + 4 skipped; frontend 277 passed en 43 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
 - Supabase con `0001`…`0004`; RLS activo y `anon`/`authenticated` sin permisos.
 - Guías: `docs/despliegue.md` y `docs/seguridad.md`.
 
@@ -34,12 +35,16 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - El outbox de la venta se elimina; `POST /sales/{uuid}/void` idempotente con clave del local; 404 = no-op.
 - Reportes local y remoto excluyen anuladas; el corte las muestra aparte y avisa si cambió.
 
+## Spec 013 — Historial y CSV (activa)
+- Historial local por rango de fechas, búsqueda por folio y detalle de líneas.
+- CSV con una fila por línea, anuladas incluidas, BOM UTF-8 y hasta 500 tickets en pantalla.
+
 ## Próximos pasos
-1. 003 bloqueada hasta tener imágenes aprobadas por SKU.
-2. Si no hay imágenes, seguir con 013 historial/exportación o 009 impresión (falta modelo de impresora).
-3. Verificación de campo: respaldo/restauración y anulación en la tablet.
-4. Publicar precios reales cuando el dueño los defina.
+1. Validar 013 en campo: consultar un rango y abrir el CSV en Excel.
+2. 003 bloqueada hasta tener imágenes aprobadas por SKU.
+3. 009 impresión pendiente del modelo y la conexión de la impresora.
+4. Verificación de campo: respaldo/restauración y anulación en la tablet.
+5. Publicar precios reales cuando el dueño los defina.
 
 ## Decisiones pendientes
 - 009: modelo y conexión de la impresora.
-- 013: columnas y filtros del historial/exportación.
