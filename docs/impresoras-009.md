@@ -109,6 +109,25 @@ Esto es tan importante como la impresora:
 - **iOS**: AirPrint no cubre la mayoría de térmicas; necesitaría servidor/agente. No es el camino
   recomendado.
 
+### Bluetooth no es universal
+
+No cualquier impresora Bluetooth sirve directamente desde una PWA:
+
+- La mayoría de las térmicas de tickets usan **Bluetooth clásico (SPP)** y **ESC/POS**. Un navegador
+  no puede abrir SPP; necesita la app/SDK del fabricante o un agente local.
+- **Web Bluetooth** existe en Chrome Android, pero solo habla **BLE** y depende de los servicios
+  UUID del modelo; no es plug-and-play. **iOS/Safari no lo soporta**.
+- La ruta más universal es imprimir a través del **sistema operativo**: Windows con el driver de
+  la impresora y Chrome con `--kiosk-printing`. Así funciona con USB, Bluetooth o red, y el
+  software solo genera el HTML/PDF del ticket.
+- Si la tablet es obligatoria, lo más robusto es una **impresora de red + agente local** (QZ Tray
+  o un pequeño servicio propio) en una mini PC; la tablet manda el ticket por LAN y el agente
+  habla ESC/POS/TSPL.
+
+Conclusión: para 009 conviene empezar con **tickets normales en papel térmico** usando el driver
+del sistema; el modelo exacto de impresora deja de importar mientras tenga driver. La impresión
+directa por Bluetooth desde la PWA se puede agregar después, pero es específica del modelo.
+
 ## 7. Qué conviene según el caso
 
 ### Caso A — Ticket completo pegado, laptop/PC en caja (recomendado)
