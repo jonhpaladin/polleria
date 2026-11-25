@@ -15,3 +15,6 @@ __pycache__/
 *.local
 .DS_Store
 Thumbs.db
+
+# Imágenes fuente generadas fuera del repo
+Gemini_Generated_Image_*.jpg
