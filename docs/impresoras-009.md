@@ -160,6 +160,37 @@ Para cerrar la elección necesito:
 
 Con eso defino el modelo, el tamaño de etiqueta, el flujo de impresión y el alcance de 009.
 
+## 10. ¿Puedo usar una impresora económica de 58 mm con papel adhesivo?
+
+**Sí, siempre que el papel sea térmico adhesivo y quepa en la impresora.** El lenguaje de
+impresión (ESC/POS) no cambia por ser adhesivo; la limitación es física:
+
+- **Papel térmico directo**, no papel adhesivo común de papelería.
+- **Ancho:** 57–58 mm; el área imprimible típica es 48 mm.
+- **Grosor:** muchas 58 mm aceptan 0.06–0.08 mm. El adhesivo con respaldo suele ser más grueso;
+  si pasa de 0.08–0.10 mm puede patinar, imprimir claro o atascarse.
+- **Diámetro del rollo:** las portátiles baratas suelen aceptar 40–50 mm. Un rollo adhesivo de
+  30 m puede ser demasiado grande; los de 5 m sí entran, pero rinden pocos tickets.
+- **Cortador:** estas económicas suelen traer **desgarre manual**, no autocorte. Eso es bueno
+  para el adhesivo, porque no se pega el pegamento en la cuchilla.
+- **Etiquetas troqueladas:** si no tienen sensor de separación (gap), la alineación se va
+  acumulando; para 30+ pedidos/día no es fiable.
+
+Los modelos que mandaste son de esa familia: 58 mm, ~48 mm de impresión, rollo de ~50 mm,
+papel de 0.06–0.08 mm, Bluetooth + USB, batería y cortador manual. Precio típico **~$400–600**;
+suelen incluir 5 rollos de papel normal, no adhesivo.
+
+**En la práctica:** pueden imprimir una **etiqueta pequeña** (57×30 mm) con folio/nombre/total,
+pero no son la mejor opción para un ticket completo adhesivo a más de 30 pedidos/día: el papel
+continuo de 58 mm es escaso, los rollos son cortos y el avance puede desalinearse. Para probar,
+compra **un rollo** de etiquetas 57×30 y haz una prueba; no compres caja completa.
+
+Ejemplo de especificaciones de esa categoría (58 mm, 0.06–0.08 mm, rollo 50 mm, cortador manual):
+https://www.enduropos.com/product/1-ano-de-garantia-con-factura-caracteristicas-impresora-termica-de-boletos-velocidad-de-impresion-110-mm-s-ancho-de-papel-58-mm-interfaz-usb-cortador-manualmente-emulacion-epson-esc-pos-es
+
+Etiquetas 57×30 mm (3 rollos, ~$82–109):
+https://listado.mercadolibre.com.mx/rollo-adhesivo-termico-58mm
+
 ## Fuentes principales
 
 - Xprinter México: https://xprintermexico.com/product-page/xp58iih ·
