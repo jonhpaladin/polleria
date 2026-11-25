@@ -37,7 +37,7 @@ export function ProductCard({
       type="button"
       onClick={onSelect}
       aria-label={`Ver ${product.name}`}
-      className="group relative flex min-h-52 w-full flex-col justify-end overflow-hidden rounded-2xl border border-stone-200 bg-white p-3 text-left shadow-sm transition-colors hover:border-brand-300 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+      className="group relative flex aspect-square w-full flex-col justify-end overflow-hidden rounded-2xl border border-stone-200 bg-white p-3 text-left shadow-sm transition-colors hover:border-brand-300 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
     >
       {showImage ? (
         <>
@@ -62,7 +62,7 @@ export function ProductCard({
           data-testid="product-fallback"
           className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-50 via-accent-100 to-cream-50"
         >
-          <span aria-hidden="true" className="text-7xl font-black text-brand-700">
+          <span aria-hidden="true" className="text-6xl font-black text-brand-700 sm:text-7xl">
             {fallbackInitial(product.name)}
           </span>
         </div>
@@ -70,14 +70,14 @@ export function ProductCard({
 
       <div className="relative space-y-1">
         <h3
-          className={`line-clamp-2 text-lg font-bold leading-tight ${
+          className={`line-clamp-2 text-base font-bold leading-tight sm:text-lg ${
             showImage ? "text-white" : "text-stone-900"
           }`}
         >
           {product.name}
         </h3>
         <p
-          className={`flex flex-wrap items-center gap-x-1 text-xs font-semibold uppercase tracking-wide ${
+          className={`flex flex-wrap items-center gap-x-1 text-[0.65rem] font-semibold uppercase tracking-wide sm:text-xs ${
             showImage ? "text-white/85" : "text-stone-500"
           }`}
         >
@@ -87,20 +87,20 @@ export function ProductCard({
         </p>
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-1">
           <span
-            className={`text-2xl font-black tabular-nums ${
+            className={`text-xl font-black tabular-nums sm:text-2xl ${
               showImage ? "text-white" : "text-stone-900"
             }`}
           >
             {normalPriceCents !== undefined ? formatCents(normalPriceCents) : "—"}
           </span>
           {promotionPriceCents !== null ? (
-            <span className="rounded-full bg-accent-300 px-2 py-1 text-xs font-bold tabular-nums text-accent-700">
+            <span className="rounded-full bg-accent-300 px-2 py-0.5 text-[0.65rem] font-bold tabular-nums text-accent-700 sm:text-xs">
               promo {formatCents(promotionPriceCents)}
             </span>
           ) : null}
           {wholesalePriceCents !== null ? (
             <span
-              className={`rounded-full px-2 py-1 text-xs font-bold tabular-nums ${
+              className={`rounded-full px-2 py-0.5 text-[0.65rem] font-bold tabular-nums sm:text-xs ${
                 showImage ? "bg-white/90 text-brand-700" : "bg-brand-50 text-brand-700"
               }`}
             >
