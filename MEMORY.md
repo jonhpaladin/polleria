@@ -2,13 +2,14 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
 ## Estado actual (2026-11-23)
-- Specs 001, 002, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 003 activa esperando imágenes.
+- Specs 001, 002, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 003 activa con las 25 imágenes integradas.
+- 003: 25 WebP 512×512 (1.09 MB) precacheadas, mapa SKU→archivo y tarjeta visual; 4 bebidas con respaldo.
 - 013 validada por el dueño: historial local por rango, búsqueda por folio y CSV con anuladas.
 - 012 validada por el dueño: anulación de ticket completo con PIN, sincronización y reportes filtrados.
 - 008: administración de precios, claves de API y RLS desplegadas; `ADMIN_KEY` y `DEVICE_KEY` ya configuradas en Render.
 - Catálogo real con 29 productos activos: 11 con precio confirmado y 18 temporales a $100; 17 inactivos.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
-- Tests: backend 59 passed + 4 skipped; frontend 277 passed en 43 archivos; `ruff`, `lint`, `typecheck`, `build` y `seed:check` verdes.
+- Tests: backend 59 passed + 4 skipped; frontend 283 passed en 44 archivos; `ruff`, `lint`, `typecheck`, `build`, `seed:check` e `images:check` verdes.
 - Supabase con `0001`…`0004`; RLS activo y `anon`/`authenticated` sin permisos.
 - Guías: `docs/despliegue.md` y `docs/seguridad.md`.
 
@@ -35,15 +36,15 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Reportes local y remoto excluyen anuladas; el corte las muestra aparte y avisa si cambió.
 
 ## Spec 003 — Catálogo visual (activa)
-- 25 prompts (sin bebidas) en `specs/003-catalogo-visual/prompts.md`; el dueño genera y entrega las imágenes.
-- Las 4 bebidas usan respaldo con inicial; estilo foto de estudio, crema/madera, rojo/amarillo y mascota.
+- 25 imágenes WebP 512×512 integradas y precacheadas; 4 bebidas con respaldo por inicial.
+- Tarjeta con imagen de fondo, degradado, precio/chips y respaldo; rejilla 2/3/4 columnas.
+- Falta validar visualmente en tablet y el smoke offline; `images:check` cubre peso y cobertura.
 
 ## Próximos pasos
-1. Generar las 25 imágenes con los prompts y entregarlas con el nombre de archivo indicado.
-2. Optimizar a WebP 512×512, integrar el mapa por SKU y validar el layout offline; las bebidas quedan con respaldo.
-3. 009 impresión pendiente del modelo y la conexión de la impresora.
-4. Verificación de campo: respaldo/restauración y anulación en la tablet.
-5. Publicar precios reales cuando el dueño los defina.
+1. Validar la rejilla con imágenes en la tablet a 360/768/1280 y sin red.
+2. 009 impresión pendiente del modelo y la conexión de la impresora.
+3. Verificación de campo: respaldo/restauración y anulación en la tablet.
+4. Publicar precios reales cuando el dueño los defina.
 
 ## Decisiones pendientes
 - 009: modelo y conexión de la impresora.

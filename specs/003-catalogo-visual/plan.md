@@ -3,7 +3,7 @@
 - Spec: `specs/003-catalogo-visual/spec.md`
 - Prompts: `specs/003-catalogo-visual/prompts.md`
 - Constitución: `docs/constitution.md` v1.0
-- Estado: activo (reabierto 2026-11-23)
+- Estado: implementado (2026-11-25); validación visual/offline pendiente
 - Dependencia: Specs 001, 002, 007 y 012 cerradas
 
 ## 1. Estructura prevista

@@ -73,4 +73,27 @@ describe("ProductCard", () => {
 
     expect(screen.getByText("Pierna y muslo con piel bien dorada")).toHaveClass("line-clamp-2");
   });
+
+  it("muestra la imagen del producto como decorativa", () => {
+    render(<ProductCard product={productBySku("PIERNA-MUSLO")} categoryName="Pollo" />);
+
+    const image = screen.getByTestId("product-image");
+    expect(image).toHaveAttribute("alt", "");
+    expect(image).toHaveAttribute("src", expect.stringContaining("pierna-muslo"));
+  });
+
+  it("usa la inicial cuando el producto no tiene imagen", () => {
+    render(<ProductCard product={productBySku("COMBO-1")} categoryName="Promociones" />);
+
+    expect(screen.getByTestId("product-fallback")).toHaveTextContent("C");
+    expect(screen.queryByTestId("product-image")).not.toBeInTheDocument();
+  });
+
+  it("cae al respaldo si la imagen no carga", () => {
+    render(<ProductCard product={productBySku("PIERNA-MUSLO")} categoryName="Pollo" />);
+
+    fireEvent.error(screen.getByTestId("product-image"));
+
+    expect(screen.getByTestId("product-fallback")).toHaveTextContent("P");
+  });
 });

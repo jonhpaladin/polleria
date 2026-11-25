@@ -62,6 +62,8 @@ jobs:
         run: npm ci
       - name: Semilla sincronizada con el backend
         run: npm run seed:check
+      - name: Imágenes del catálogo
+        run: npm run images:check
       - name: Lint
         run: npm run lint
       - name: Typecheck

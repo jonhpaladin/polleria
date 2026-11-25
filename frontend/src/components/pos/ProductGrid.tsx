@@ -11,7 +11,7 @@ interface ProductGridProps {
   onSelect?: (product: Product) => void;
 }
 
-/** Rejilla mobile-first: una columna a 360 px, dos en sm y tres en lg. */
+/** Rejilla mobile-first: 2 columnas a 360 px, 3 en tablet y 4 en laptop. */
 export function ProductGrid({
   products,
   categories,
@@ -40,7 +40,7 @@ export function ProductGrid({
       <h2 id="productos-title" className="sr-only">
         Productos
       </h2>
-      <div className="grid grid-cols-1 gap-3 px-4 pb-24 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-2 px-4 pb-24 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
         {products.map((product) => (
           <ProductCard
             key={product.id}

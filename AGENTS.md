@@ -34,7 +34,8 @@ Nada se implementa fuera de la spec activa.
 - Backend (`cd backend`; `.venv/Scripts/python.exe` en Windows, `.venv/bin/python` en
   macOS/Linux): `python -m pytest -q` y `python -m ruff check .`. La integración con
   PostgreSQL se omite sin `TEST_DATABASE_URL` (en CI sí corre).
-- Frontend (`cd frontend`): `npm run test`, `lint`, `typecheck`, `build`, `seed:check`.
+- Frontend (`cd frontend`): `npm run test`, `lint`, `typecheck`, `build`, `seed:check` y
+  `images:check`.
 - Puerta de calidad = todo lo anterior en verde.
 - `skills-lock.json` es el manifiesto del instalador de skills, no un lockfile npm: no
   ejecutes `npm install`/`npm ci` por su presencia.

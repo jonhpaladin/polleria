@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "seed:sync": "node scripts/sync-seed.mjs",
-    "seed:check": "node scripts/sync-seed.mjs --check"
+    "seed:check": "node scripts/sync-seed.mjs --check",
+    "images:check": "node scripts/check-product-images.mjs"
   },
   "dependencies": {
     "dexie": "^4.4.7",

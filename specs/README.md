@@ -7,7 +7,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 |---|---|---|---|---|
 | 001 | `001-fundamentos-catalogo` | Andamiaje + catálogo de solo lectura, offline | constitución | cerrada por ratificación del dueño |
 | 002 | `002-venta-offline` | Carrito, venta offline y ticket local persistido en <50 ms | 001 | cerrada por ratificación del dueño (2026-11-13) |
-| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 (+007 para el catálogo real) | activa (2026-11-23); 25 prompts listos, bebidas con respaldo |
+| 003 | `003-catalogo-visual` | Catálogo táctil con imagen de producto y estilo uniforme | 002 (+007 para el catálogo real) | activa (2026-11-25); 25 imágenes integradas, pendiente validación visual |
 | 004 | `004-sincronizacion` | Outbox con backoff e idempotencia por `client_order_uuid` | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 005 | `005-venta-tactil` | Modal de producto y carrito en pestaña con icono flotante | 002 | cerrada por ratificación del dueño (2026-11-22) |
 | 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
@@ -40,9 +40,9 @@ autenticación se revisan en una spec posterior.
 
 ## 003 — Catálogo visual
 
-**Estado**: activa (reabierta 2026-11-23). Los 25 prompts de producto están en
-`specs/003-catalogo-visual/prompts.md`; las 4 bebidas usan respaldo con inicial. El dueño genera
-las imágenes y las entrega para optimizarlas e integrarlas.
+**Estado**: activa (2026-11-25). Las 25 imágenes están integradas en WebP 512×512 y
+precacheadas; las 4 bebidas usan respaldo con inicial. Falta la validación visual/offline en el
+dispositivo.
 
 **Objetivo**: que el cajero reconozca cada producto por su imagen. Cada tarjeta activa lleva una
 foto de estudio como fondo, con estilo uniforme en todo el set, servida desde el precache y con

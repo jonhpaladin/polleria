@@ -1,0 +1,30 @@
+{
+  "images": {
+    "POLLO-ENTERO": "pollo-entero",
+    "PIERNA-MUSLO": "pierna-muslo",
+    "ALITAS": "alitas",
+    "PECHUGA": "pechuga",
+    "MILANESA": "milanesa",
+    "PATITAS": "patitas",
+    "MENUDENCIAS": "menudencias",
+    "NUGGETS": "nuggets",
+    "POLLO-KFC": "pollo-kfc",
+    "CARNE-HAMBURGUESA": "carne-hamburguesa",
+    "ALBONDIGAS": "albondigas",
+    "EMPANADA-POLLO": "empanada-pollo",
+    "EMPANADA-JAMON": "empanada-jamon-queso",
+    "EMPANADA-CHAMPINON": "empanada-champinon-queso",
+    "TEPPANYAKI": "teppanyaki",
+    "JARDINERA": "jardinera",
+    "POBLANO": "poblano",
+    "ADOBADO": "adobado",
+    "HUEVO": "huevo",
+    "PAPAS-FRANCESA": "papas-francesa",
+    "PAPAS-GAJO": "papas-gajo",
+    "MOLE-DULCE": "mole-dulce",
+    "MOLE-POBLANO": "mole-poblano",
+    "MOLE-RANCHERO": "mole-ranchero",
+    "DEDOS-QUESO": "dedos-queso"
+  },
+  "fallbacks": ["REFRESCO", "AGUA", "AGUA-LITRO", "JUGO"]
+}
