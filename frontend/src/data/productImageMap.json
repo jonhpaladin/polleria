@@ -26,5 +26,5 @@
     "MOLE-RANCHERO": "mole-ranchero",
     "DEDOS-QUESO": "dedos-queso"
   },
-  "fallbacks": ["REFRESCO", "AGUA", "AGUA-LITRO", "JUGO"]
+  "fallbacks": []
 }

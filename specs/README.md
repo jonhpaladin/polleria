@@ -41,7 +41,7 @@ autenticación se revisan en una spec posterior.
 ## 003 — Catálogo visual
 
 **Estado**: activa (2026-11-25). Las 25 imágenes están integradas en WebP 512×512 y
-precacheadas; las 4 bebidas usan respaldo con inicial. Falta la validación visual/offline en el
+precacheadas; el catálogo ya no incluye bebidas. Falta la validación visual/offline en el
 dispositivo.
 
 **Objetivo**: que el cajero reconozca cada producto por su imagen. Cada tarjeta activa lleva una
@@ -53,8 +53,8 @@ ni de Dexie.
 categoría, búsqueda, favoritos, sincronización (004) e impresión (009).
 
 **Decisiones**: fotografía de estudio cálida con paleta rojo/amarillo del letrero, fondo crema,
-madera clara y mascota como sello; 25 SKU con imagen y 4 bebidas con respaldo; WebP 512×512,
-≤60 KB cada una; 2/3/4 columnas.
+madera clara y mascota como sello; 25 SKU con imagen; WebP 512×512, ≤60 KB cada una; 2/3/4
+columnas.
 
 **Duda abierta**: ninguna bloqueante. Si la IA no mantiene la mascota, se superpone el SVG real.
 
@@ -105,18 +105,18 @@ conteo de efectivo, foto recalculable y conciliación remota.
 
 ## 007 — Catálogo real y diseño
 
-**Estado**: cerrada (2026-11-23). 29 productos activos; 18 llevan $100.00 temporal hasta que el
-dueño los ajuste.
+**Estado**: cerrada (2026-11-23); actualizada 2026-11-25 con 25 productos activos (sin bebidas).
+14 llevan $100.00 temporal hasta que el dueño los ajuste.
 
 **Objetivo**: sustituir el catálogo provisional por los productos reales de la pollería de pollo
-crudo (cortes, congelados, moles, preparados, complementos y bebidas) y alinear la identidad
-visual con el letrero del local: rojo, amarillo y blanco, nombre «El Wero».
+crudo (cortes, congelados, moles, preparados y complementos) y alinear la identidad visual con el
+letrero: rojo, amarillo y blanco, nombre «El Wero».
 
 **Fuera de alcance**: imágenes por producto (003), inventario, costos, proveedores y reportes.
 
-**Decisiones**: pollo, moles, preparados y huevo por kilo; congelados, papas, dedos y bebidas por
-pieza; los productos sin precio confirmado usan $100 temporal; los 17 provisionales quedaron
-inactivos; mascota SVG y tarjetas de texto hasta 003.
+**Decisiones**: pollo, moles, preparados y huevo por kilo; congelados, papas y dedos por pieza;
+los productos sin precio confirmado usan $100 temporal; los 17 provisionales quedaron inactivos;
+mascota SVG y tarjetas de texto hasta 003. Las bebidas se retiraron el 2026-11-25.
 
 ## 008 — Administración de precios y seguridad
 

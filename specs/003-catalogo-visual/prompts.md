@@ -1,6 +1,6 @@
-# Prompts 003 — Catálogo visual de Pollería El Wero (25 productos, sin bebidas)
+# Prompts 003 — Catálogo visual de Pollería El Wero (25 productos)
 
-Guía para generar las 25 imágenes del catálogo actual. Las 4 bebidas quedan sin imagen y usan el respaldo con inicial. Cada prompt ya incluye el estilo, así que
+Guía para generar las 25 imágenes del catálogo actual. Cada prompt ya incluye el estilo, así que
 puedes copiarlo completo. El texto va en inglés porque los generadores de imagen suelen respetar
 mejor las indicaciones en ese idioma; los nombres de los productos quedan en español.
 
@@ -318,12 +318,6 @@ field, crisp focus on the food, appetizing and clean, no text, no letters, no lo
 watermark, no hands, no people; a small flat white cartoon chicken mascot sticker with a red
 comb, yellow beak, red outline and a friendly smile in the top-right corner, about 12% of the
 frame.
-
-## Bebidas sin imagen
-
-Las 4 bebidas (`REFRESCO`, `AGUA`, `AGUA-LITRO`, `JUGO`) no llevan imagen en este lote. La
-tarjeta usa el respaldo con la inicial y el color de la categoría; cuando haya fotos de bebidas
-se agregan por SKU sin cambiar el resto del set.
 
 ## Archivos esperados
 

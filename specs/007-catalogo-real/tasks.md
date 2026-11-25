@@ -1,5 +1,8 @@
 # Tareas — Spec 007 · Catálogo real y diseño de la marca
 
+> Nota 2026-11-25: se retiraron las 4 bebidas porque no se venden; el catálogo activo es de 25
+> productos. Las tareas de abajo conservan el registro de la implementación original.
+
 Cada tarea se marca `[x]` solo con la puerta de calidad en verde (constitución, sección 5).
 
 - [x] **T-007-01 · Semilla del catálogo real**

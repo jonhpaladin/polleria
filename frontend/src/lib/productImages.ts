@@ -15,7 +15,7 @@ for (const [path, url] of Object.entries(modules)) {
 /** SKU activo → nombre descriptivo del archivo, sin extensión. */
 export const PRODUCT_IMAGE_BY_SKU: Readonly<Record<string, string>> = imageMap.images;
 
-/** Productos que usan el respaldo con inicial a propósito (bebidas). */
+/** Productos que usan el respaldo con inicial a propósito; hoy ninguno. */
 export const INTENTIONAL_FALLBACKS: readonly string[] = imageMap.fallbacks;
 
 export function productImageUrl(sku: string): string | null {

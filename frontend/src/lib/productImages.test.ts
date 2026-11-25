@@ -16,28 +16,20 @@ function activeProducts() {
 }
 
 describe("productImages", () => {
-  it("cubre los 25 productos con imagen y deja 4 bebidas con respaldo", () => {
+  it("cubre los 25 productos activos con imagen y sin respaldos intencionales", () => {
     const active = activeProducts();
     const mapped = active.filter((product) => PRODUCT_IMAGE_BY_SKU[product.sku] !== undefined);
-    const fallbacks = active.filter((product) => INTENTIONAL_FALLBACKS.includes(product.sku));
 
-    expect(active).toHaveLength(29);
+    expect(active).toHaveLength(25);
     expect(mapped).toHaveLength(25);
-    expect(fallbacks.map((product) => product.sku).sort()).toEqual([
-      "AGUA",
-      "AGUA-LITRO",
-      "JUGO",
-      "REFRESCO",
-    ]);
+    expect(INTENTIONAL_FALLBACKS).toEqual([]);
   });
 
   it("resuelve una URL para cada SKU con imagen y null para el resto", () => {
     for (const [sku] of Object.entries(PRODUCT_IMAGE_BY_SKU)) {
       expect(productImageUrl(sku), sku).not.toBeNull();
     }
-    for (const sku of INTENTIONAL_FALLBACKS) {
-      expect(productImageUrl(sku)).toBeNull();
-    }
+    expect(productImageUrl("REFRESCO")).toBeNull();
     expect(productImageUrl("NO-EXISTE")).toBeNull();
   });
 

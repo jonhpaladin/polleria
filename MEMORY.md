@@ -1,13 +1,13 @@
 # MEMORY.md — Memoria de Arquitectura y Estado del POS
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
-## Estado actual (2026-11-23)
+## Estado actual (2026-11-25)
 - Specs 001, 002, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 003 activa con las 25 imágenes integradas.
-- 003: 25 WebP 512×512 (1.09 MB) precacheadas, mapa SKU→archivo y tarjeta visual; 4 bebidas con respaldo.
+- 003: 25 WebP 512×512 (1.09 MB) precacheadas, mapa SKU→archivo y tarjeta visual; sin bebidas.
 - 013 validada por el dueño: historial local por rango, búsqueda por folio y CSV con anuladas.
 - 012 validada por el dueño: anulación de ticket completo con PIN, sincronización y reportes filtrados.
 - 008: administración de precios, claves de API y RLS desplegadas; `ADMIN_KEY` y `DEVICE_KEY` ya configuradas en Render.
-- Catálogo real con 29 productos activos: 11 con precio confirmado y 18 temporales a $100; 17 inactivos.
+- Catálogo real con 25 productos activos: 11 con precio confirmado y 14 temporales a $100; 17 inactivos.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
 - Tests: backend 59 passed + 4 skipped; frontend 283 passed en 44 archivos; `ruff`, `lint`, `typecheck`, `build`, `seed:check` e `images:check` verdes.
 - Supabase con `0001`…`0004`; RLS activo y `anon`/`authenticated` sin permisos.
@@ -26,7 +26,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 ## Specs cerradas
 - **002/004:** hoja diaria, carrito, ticket + outbox atómicos, backoff 2 s→5 min y 4xx terminal.
 - **005/006:** hoja de producto, carrito en pestaña, corte por día, efectivo contado y conciliación.
-- **007:** 29 productos reales, identidad rojo/amarillo con mascota; imágenes para 003.
+- **007:** 25 productos reales (sin bebidas), identidad rojo/amarillo con mascota; imágenes para 003.
 - **008:** engrane con clave, edición de precios, clave del local, 401 reintentable y RLS.
 - **011:** respaldo con tickets, outbox, cortes y precios; restauración que no borra.
 
@@ -36,7 +36,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Reportes local y remoto excluyen anuladas; el corte las muestra aparte y avisa si cambió.
 
 ## Spec 003 — Catálogo visual (activa)
-- 25 imágenes WebP 512×512 integradas y precacheadas; 4 bebidas con respaldo por inicial.
+- 25 imágenes WebP 512×512 integradas y precacheadas; el catálogo no incluye bebidas.
 - Tarjeta con imagen de fondo, degradado, precio/chips y respaldo; rejilla 2/3/4 columnas.
 - Falta validar visualmente en tablet y el smoke offline; `images:check` cubre peso y cobertura.
 

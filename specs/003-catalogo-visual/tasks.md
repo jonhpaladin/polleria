@@ -32,14 +32,14 @@
 
 - [x] **T-003-05 · Verificar presencia y peso**
   Crear `frontend/scripts/check-product-images.mjs` y ejecutarlo.
-  Hecho cuando el script falla si falta un SKU con imagen o fallback declarado, o se excede el presupuesto.
+  Hecho cuando el script falla si falta un SKU con imagen o se excede el presupuesto.
   RF: RF-003-07, RF-003-08
 
 ## Fase 2 — Código
 
 - [x] **T-003-06 · Crear el mapa de imágenes**
   Implementar `productImages.ts` con `import.meta.glob`, `productImageUrl` y `fallbackInitial`;
-  agregar el test de cobertura contra los 25 SKU con imagen y los 4 fallbacks.
+  agregar el test de cobertura contra los 25 SKU con imagen.
   Hecho cuando el test pasa y un SKU desconocido devuelve `null`.
   RF: RF-003-01, RF-003-04, RF-003-07
 

@@ -1,7 +1,8 @@
 # Spec 007 — Catálogo real y diseño de la marca
 
-- Estado: cerrada (2026-11-23); 29 productos activos. Los precios temporales de $100 se ajustan
-  en «Precios del día» hasta que exista la administración de 008.
+- Estado: cerrada (2026-11-23); actualizada el 2026-11-25 con 25 productos activos (sin bebidas).
+  Los precios temporales de $100 se ajustan en «Precios del día» hasta que exista la administración
+  de 008.
 - Spec activa: no
 - Depende de: `specs/002-venta-offline`, `specs/005-venta-tactil`, `specs/006-corte-reportes`
 - Fecha: 2026-11-22
@@ -10,7 +11,7 @@
 
 El catálogo anterior era provisional: 26 SKU con pollo asado, combos y precios inventados para
 probar la venta. El local real es una **pollería de pollo crudo** con cortes, congelados, moles,
-preparados, complementos y bebidas. Las fotos del letrero y la vitrina muestran la operación real.
+preparados y complementos. Las fotos del letrero y la vitrina muestran la operación real.
 
 Esta iteración sustituyó el catálogo por los productos del local y alineó la identidad visual con
 el letrero: rojo, amarillo y blanco, nombre «El Wero». Los tickets ya cobrados conservan su
@@ -52,9 +53,8 @@ champiñón y queso, teppanyaki, a la jardinera, poblano y adobado.
 Huevo (kg), papas a la francesa, papas gajo, mole dulce, mole poblano, mole ranchero y dedos de
 queso (pieza).
 
-### Bebidas (pieza)
-
-Refresco, agua 600 ml, agua 1.5 L y jugo natural.
+Las bebidas se retiraron del catálogo el 2026-11-25 porque no se venden. Los tickets históricos
+conservan su snapshot.
 
 ## Precios
 
@@ -64,7 +64,7 @@ Refresco, agua 600 ml, agua 1.5 L y jugo natural.
 | Carne para hamburguesa, albóndigas, teppanyaki, jardinera, poblano y adobado | $139.00/kg |
 | Empanadas (pollo, jamón y queso, champiñón y queso) | $169.00/kg |
 | Huevo | $32.00/kg |
-| Resto del catálogo (18 SKU) | $100.00 temporal, por definir |
+| Resto del catálogo (14 SKU) | $100.00 temporal, por definir |
 
 Los $100 son un valor de captura para operar; el dueño los ajusta en «Precios del día». Cambiar el
 precio base de la semilla queda para 008 (administración de precios).
@@ -88,10 +88,10 @@ precio base de la semilla queda para 008 (administración de precios).
 
 ## Decisiones
 
-- **D-007-01**: catálogo real de 29 SKU agrupado en las categorías del local. Aprobado el
-  2026-11-23.
-- **D-007-02**: pollo, moles, preparados y huevo se venden por kilo; congelados, papas, dedos de
-  queso y bebidas por pieza. Aprobado el 2026-11-23.
+- **D-007-01**: catálogo real de 25 SKU agrupado en las categorías del local (las bebidas se
+  retiraron el 2026-11-25). Aprobado el 2026-11-23.
+- **D-007-02**: pollo, moles, preparados y huevo se venden por kilo; congelados, papas y dedos de
+  queso por pieza. Aprobado el 2026-11-23.
 - **D-007-03**: los productos sin precio confirmado llevan $100.00 temporal. Aprobado el
   2026-11-23.
 - **D-007-04**: los 17 productos provisionales se desactivan, no se borran. Aprobado el
@@ -105,7 +105,7 @@ precio base de la semilla queda para 008 (administración de precios).
 
 | Archivo | Cambio |
 |---|---|
-| `backend/app/seeds/catalog.json` | Semilla canónica con 29 productos y 6 categorías |
+| `backend/app/seeds/catalog.json` | Semilla canónica con 25 productos y 5 categorías |
 | `frontend/src/data/seedCatalog.json` | Copia generada por `npm run seed:sync` |
 | `backend/app/repositories/catalog.py` | El seed desactiva los productos ausentes antes del upsert |
 | `frontend/src/App.tsx` | Encabezado con mascota, pestañas y menú desplazable |
@@ -113,8 +113,8 @@ precio base de la semilla queda para 008 (administración de precios).
 | `frontend/src/components/ui/BrandMark.tsx` | Mascota SVG |
 | `frontend/index.html`, `frontend/vite.config.ts` | Título, tema y manifiesto de la PWA |
 
-Estado remoto: 29 productos activos, 17 inactivos y `catalog_meta.updated_at` actualizado con el
-SQL aplicado vía Supabase. `GET /catalog` devuelve los 29 productos con su unidad y precio.
+Estado remoto: 25 productos activos, 17 inactivos y `catalog_meta.updated_at` actualizado con el
+SQL aplicado vía Supabase. `GET /catalog` devuelve los 25 productos con su unidad y precio.
 
 ## Criterios de aceptación
 
@@ -126,6 +126,6 @@ SQL aplicado vía Supabase. `GET /catalog` devuelve los 29 productos con su unid
 
 ## Pendientes conocidos
 
-- Los 18 precios de $100 son temporales; el dueño los ajusta en «Precios del día» y, de forma
+- Los 14 precios de $100 son temporales; el dueño los ajusta en «Precios del día» y, de forma
   permanente, en 008.
 - La validación visual final en el celular/tablet del local queda en la verificación de campo.

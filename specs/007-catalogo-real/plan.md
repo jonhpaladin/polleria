@@ -25,7 +25,6 @@ backend/app/seeds/catalog.json
 | Preparados | Carne para hamburguesa, albóndigas, empanadas (3), teppanyaki, jardinera, poblano, adobado | kg |
 | Complementos | Huevo, mole dulce, mole poblano, mole ranchero | kg |
 | Complementos | Papas a la francesa, papas gajo, dedos de queso | pieza |
-| Bebidas | Refresco, agua 600 ml, agua 1.5 L, jugo natural | pieza |
 
 ## Semilla
 
@@ -39,7 +38,7 @@ backend/app/seeds/catalog.json
 
 | Archivo | Contenido |
 |---|---|
-| `app/seeds/catalog.json` | 6 categorías y 29 productos |
+| `app/seeds/catalog.json` | 5 categorías y 25 productos |
 | `app/repositories/catalog.py` | Upsert por `id`/`sku` y desactivación de ausentes |
 | `app/routers/catalog.py` | `GET /catalog` con productos activos |
 | `tests/test_seed.py` | Coherencia, umbrales y timestamp de la semilla |
@@ -61,7 +60,7 @@ backend/app/seeds/catalog.json
 1. Upsert de categorías y productos con SQL idempotente.
 2. Resolución por `sku` y luego por `id` para reutilizar registros provisionales sin duplicar.
 3. Reemplazo de precios del producto y avance de `catalog_meta.updated_at`.
-4. Verificación con `GET /catalog`: 29 productos activos.
+4. Verificación con `GET /catalog`: 25 productos activos.
 
 ## Riesgos
 

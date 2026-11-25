@@ -82,8 +82,6 @@ El estilo y los 25 prompts están en `prompts.md`. Resumen del estilo:
 | `MOLE-RANCHERO` | Mole ranchero | `mole-ranchero.webp` |
 | `DEDOS-QUESO` | Dedos de queso | `dedos-queso.webp` |
 
-Las 4 bebidas (`REFRESCO`, `AGUA`, `AGUA-LITRO`, `JUGO`) no llevan imagen y usan el respaldo con inicial.
-
 ## 4. Flujo de generación
 
 ```text
@@ -135,7 +133,7 @@ export function fallbackInitial(name: string): string;
 
 ## 6. Pruebas
 
-- Cobertura de los 25 SKU con imagen y los 4 fallbacks declarados.
+- Cobertura de los 25 SKU activos contra el mapa.
 - Peso por archivo y total.
 - Imagen presente, respaldo, chips, `alt=""` y precio de la hoja.
 - Layout a 360/768/1280 y smoke sin red.

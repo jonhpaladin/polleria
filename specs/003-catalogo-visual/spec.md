@@ -1,6 +1,6 @@
 # Spec 003 — Catálogo visual con imágenes
 
-- Estado: activa (reabierta 2026-11-23); 25 imágenes integradas y 4 bebidas con respaldo; pendiente validación visual/offline.
+- Estado: activa (reabierta 2026-11-23); 25 imágenes integradas y catálogo sin bebidas; pendiente validación visual/offline.
 - Spec activa: sí
 - Depende de: `specs/001-fundamentos-catalogo`, `specs/002-venta-offline`, `specs/007-catalogo-real` y `docs/constitution.md` v1.0
 - Fecha: 2026-11-13; actualizada 2026-11-23
@@ -16,9 +16,9 @@ Las imágenes viven en el propio frontend y se precachean con el service worker,
 catálogo visual funciona igual sin conexión. No hay cambios de backend, de Alembic ni del
 esquema Dexie: la imagen se resuelve por SKU.
 
-El catálogo ya es el real del local: 29 productos entre pollo crudo, congelados, preparados,
-complementos y bebidas. El set de imágenes cubre **25 productos**; las 4 bebidas usan el respaldo
-con inicial hasta que existan fotos propias.
+El catálogo ya es el real del local: 25 productos entre pollo crudo, congelados, preparados y
+complementos. Las bebidas se retiraron el 2026-11-25 porque no se venden; el set de imágenes
+cubre los 25 productos activos.
 
 ## Usuarios / actores
 
@@ -120,8 +120,7 @@ esquema Dexie, y variantes de arte por temporada.
 
 ## Criterios de finalización
 
-1. Las 25 imágenes existen, comparten estilo y fueron aprobadas por el dueño; las 4 bebidas
-   muestran el respaldo con inicial.
+1. Las 25 imágenes existen, comparten estilo y fueron aprobadas por el dueño.
 2. Toda tarjeta activa muestra imagen o respaldo; no hay huecos ni íconos rotos.
 3. La cobertura SKU ↔ imagen pasa en un test automático.
 4. La pestaña de venta funciona sin red con las imágenes precacheadas.
@@ -136,9 +135,9 @@ esquema Dexie, y variantes de arte por temporada.
   para el set es fotografía de estudio cálida con la paleta rojo/amarillo del letrero, fondo
   crema, madera clara y la mascota como sello pequeño. El dueño genera las imágenes y las
   entrega; la aprobación visual final se hace sobre el set completo.
-- **D-003-02**: se generan para 25 SKU reales; las 4 bebidas (`REFRESCO`, `AGUA`,
-  `AGUA-LITRO`, `JUGO`) usan respaldo con inicial. El reemplazo es por SKU. Los prompts y los
-  nombres de archivo están en `specs/003-catalogo-visual/prompts.md`.
+- **D-003-02**: se generan para los 25 SKU activos; no hay bebidas en el catálogo. El reemplazo
+  es por SKU. Los prompts y los nombres de archivo están en
+  `specs/003-catalogo-visual/prompts.md`.
 - **D-003-03**: los assets viven en `frontend/src/assets/products/` y se resuelven por SKU, sin
   cambios de backend ni de Dexie.
 - **D-003-04**: WebP 512×512, máximo 60 KB por imagen y 2 MB el set.
