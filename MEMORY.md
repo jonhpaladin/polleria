@@ -2,7 +2,8 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
 ## Estado actual (2026-11-25)
-- Specs 001, 002, 003, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 009 es la siguiente.
+- Specs 001, 002, 003, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 009 en investigación.
+- 009: modelos, insumos y costos en `docs/impresoras-009.md`; falta elegir laptop/tablet, volumen y etiqueta.
 - 003: 25 WebP 512×512 (1.09 MB) precacheadas, mapa SKU→archivo y tarjeta visual; sin bebidas.
 - 013 validada por el dueño: historial local por rango, búsqueda por folio y CSV con anuladas.
 - 012 validada por el dueño: anulación de ticket completo con PIN, sincronización y reportes filtrados.
@@ -41,8 +42,8 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - `images:check` cubre peso y cobertura; validada por el dueño en la tablet.
 
 ## Próximos pasos
-1. Investigar impresoras e insumos para 009; el dueño elige modelo y conexión.
-2. 009: ticket térmico y etiquetas adhesivas para pegar en las bolsas.
+1. Revisar `docs/impresoras-009.md` y definir dispositivo, pedidos/día, etiqueta y presupuesto.
+2. Abrir 009 con el modelo elegido: ticket térmico y etiquetas adhesivas para las bolsas.
 3. Verificación de campo: respaldo/restauración y anulación en la tablet.
 4. Publicar precios reales cuando el dueño los defina.
 

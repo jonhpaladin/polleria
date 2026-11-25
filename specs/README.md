@@ -147,6 +147,9 @@ reemplaza la hoja del día en curso; sin historial de precios en esta iteración
 **Dudas abiertas**: ¿modelo de impresora? ¿USB, Bluetooth o red? ¿se imprime antes o
 después de confirmar el cobro?
 
+**Investigación**: modelos, insumos y costos en `docs/impresoras-009.md`; falta elegir
+dispositivo (laptop/tablet), volumen y tamaño de etiqueta.
+
 ## 010 — Multidispositivo (condicional)
 
 **Objetivo**: dos o más cajas operando a la vez sin pisarse precios ni folios. Solo se abre
