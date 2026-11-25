@@ -155,6 +155,21 @@ Antes de elegir, prueba lo más barato: instala la app del fabricante y usa el d
 de Android (`window.print()`). Si la impresora aparece como servicio de impresión, no hace falta
 APK ni agente; la mayoría de las térmicas baratas no lo hacen.
 
+### PWA sola: qué funciona en cada sistema
+
+| Ruta | Android | iOS |
+|---|---|---|
+| Web Bluetooth (BLE) | Chrome Android, solo BLE y con UUID del modelo | No existe |
+| `window.print()` / AirPrint | Solo si el fabricante instala un servicio de impresión | Solo impresoras AirPrint |
+| APK con Bluetooth SPP | Sí | No (requiere MFi) |
+| Agente HTTPS en mini PC/Raspberry Pi | Sí | Sí |
+| Impresora en la nube (Star/Epson) | Sí | Sí |
+
+Las 58 mm económicas que viste suelen ser **Bluetooth SPP + ESC/POS**, no BLE; además no son
+AirPrint. Por eso, para usar **Android e iOS** con esas impresoras, la PWA sola no alcanza: se
+necesita un **agente HTTPS** que reciba el ticket y hable con la impresora, o cambiar a una
+impresora de red/AirPrint (más cara).
+
 ## 7. Qué conviene según el caso
 
 ### Caso A — Ticket completo pegado, laptop/PC en caja (recomendado)
