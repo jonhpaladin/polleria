@@ -2,7 +2,7 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
 ## Estado actual (2026-11-25)
-- Specs 001, 002, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 003 activa con las 25 imágenes integradas.
+- Specs 001, 002, 003, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 009 es la siguiente.
 - 003: 25 WebP 512×512 (1.09 MB) precacheadas, mapa SKU→archivo y tarjeta visual; sin bebidas.
 - 013 validada por el dueño: historial local por rango, búsqueda por folio y CSV con anuladas.
 - 012 validada por el dueño: anulación de ticket completo con PIN, sincronización y reportes filtrados.
@@ -35,14 +35,14 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - El outbox de la venta se elimina; `POST /sales/{uuid}/void` idempotente con clave del local; 404 = no-op.
 - Reportes local y remoto excluyen anuladas; el corte las muestra aparte y avisa si cambió.
 
-## Spec 003 — Catálogo visual (activa)
+## Spec 003 — Catálogo visual (cerrada)
 - 25 imágenes WebP 512×512 integradas y precacheadas; el catálogo no incluye bebidas.
 - Tarjeta con imagen de fondo, degradado, precio/chips y respaldo; rejilla 2/3/4 columnas.
-- Falta validar visualmente en tablet y el smoke offline; `images:check` cubre peso y cobertura.
+- `images:check` cubre peso y cobertura; validada por el dueño en la tablet.
 
 ## Próximos pasos
-1. Validar la rejilla con imágenes en la tablet a 360/768/1280 y sin red.
-2. 009 impresión pendiente del modelo y la conexión de la impresora.
+1. Investigar impresoras e insumos para 009; el dueño elige modelo y conexión.
+2. 009: ticket térmico y etiquetas adhesivas para pegar en las bolsas.
 3. Verificación de campo: respaldo/restauración y anulación en la tablet.
 4. Publicar precios reales cuando el dueño los defina.
 

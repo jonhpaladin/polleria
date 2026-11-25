@@ -1,7 +1,7 @@
 # Spec 003 — Catálogo visual con imágenes
 
-- Estado: activa (reabierta 2026-11-23); 25 imágenes integradas y catálogo sin bebidas; pendiente validación visual/offline.
-- Spec activa: sí
+- Estado: cerrada por ratificación del dueño (2026-11-25); 25 imágenes integradas y catálogo sin bebidas.
+- Spec activa: no
 - Depende de: `specs/001-fundamentos-catalogo`, `specs/002-venta-offline`, `specs/007-catalogo-real` y `docs/constitution.md` v1.0
 - Fecha: 2026-11-13; actualizada 2026-11-23
 

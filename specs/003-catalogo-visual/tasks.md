@@ -66,7 +66,7 @@
   Hecho cuando los tests pasan y no hay botones anidados.
   RF: RF-003-04…06, RF-003-09, RF-003-11
 
-- [ ] **T-003-11 · Validar layout y offline**
+- [x] **T-003-11 · Validar layout y offline**
   Medir 360/768/1280, targets de 48 px y smoke con red apagada.
   Hecho cuando no hay scroll horizontal, las imágenes salen del precache y el resultado queda
   documentado.
