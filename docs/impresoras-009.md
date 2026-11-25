@@ -128,6 +128,33 @@ Conclusión: para 009 conviene empezar con **tickets normales en papel térmico*
 del sistema; el modelo exacto de impresora deja de importar mientras tenga driver. La impresión
 directa por Bluetooth desde la PWA se puede agregar después, pero es específica del modelo.
 
+### Si la impresora va conectada al celular o tablet
+
+Hay un detalle que cambia el diseño: la PWA vive en **HTTPS** (Cloudflare Pages) y el navegador
+**no permite llamar a `http://192.168.x.x`** (contenido mixto). Tampoco puede usar Bluetooth
+clásico (SPP). Por eso, imprimir directo desde el celular/tablet no es “conectar y listo”.
+
+Caminos posibles:
+
+1. **APK envolviendo la PWA (Capacitor/Cordova) + plugin Bluetooth SPP.** La app sigue siendo la
+   misma web, pero el APK agrega el puente nativo para imprimir en una térmica Bluetooth clásica
+   (58/80 mm). Funciona sin internet y sin equipo extra; es Android. Implica compilar y distribuir
+   un APK, permisos de Bluetooth y mantener el plugin. Para un local con tablet Android es la
+   ruta más directa.
+2. **Mini PC/Raspberry Pi como agente de impresión.** La tablet manda el ticket por LAN; el
+   agente imprime por USB/red. Necesita HTTPS (túnel de Cloudflare o certificado local) por el
+   contenido mixto; resuelve 80 mm y 4×6 y no depende del Bluetooth del tablet. Es la opción más
+   robusta para 30+ pedidos/día y para pegar etiquetas.
+3. **Impresión en la nube** (Star CloudPRNT, Epson Server Direct Print): la PWA manda el ticket
+   por HTTPS y la impresora lo recoge. Sin equipo local, pero impresora cara y depende de
+   internet.
+4. **App del fabricante / compartir PDF:** la PWA genera el ticket y lo comparte con la app de la
+   impresora. Sirve para probar, pero es manual y no aguanta 30+ pedidos/día.
+
+Antes de elegir, prueba lo más barato: instala la app del fabricante y usa el diálogo de impresión
+de Android (`window.print()`). Si la impresora aparece como servicio de impresión, no hace falta
+APK ni agente; la mayoría de las térmicas baratas no lo hacen.
+
 ## 7. Qué conviene según el caso
 
 ### Caso A — Ticket completo pegado, laptop/PC en caja (recomendado)
