@@ -170,6 +170,28 @@ AirPrint. Por eso, para usar **Android e iOS** con esas impresoras, la PWA sola 
 necesita un **agente HTTPS** que reciba el ticket y hable con la impresora, o cambiar a una
 impresora de red/AirPrint (más cara).
 
+### Solo PWA, sin app ni agente: la conclusión
+
+Con las impresoras económicas de 58 mm que mandaste, **no es posible** imprimir solo desde la
+página web en Android e iOS:
+
+- En Android, la PWA solo podría con **BLE + Web Bluetooth** (Chrome); esas impresoras suelen ser
+  **Bluetooth clásico SPP**, que el navegador no puede abrir.
+- En iOS no existe Web Bluetooth; solo **AirPrint**, y esas impresoras no son AirPrint.
+- `window.print()` solo funciona si el sistema ve la impresora como servicio de impresión; las
+  económicas normalmente solo imprimen desde su app.
+- La PWA está en HTTPS y no puede llamar a un agente HTTP local; por eso un agente requiere
+  HTTPS/túnel, que ya es “equipo extra”.
+
+La PWA sola **sí** puede imprimir si usas una **impresora de red con AirPrint/Mopria/IPP**
+(por ejemplo, una 4×6 de etiquetas con AirPrint o una térmica de red compatible). Esas impresoras
+cuestan más que las económicas, pero no requieren APK ni Raspberry: el diálogo de impresión del
+celular/tablet las ve. Hay que confirmar el modelo exacto y su disponibilidad en México.
+
+Resumen: **PWA pura + impresora económica 58 mm + Android/iOS = no**. Para seguir con PWA pura
+hay que subir el presupuesto a una impresora AirPrint/Mopria; para usar las económicas hay que
+aceptar app del fabricante o un agente.
+
 ## 7. Qué conviene según el caso
 
 ### Caso A — Ticket completo pegado, laptop/PC en caja (recomendado)
