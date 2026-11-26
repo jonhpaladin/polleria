@@ -6,9 +6,12 @@ import { formatCents } from "@/lib/money";
 import { PAYMENT_LABEL } from "@/lib/payment";
 import type { PolleriaDb } from "@/lib/db";
 import type { CartLine, LocalTicket } from "@/types/sale";
+import { PrintTicketButton } from "@/components/printer/PrintTicketButton";
 
 interface HistoryTabProps {
   db?: PolleriaDb;
+  onReprint?: (ticket: LocalTicket) => Promise<void>;
+  onPrintWithSystem?: (ticket: LocalTicket) => Promise<void>;
 }
 
 const PRICE_SOURCE_LABEL: Record<CartLine["priceSource"], string> = {
@@ -38,7 +41,15 @@ function daysAgo(days: number): string {
   return businessDate(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
 }
 
-function TicketDetail({ ticket }: { ticket: LocalTicket }) {
+function TicketDetail({
+  ticket,
+  onReprint,
+  onPrintWithSystem,
+}: {
+  ticket: LocalTicket;
+  onReprint?: (ticket: LocalTicket) => Promise<void>;
+  onPrintWithSystem?: (ticket: LocalTicket) => Promise<void>;
+}) {
   return (
     <div className="space-y-2 border-t border-stone-100 px-4 py-3">
       {ticket.status === "voided" ? (
@@ -73,12 +84,22 @@ function TicketDetail({ ticket }: { ticket: LocalTicket }) {
           ))}
         </ul>
       )}
+      {onReprint ? (
+        <PrintTicketButton
+          ticket={ticket}
+          label={ticket.status === "voided" ? "Reimprimir anulado" : "Reimprimir"}
+          reason="reprint"
+          onPrint={(item) => onReprint(item)}
+          onSystemPrint={onPrintWithSystem}
+          className="pt-2"
+        />
+      ) : null}
     </div>
   );
 }
 
 /** Historial local por rango, con búsqueda por folio y exportación CSV. */
-export function HistoryTab({ db }: HistoryTabProps) {
+export function HistoryTab({ db, onReprint, onPrintWithSystem }: HistoryTabProps) {
   const history = useHistory({ db });
   const today = businessDate(new Date());
   const [notice, setNotice] = useState<string | null>(null);
@@ -228,7 +249,11 @@ export function HistoryTab({ db }: HistoryTabProps) {
                     {formatCents(ticket.totalCents)}
                   </p>
                 </summary>
-                <TicketDetail ticket={ticket} />
+                <TicketDetail
+                  ticket={ticket}
+                  onReprint={onReprint}
+                  onPrintWithSystem={onPrintWithSystem}
+                />
               </details>
             </li>
           ))}

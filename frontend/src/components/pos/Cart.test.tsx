@@ -1,10 +1,10 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Cart } from "@/components/pos/Cart";
 import type { Cents } from "@/types/catalog";
 import type { DailyPrice } from "@/types/dailyPrice";
-import type { CartState } from "@/types/sale";
+import type { CartState, LocalTicket } from "@/types/sale";
 
 const dailyPrice: DailyPrice = {
   id: "2026-11-13:prd-pierna",
@@ -46,6 +46,8 @@ function renderCart(overrides: {
   saving?: boolean;
   error?: string | null;
   success?: string | null;
+  lastTicket?: LocalTicket | null;
+  onPrintTicket?: (ticket: LocalTicket) => Promise<void>;
   onAction?: (action: unknown) => void;
   onCheckout?: () => void;
   onBackToSale?: () => void;
@@ -60,12 +62,29 @@ function renderCart(overrides: {
       saving={overrides.saving ?? false}
       error={overrides.error ?? null}
       success={overrides.success ?? null}
+      lastTicket={overrides.lastTicket}
+      onPrintTicket={overrides.onPrintTicket}
       onAction={onAction}
       onCheckout={onCheckout}
       onBackToSale={overrides.onBackToSale}
     />,
   );
   return { onAction, onCheckout };
+}
+
+function soldTicket(): LocalTicket {
+  return {
+    schemaVersion: 1,
+    clientOrderUuid: "11111111-1111-4111-8111-111111111111",
+    localFolio: 1,
+    soldAtUtc: "2026-11-25T18:45:00.000Z",
+    businessDate: "2026-11-25",
+    paymentMethod: "cash",
+    lines: cart().lines,
+    totalCents: 7500 as Cents,
+    status: "confirmed",
+    catalogUpdatedAt: "2026-11-25T18:00:00.000Z",
+  };
 }
 
 describe("Cart", () => {
@@ -134,6 +153,21 @@ describe("Cart", () => {
     fireEvent.click(screen.getByRole("button", { name: "Volver a vender" }));
 
     expect(onBackToSale).toHaveBeenCalledTimes(1);
+  });
+
+  it("ofrece imprimir el ticket confirmado", async () => {
+    const onPrintTicket = vi.fn().mockResolvedValue(undefined);
+    renderCart({
+      cart: cart({ lines: [] }),
+      success: "Venta confirmada: $75.00 en Efectivo. Folio local 1.",
+      lastTicket: soldTicket(),
+      onPrintTicket,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Imprimir ticket" }));
+
+    await waitFor(() => expect(onPrintTicket).toHaveBeenCalledWith(soldTicket()));
+    expect(await screen.findByText("Ticket en cola de impresión; se enviará al conectar.")).toBeInTheDocument();
   });
 
   it("deshabilita confirmar mientras guarda la venta", () => {

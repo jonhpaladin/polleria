@@ -274,6 +274,37 @@ https://www.enduropos.com/product/1-ano-de-garantia-con-factura-caracteristicas-
 Etiquetas 57×30 mm (3 rollos, ~$82–109):
 https://listado.mercadolibre.com.mx/rollo-adhesivo-termico-58mm
 
+## 11. Probar la implementación 009
+
+La PWA incluye una página de diagnóstico en `/printer-test` (o `/?printer-test=1`) con:
+
+- detección de Web Bluetooth y WebUSB;
+- botones para conectar BLE/USB, imprimir prueba y abrir `window.print()`;
+- ticket de prueba con acentos, QR y código de barras;
+- log de bytes generados y errores.
+
+### nRF Connect (si la impresora es BLE)
+
+1. Instala **nRF Connect for Mobile** en Android.
+2. Escanea y conecta la impresora; abre sus servicios.
+3. Busca un servicio como `0000ff00-…`, `000018f0-…` o `e7810a71-…` con una característica
+   escribible.
+4. Si no aparece ningún servicio BLE, la impresora es Bluetooth clásico (SPP): no funcionará
+   con Web Bluetooth, aunque tenga app para Android.
+
+### Problemas comunes
+
+- **No aparece en el selector**: es SPP o el navegador no es Chrome Android.
+- **Conecta pero no imprime**: prueba otro `codepage` (cp858), revisa el ancho de 58 mm y el
+  estado `uncertain` de la cola.
+- **WebUSB no ve la impresora**: el modelo no está en la lista de vendor IDs de la librería o
+  falta el cable OTG; prueba el selector y revisa Chrome.
+- **Salió a medias**: no reimprimas automáticamente; confirma en el diálogo de la impresora.
+- **Windows**: WebUSB no funciona si el driver reclama la impresora; el objetivo es Android.
+
+La validación con hardware real no se ejecuta en CI: los tests usan adaptadores falsos y la
+prueba física queda documentada en `specs/009-impresion/tasks.md`.
+
 ## Fuentes principales
 
 - Xprinter México: https://xprintermexico.com/product-page/xp58iih ·

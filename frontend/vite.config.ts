@@ -39,6 +39,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    // Las librerías de impresora publican solo la condición "browser".
+    conditions: ["browser", "import", "module", "default"],
   },
   test: {
     environment: "jsdom",

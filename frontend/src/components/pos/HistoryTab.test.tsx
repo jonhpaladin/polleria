@@ -1,6 +1,6 @@
 import Dexie from "dexie";
-import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { HistoryTab } from "@/components/pos/HistoryTab";
 import { businessDate } from "@/lib/dailyPrices";
@@ -86,5 +86,19 @@ describe("HistoryTab", () => {
 
     expect(screen.queryByText("Folio #1")).not.toBeInTheDocument();
     expect(screen.getByText("Folio #2")).toBeInTheDocument();
+  });
+
+  it("reimprime el snapshot del ticket desde el detalle", async () => {
+    const db = newDb();
+    const onReprint = vi.fn().mockResolvedValue(undefined);
+    await db.tickets.add(ticket("11111111-1111-4111-8111-111111111111", 1));
+
+    render(<HistoryTab db={db} onReprint={onReprint} />);
+
+    fireEvent.click(await screen.findByText("Folio #1"));
+    fireEvent.click(await screen.findByRole("button", { name: "Reimprimir" }));
+
+    await waitFor(() => expect(onReprint).toHaveBeenCalledTimes(1));
+    expect(onReprint.mock.calls[0]?.[0]).toMatchObject({ localFolio: 1 });
   });
 });

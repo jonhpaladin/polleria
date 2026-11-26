@@ -44,7 +44,7 @@ describe("Dexie v1", () => {
   });
 });
 
-describe("Dexie v1 → v4", () => {
+describe("Dexie v1 → v5", () => {
   it("conserva catálogo, meta y outbox pendiente al agregar precios, tickets e índices", async () => {
     const name = `polleria-migration-test-${counter++}`;
     const catalog = makeCatalog();
@@ -99,6 +99,7 @@ describe("Dexie v1 → v4", () => {
     expect(await db.outbox.where("status").equals("pending").count()).toBe(1);
     expect((await db.outbox.get(legacyUuid))?.enqueuedAt).toBe("2026-11-13T18:00:00.000Z");
     expect(await db.cashCuts.count()).toBe(0);
-    expect(db.verno).toBe(4);
+    expect(await db.printJobs.count()).toBe(0);
+    expect(db.verno).toBe(5);
   });
 });

@@ -7,7 +7,7 @@ import { PAYMENT_LABEL } from "@/lib/payment";
 import { persistTicket } from "@/lib/ticketRepository";
 import type { Catalog } from "@/types/catalog";
 import type { DailyPrice } from "@/types/dailyPrice";
-import type { CartState } from "@/types/sale";
+import type { CartState, LocalTicket } from "@/types/sale";
 
 export interface UseSaleResult {
   cart: CartState;
@@ -17,6 +17,7 @@ export interface UseSaleResult {
   saving: boolean;
   error: string | null;
   success: string | null;
+  lastTicket: LocalTicket | null;
   checkout: () => Promise<void>;
 }
 
@@ -36,6 +37,7 @@ export function useSale(
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [lastTicket, setLastTicket] = useState<LocalTicket | null>(null);
   const inFlight = useRef(false);
   const pendingUuid = useRef<string | null>(null);
 
@@ -67,6 +69,7 @@ export function useSale(
       }
       setError(null);
       setSuccess(null);
+      setLastTicket(null);
       dispatch({ type: "addProduct", product, categoryName, dailyPrice, selection });
       return true;
     },
@@ -100,6 +103,7 @@ export function useSale(
       const total = formatCents(result.ticket.totalCents);
       const method = PAYMENT_LABEL[result.ticket.paymentMethod];
       dispatch({ type: "clear" });
+      setLastTicket(result.ticket);
       setSuccess(
         `Venta confirmada: ${total} en ${method}. Folio local ${result.ticket.localFolio}.`,
       );
@@ -122,6 +126,7 @@ export function useSale(
     saving,
     error,
     success,
+    lastTicket,
     checkout,
   };
 }

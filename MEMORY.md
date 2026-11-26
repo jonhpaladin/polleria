@@ -2,17 +2,16 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
 ## Estado actual (2026-11-25)
-- Specs 001, 002, 003, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 009 en investigación.
-- 009: modelos, insumos y costos en `docs/impresoras-009.md`; falta elegir laptop/tablet, volumen y etiqueta.
+- Specs 001, 002, 003, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 009 cerrada en software.
+- 009: impresión 58 mm desde Chrome Android por Web Bluetooth/WebUSB, con fallback `window.print()`.
 - 003: 25 WebP 512×512 (1.09 MB) precacheadas, mapa SKU→archivo y tarjeta visual; sin bebidas.
 - 013 validada por el dueño: historial local por rango, búsqueda por folio y CSV con anuladas.
 - 012 validada por el dueño: anulación de ticket completo con PIN, sincronización y reportes filtrados.
 - 008: administración de precios, claves de API y RLS desplegadas; `ADMIN_KEY` y `DEVICE_KEY` ya configuradas en Render.
 - Catálogo real con 25 productos activos: 11 con precio confirmado y 14 temporales a $100; 17 inactivos.
 - Desplegado: API `https://polleria-api-homu.onrender.com` y PWA `https://polleria-q84.pages.dev`; CORS exige orígenes exactos.
-- Tests: backend 59 passed + 4 skipped; frontend 283 passed en 44 archivos; `ruff`, `lint`, `typecheck`, `build`, `seed:check` e `images:check` verdes.
+- Tests: backend 59 passed + 4 skipped; frontend 303 passed en 48 archivos; `ruff`, `lint`, `typecheck`, `build`, `seed:check` e `images:check` verdes.
 - Supabase con `0001`…`0004`; RLS activo y `anon`/`authenticated` sin permisos.
-- Guías: `docs/despliegue.md` y `docs/seguridad.md`.
 
 ## Decisiones
 - **Outbox local-first:** el celular cobra sin red; el mismo UUID no duplica el ticket.
@@ -41,11 +40,12 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Tarjeta con imagen de fondo, degradado, precio/chips y respaldo; rejilla 2/3/4 columnas.
 - `images:check` cubre peso y cobertura; validada por el dueño en la tablet.
 
-## Próximos pasos
-1. Revisar `docs/impresoras-009.md` y definir dispositivo, pedidos/día, etiqueta y presupuesto.
-2. Abrir 009 con el modelo elegido: ticket térmico y etiquetas adhesivas para las bolsas.
-3. Verificación de campo: respaldo/restauración y anulación en la tablet.
-4. Publicar precios reales cuando el dueño los defina.
+## Spec 009 — Impresión (cerrada en software)
+- Ticket ESC/POS de 58 mm desde Chrome Android por BLE/WebUSB; sin backend ni agente.
+- Cola Dexie v5 `printJobs` con `pending/printing/printed/failed/uncertain`; incierto no auto.
+- `/printer-test` y `docs/impresoras-009.md`; falta probar con impresora física (T-009-15).
 
-## Decisiones pendientes
-- 009: modelo y conexión de la impresora.
+## Próximos pasos
+1. Validar 009 con una impresora BLE/USB real en Chrome Android (T-009-15).
+2. Verificación de campo: respaldo/restauración y anulación en la tablet.
+3. Publicar precios reales cuando el dueño los defina.

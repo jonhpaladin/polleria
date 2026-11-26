@@ -3,9 +3,10 @@ import { useEffect, useRef } from "react";
 import { formatCents } from "@/lib/money";
 import { cartTotalCents, type CartAction } from "@/lib/cart";
 import type { DailyPrice } from "@/types/dailyPrice";
-import type { CartState } from "@/types/sale";
+import type { CartState, LocalTicket } from "@/types/sale";
 import { CartLine } from "@/components/pos/CartLine";
 import { PaymentSelector } from "@/components/pos/PaymentSelector";
+import { PrintTicketButton } from "@/components/printer/PrintTicketButton";
 
 interface CartProps {
   cart: CartState;
@@ -14,12 +15,15 @@ interface CartProps {
   saving: boolean;
   error: string | null;
   success: string | null;
+  lastTicket?: LocalTicket | null;
+  onPrintTicket?: (ticket: LocalTicket) => Promise<void>;
+  onSystemPrintTicket?: (ticket: LocalTicket) => Promise<void>;
   onAction: (action: CartAction) => void;
   onCheckout: () => void;
   onBackToSale?: () => void;
 }
 
-export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, onAction, onCheckout, onBackToSale }: CartProps) {
+export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, lastTicket, onPrintTicket, onSystemPrintTicket, onAction, onCheckout, onBackToSale }: CartProps) {
   const dailyPriceByProduct = new Map(dailyPrices.map((price) => [price.productId, price]));
   const total = cartTotalCents(cart);
   const errorRef = useRef<HTMLParagraphElement | null>(null);
@@ -101,6 +105,16 @@ export function Cart({ cart, dailyPrices, canCheckout, saving, error, success, o
         {success ? (
           <div className="mt-3">
             <p ref={successRef} tabIndex={-1} className="text-sm font-semibold text-emerald-700 focus:outline-none" role="status" aria-live="polite">{success}</p>
+            {lastTicket && onPrintTicket ? (
+              <PrintTicketButton
+                ticket={lastTicket}
+                label="Imprimir ticket"
+                reason="sale"
+                onPrint={(ticket) => onPrintTicket(ticket)}
+                onSystemPrint={onSystemPrintTicket}
+                className="mt-3"
+              />
+            ) : null}
             {onBackToSale ? (
               <button
                 type="button"

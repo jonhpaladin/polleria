@@ -18,6 +18,9 @@
     "images:check": "node scripts/check-product-images.mjs"
   },
   "dependencies": {
+    "@point-of-sale/receipt-printer-encoder": "^4.0.1",
+    "@point-of-sale/webbluetooth-receipt-printer": "^2.1.0",
+    "@point-of-sale/webusb-receipt-printer": "^2.1.0",
     "dexie": "^4.4.7",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"

@@ -13,7 +13,7 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
 | 007 | `007-catalogo-real` | Catálogo real del local y diseño de la marca | 002, 005, 006 | cerrada por ratificación del dueño (2026-11-23) |
 | 008 | `008-precios-admin` | Edición de precios, publicación y seguridad de la API | 001 (+004 para propagar) | cerrada por ratificación del dueño (2026-11-23); claves de Render como paso operativo |
-| 009 | `009-impresion` | Ticket ESC/POS y etiquetas TSPL | 002 | borrador |
+| 009 | `009-impresion` | Ticket ESC/POS de 58 mm desde Chrome Android (BLE/USB) | 002, 005, 012, 013 | cerrada (2026-11-25); validación física pendiente |
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 | 011 | `011-respaldo` | Respaldo y restauración de los datos locales | 002, 004, 006 | cerrada por ratificación del dueño (2026-11-23); verificación de campo pendiente |
 | 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | cerrada por ratificación del dueño (2026-11-23) |
@@ -137,18 +137,24 @@ Los pasos pendientes están en `docs/seguridad.md`.
 **Decisiones**: precios base y activar/desactivar; clave de admin + clave del local; publicar
 reemplaza la hoja del día en curso; sin historial de precios en esta iteración.
 
-## 009 — Impresión
+## 009 — Impresión térmica desde la PWA
 
-**Objetivo**: ticket en impresora térmica 58/80 mm por ESC/POS y etiquetas por TSPL, con
-`--kiosk-printing` en Chromium.
+**Estado**: cerrada en software (2026-11-25); la conexión con la impresora física queda como
+verificación de campo con el modelo que compre el dueño.
 
-**Fuera de alcance**: impresión desde iOS, servidor de impresión.
+**Objetivo**: imprimir el ticket de 58 mm desde Chrome Android sin backend ni agente. Usa Web
+Bluetooth (BLE), WebUSB (OTG) y, si no hay impresora, una vista de 58 mm con `window.print()`.
+La cola vive en Dexie v5 (`printJobs`) y distingue `pending`, `printing`, `printed`, `failed` y
+`uncertain`; un trabajo incierto no se reintenta solo.
 
-**Dudas abiertas**: ¿modelo de impresora? ¿USB, Bluetooth o red? ¿se imprime antes o
-después de confirmar el cobro?
+**Fuera de alcance**: iOS con Bluetooth/USB, 80 mm, 4×6, TSPL, etiquetas adhesivas, red y
+servidor de impresión.
 
-**Investigación**: modelos, insumos y costos en `docs/impresoras-009.md`; falta elegir
-dispositivo (laptop/tablet), volumen y tamaño de etiqueta.
+**Decisiones**: Android-first; 3 librerías MIT de `@point-of-sale`; el ticket se reimprime desde
+el snapshot; sin corte automático; `cp858` disponible si los acentos salen raros.
+
+**Prueba**: `frontend/src/pages/PrinterTestPage.tsx` (`/printer-test`) y
+`docs/impresoras-009.md`.
 
 ## 010 — Multidispositivo (condicional)
 

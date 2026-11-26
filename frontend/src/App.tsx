@@ -4,6 +4,7 @@ import { formatUpdatedAt, selectProducts, visibleCategories } from "@/lib/catalo
 import { useCatalog } from "@/hooks/useCatalog";
 import { useBackupStatus } from "@/hooks/useBackupStatus";
 import { useDailyPrices } from "@/hooks/useDailyPrices";
+import { usePrinter } from "@/hooks/usePrinter";
 import { usePwaUpdate } from "@/hooks/usePwaUpdate";
 import { useReports } from "@/hooks/useReports";
 import { useSale } from "@/hooks/useSale";
@@ -20,6 +21,7 @@ import { ProductGrid } from "@/components/pos/ProductGrid";
 import { ProductSheet } from "@/components/pos/ProductSheet";
 import { ReportsTab } from "@/components/pos/ReportsTab";
 import { SyncBadge } from "@/components/pos/SyncBadge";
+import { PrinterBadge } from "@/components/printer/PrinterDialog";
 import { UpdateBanner } from "@/components/ui/UpdateBanner";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { DeviceKeyDialog } from "@/components/ui/DeviceKeyDialog";
@@ -44,6 +46,7 @@ export default function App() {
   const { catalog, origin, online, selectedCategory, selectCategory, refresh } = useCatalog();
   const backupOverdue = useBackupStatus();
   const sync = useSync({ online });
+  const printer = usePrinter();
   const dailyPrices = useDailyPrices(catalog);
   const reports = useReports({
     businessDate: dailyPrices.businessDate,
@@ -91,6 +94,7 @@ export default function App() {
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-2">
+            <PrinterBadge printer={printer} />
             <SyncBadge
               pending={sync.pending}
               failed={sync.failed}
@@ -182,6 +186,9 @@ export default function App() {
             saving={sale.saving}
             error={sale.error}
             success={sale.success}
+            lastTicket={sale.lastTicket}
+            onPrintTicket={(ticket) => printer.printTicket(ticket, "sale")}
+            onSystemPrintTicket={(ticket) => printer.printTicketWithSystem(ticket)}
             onAction={sale.dispatch}
             onCheckout={() => void sale.checkout()}
             onBackToSale={() => setActiveTab("sale")}
@@ -204,7 +211,10 @@ export default function App() {
             onVoid={reports.voidSale}
           />
         ) : activeTab === "history" ? (
-          <HistoryTab />
+          <HistoryTab
+            onReprint={(ticket) => printer.printTicket(ticket, "reprint")}
+            onPrintWithSystem={(ticket) => printer.printTicketWithSystem(ticket)}
+          />
         ) : activeTab === "backup" ? (
           <BackupTab />
         ) : (

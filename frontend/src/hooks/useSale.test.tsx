@@ -47,6 +47,7 @@ describe("useSale", () => {
       ),
     );
     expect(result.current.cart.lines).toHaveLength(0);
+    expect(result.current.lastTicket?.localFolio).toBe(1);
     expect(await getDb().tickets.count()).toBe(1);
   });
 
