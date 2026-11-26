@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { buildDiagnosticTicket } from "@/printer/encoder";
 import type { UsePrinterResult } from "@/hooks/usePrinter";
@@ -46,11 +47,19 @@ export function PrinterDialog({
     };
   }, [listAttentionJobs, state.failed, state.uncertain]);
 
+  useEffect(() => {
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, []);
+
   async function reloadJobs() {
     setJobs(await printer.listAttentionJobs());
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-stone-950/50 p-0 sm:items-center sm:p-4">
       <section
         role="dialog"
@@ -245,7 +254,8 @@ export function PrinterDialog({
           Abrir diagnóstico de impresora
         </a>
       </section>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
