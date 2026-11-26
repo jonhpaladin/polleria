@@ -2,7 +2,7 @@
 
 - Spec: `specs/009-impresion/spec.md`
 - Constitución: `docs/constitution.md` v1.0
-- Estado: implementado (2026-11-25); verificación física pendiente
+- Estado: cerrado por ratificación del dueño (2026-11-26); verificación física de campo pendiente
 - Dependencias: 002, 005, 012, 013 cerradas; `docs/impresoras-009.md` como investigación
 
 ## 1. Arquitectura

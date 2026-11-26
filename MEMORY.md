@@ -1,9 +1,9 @@
 # MEMORY.md — Memoria de Arquitectura y Estado del POS
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no te aporte
 
-## Estado actual (2026-11-25)
-- Specs 001, 002, 003, 004, 005, 006, 007, 008, 011, 012 y 013 cerradas; 009 cerrada en software.
-- 009: impresión 58 mm desde Chrome Android por Web Bluetooth/WebUSB, con fallback `window.print()`.
+## Estado actual (2026-11-26)
+- Specs 001, 002, 003, 004, 005, 006, 007, 008, 009, 011, 012 y 013 cerradas; solo 010 condicional.
+- 009 cerrada por ratificación: impresión 58 mm por BLE/WebUSB y fallback `window.print()`.
 - 003: 25 WebP 512×512 (1.09 MB) precacheadas, mapa SKU→archivo y tarjeta visual; sin bebidas.
 - 013 validada por el dueño: historial local por rango, búsqueda por folio y CSV con anuladas.
 - 012 validada por el dueño: anulación de ticket completo con PIN, sincronización y reportes filtrados.
@@ -40,12 +40,13 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Tarjeta con imagen de fondo, degradado, precio/chips y respaldo; rejilla 2/3/4 columnas.
 - `images:check` cubre peso y cobertura; validada por el dueño en la tablet.
 
-## Spec 009 — Impresión (cerrada en software)
+## Spec 009 — Impresión (cerrada)
 - Ticket ESC/POS de 58 mm desde Chrome Android por BLE/WebUSB; sin backend ni agente.
 - Cola Dexie v5 `printJobs` con `pending/printing/printed/failed/uncertain`; incierto no auto.
-- `/printer-test` y `docs/impresoras-009.md`; falta probar con impresora física (T-009-15).
+- `/printer-test` y `docs/impresoras-009.md`; T-009-16 (impresora física) es verificación de campo.
 
 ## Próximos pasos
-1. Validar 009 con una impresora BLE/USB real en Chrome Android (T-009-15).
+1. Comprar/probar una impresora BLE o USB real en Chrome Android (T-009-16).
 2. Verificación de campo: respaldo/restauración y anulación en la tablet.
 3. Publicar precios reales cuando el dueño los defina.
+4. 010 multidispositivo solo si se abre una segunda caja.

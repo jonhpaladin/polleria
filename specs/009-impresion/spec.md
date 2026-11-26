@@ -1,6 +1,6 @@
 # Spec 009 — Impresión térmica desde la PWA
 
-- Estado: cerrada en software (2026-11-25); validación física pendiente
+- Estado: cerrada por ratificación del dueño (2026-11-26); la prueba con impresora física queda como verificación de campo (T-009-16)
 - Spec activa: no
 - Depende de: `specs/002-venta-offline`, `specs/005-venta-tactil`, `specs/012-anulaciones`,
   `specs/013-historial-ventas` y `docs/constitution.md` v1.0
@@ -124,6 +124,9 @@ interface PrintTicket {
 5. `/printer-test` permite diagnosticar BLE, USB, QR, código de barras y bytes.
 6. `lint`, `typecheck`, `test`, `build`, `seed:check` e `images:check` pasan.
 7. `specs/README.md` y `MEMORY.md` quedan actualizados.
+
+> Los criterios 1 y 2 (hardware BLE/USB real) quedan como verificación de campo T-009-16; el
+> dueño ratificó el cierre de software el 2026-11-26.
 
 ## Decisiones ratificadas
 

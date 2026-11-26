@@ -2,7 +2,7 @@
 
 - Spec: `specs/009-impresion/spec.md`
 - Plan: `specs/009-impresion/plan.md`
-- Estado: cerrada en software (2026-11-25); verificación física pendiente
+- Estado: cerrada por ratificación del dueño (2026-11-26); verificación física de campo pendiente
 
 ## Fase 0 — Gobierno
 
@@ -85,11 +85,16 @@
   Hecho cuando todo pasa y la validación física queda documentada como manual.
   RF: —
 
-## Fase 5 — Verificación física
+## Fase 5 — Verificación de campo
 
-- [ ] **T-009-15 · Probar con impresora real**
+- [x] **T-009-15 · Validar el diálogo en computadora y celular**
+  Confirmar que el popup abre completo, cierra y muestra “Reconectar” en ambos tamaños.
+  Hecho cuando el dueño confirma la revisión (2026-11-26).
+  RF: RF-009-10
+
+- [ ] **T-009-16 · Probar con impresora real**
   En Chrome Android, conectar una BLE (o USB con OTG), imprimir el ticket de prueba con
   acentos, QR y código de barras, y revisar la reconexión y la cola `uncertain`.
   Hecho cuando el dueño confirma el modelo y el ticket sale completo; si el modelo es SPP o no
-  aparece en WebUSB, se documenta y se decide el reemplazo.
+  aparece en WebUSB, se documenta y se decide el reemplazo. No bloquea el cierre de 009.
   RF: RF-009-01, 02, 05, 06, 09, 12

@@ -13,14 +13,14 @@ sus dudas estén resueltas; aquí solo se fija el orden y el porqué.
 | 006 | `006-corte-reportes` | Corte de caja y reportes agrupados por día local | 002 (+004 para consolidar) | cerrada por ratificación del dueño (2026-11-22) |
 | 007 | `007-catalogo-real` | Catálogo real del local y diseño de la marca | 002, 005, 006 | cerrada por ratificación del dueño (2026-11-23) |
 | 008 | `008-precios-admin` | Edición de precios, publicación y seguridad de la API | 001 (+004 para propagar) | cerrada por ratificación del dueño (2026-11-23); claves de Render como paso operativo |
-| 009 | `009-impresion` | Ticket ESC/POS de 58 mm desde Chrome Android (BLE/USB) | 002, 005, 012, 013 | cerrada (2026-11-25); validación física pendiente |
+| 009 | `009-impresion` | Ticket ESC/POS de 58 mm desde Chrome Android (BLE/USB) | 002, 005, 012, 013 | cerrada por ratificación del dueño (2026-11-26); prueba física de campo pendiente |
 | 010 | `010-multidispositivo` | Concurrencia entre cajas y roles con PIN | 004 | condicional |
 | 011 | `011-respaldo` | Respaldo y restauración de los datos locales | 002, 004, 006 | cerrada por ratificación del dueño (2026-11-23); verificación de campo pendiente |
 | 012 | `012-anulaciones` | Anulación y devolución de tickets con auditoría | 002, 004 | cerrada por ratificación del dueño (2026-11-23) |
 | 013 | `013-historial-ventas` | Historial de ventas y exportación CSV | 006 | cerrada por ratificación del dueño (2026-11-23) |
 
-Orden de trabajo acordado (2026-11-23): **003 imágenes → 009 impresión**; 010 multidispositivo
-queda condicional.
+Orden de trabajo: **003 imágenes y 009 impresión cerradas (2026-11-26)**; 010 multidispositivo
+queda condicional y es el único spec pendiente.
 
 ## 002 — Venta offline
 
@@ -139,8 +139,8 @@ reemplaza la hoja del día en curso; sin historial de precios en esta iteración
 
 ## 009 — Impresión térmica desde la PWA
 
-**Estado**: cerrada en software (2026-11-25); la conexión con la impresora física queda como
-verificación de campo con el modelo que compre el dueño.
+**Estado**: cerrada por ratificación del dueño (2026-11-26). La prueba con impresora física
+queda como verificación de campo (T-009-16), no como bloqueo del spec.
 
 **Objetivo**: imprimir el ticket de 58 mm desde Chrome Android sin backend ni agente. Usa Web
 Bluetooth (BLE), WebUSB (OTG) y, si no hay impresora, una vista de 58 mm con `window.print()`.
